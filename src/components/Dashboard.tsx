@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { UserProfile, DailyProfile } from "../types";
 import { getDailyProfile } from "../utils/numerologyCalculator";
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,10 +11,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Calendar as CalendarRangeIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import NumerologyCard from "./NumerologyCard";
 import MonthlyCalendar from "./MonthlyCalendar";
+import { DateRange } from "react-day-picker";
+import { toast } from "@/components/ui/use-toast";
 
 interface DashboardProps {
   userProfile: UserProfile;
@@ -23,8 +25,10 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ userProfile, onLogout }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [dailyProfile, setDailyProfile] = useState<DailyProfile | null>(null);
   const [showMonthly, setShowMonthly] = useState<boolean>(false);
+  const [isRangeMode, setIsRangeMode] = useState<boolean>(false);
   
   useEffect(() => {
     if (userProfile) {
@@ -32,6 +36,18 @@ const Dashboard: React.FC<DashboardProps> = ({ userProfile, onLogout }) => {
       setDailyProfile(profile);
     }
   }, [userProfile, selectedDate]);
+  
+  const handleDateRangeSelection = () => {
+    if (dateRange?.from && dateRange?.to) {
+      const days = Math.floor((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      toast({
+        title: "Date range selected",
+        description: `You selected ${days} days from ${format(dateRange.from, "MMMM d, yyyy")} to ${format(dateRange.to, "MMMM d, yyyy")}`,
+      });
+      setIsRangeMode(false);
+      setSelectedDate(dateRange.from);
+    }
+  };
   
   if (!dailyProfile) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
@@ -46,11 +62,7 @@ const Dashboard: React.FC<DashboardProps> = ({ userProfile, onLogout }) => {
   
   const isToday = (date: Date): boolean => {
     const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
+    return isSameDay(date, today);
   };
   
   return (
@@ -82,27 +94,87 @@ const Dashboard: React.FC<DashboardProps> = ({ userProfile, onLogout }) => {
                 </p>
               </div>
             </div>
-            <div className="flex space-x-2">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="flex items-center space-x-2 border-colorpath-lavender"
-                  >
-                    <CalendarIcon className="h-4 w-4" />
-                    <span>{format(selectedDate, "MMMM d, yyyy")}</span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 pointer-events-auto">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={(date) => date && setSelectedDate(date)}
-                    initialFocus
-                    className="p-3 pointer-events-auto"
-                  />
-                </PopoverContent>
-              </Popover>
+            <div className="flex flex-wrap gap-2">
+              {isRangeMode ? (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="flex items-center space-x-2 border-colorpath-lavender"
+                    >
+                      <CalendarRangeIcon className="h-4 w-4" />
+                      <span>
+                        {dateRange?.from ? (
+                          dateRange.to ? (
+                            <>
+                              {format(dateRange.from, "LLL dd, y")} -{" "}
+                              {format(dateRange.to, "LLL dd, y")}
+                            </>
+                          ) : (
+                            format(dateRange.from, "LLL dd, y")
+                          )
+                        ) : (
+                          "Select date range"
+                        )}
+                      </span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0 pointer-events-auto">
+                    <div className="p-3">
+                      <Calendar
+                        initialFocus
+                        mode="range"
+                        defaultMonth={selectedDate}
+                        selected={dateRange}
+                        onSelect={setDateRange}
+                        numberOfMonths={2}
+                      />
+                      <div className="flex justify-end gap-2 mt-4">
+                        <Button 
+                          variant="outline"
+                          onClick={() => setIsRangeMode(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button 
+                          onClick={handleDateRangeSelection}
+                          disabled={!dateRange?.from || !dateRange?.to}
+                        >
+                          Apply
+                        </Button>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              ) : (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="flex items-center space-x-2 border-colorpath-lavender"
+                    >
+                      <CalendarIcon className="h-4 w-4" />
+                      <span>{format(selectedDate, "MMMM d, yyyy")}</span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0 pointer-events-auto">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={(date) => date && setSelectedDate(date)}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              )}
+              
+              <Button 
+                variant="outline"
+                onClick={() => setIsRangeMode(!isRangeMode)}
+                className="border-colorpath-lavender"
+              >
+                {isRangeMode ? "Single Date" : "Date Range"}
+              </Button>
               
               <Button
                 variant="outline"
