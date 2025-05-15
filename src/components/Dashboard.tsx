@@ -151,11 +151,6 @@ const Dashboard: React.FC<DashboardProps> = ({ userProfile, onLogout }) => {
                 <blockquote className="text-lg italic text-gray-700 flex-grow">
                   "{dailyProfile.numerologyData.affirmation}"
                 </blockquote>
-                <div className="mt-auto">
-                  <button className="text-primary hover:underline mt-4 text-sm">
-                    Get Another Affirmation
-                  </button>
-                </div>
               </div>
             </div>
             
