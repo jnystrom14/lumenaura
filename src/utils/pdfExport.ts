@@ -88,3 +88,68 @@ export const exportMonthlyPDF = (profiles: DailyProfile[], month: number, year: 
   // Save the PDF
   doc.save(`ColorPath_${monthName}_${year}.pdf`);
 };
+
+export const exportDateRangePDF = (profiles: DailyProfile[], from: Date, to: Date): void => {
+  const doc = new jsPDF();
+  
+  // Format date range for title
+  const fromDate = from.toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' });
+  const toDate = to.toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' });
+  
+  // Add title
+  doc.setFontSize(20);
+  doc.text(`ColorPath: ${fromDate} - ${toDate}`, 105, 15, { align: 'center' });
+  doc.setFontSize(12);
+  doc.text("Numerology Calendar", 105, 22, { align: 'center' });
+  
+  // Prepare data for table
+  const calendarData = profiles.map(profile => [
+    profile.date.toLocaleString('default', { month: 'short', day: 'numeric' }),
+    profile.personalDay,
+    profile.numerologyData.color,
+    profile.numerologyData.gem,
+    profile.numerologyData.powerWord
+  ]);
+  
+  // Create table
+  doc.autoTable({
+    startY: 30,
+    head: [['Date', 'Number', 'Color', 'Gem', 'Power Word']],
+    body: calendarData,
+    headStyles: { 
+      fillColor: [85, 73, 188],
+      textColor: 255
+    },
+    alternateRowStyles: {
+      fillColor: [240, 240, 255]
+    },
+    margin: { top: 30 },
+    styles: {
+      cellPadding: 3,
+      fontSize: 10,
+      valign: 'middle',
+      overflow: 'linebreak',
+      lineWidth: 0.1
+    },
+    columnStyles: {
+      0: { cellWidth: 30 },
+      1: { cellWidth: 25 },
+      2: { cellWidth: 35 },
+      3: { cellWidth: 35 },
+      4: { cellWidth: 65 }
+    }
+  });
+  
+  // Add footer with page numbers
+  const pageCount = doc.internal.pages.length - 1;
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFontSize(10);
+    doc.text('ColorPath - Your Daily Numerology Guide', 105, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+  }
+  
+  // Save the PDF
+  const fromMonth = from.toLocaleString('default', { month: 'short' });
+  const toMonth = to.toLocaleString('default', { month: 'short' });
+  doc.save(`ColorPath_${fromMonth}${from.getDate()}-${toMonth}${to.getDate()}_${to.getFullYear()}.pdf`);
+};
