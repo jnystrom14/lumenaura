@@ -6,13 +6,6 @@ import "jspdf-autotable";
 declare module "jspdf" {
   interface jsPDF {
     autoTable: (options: any) => jsPDF;
-    internal: {
-      getNumberOfPages: () => number;
-      pageSize: {
-        height: number;
-        width: number;
-      };
-    };
   }
 }
 
@@ -84,12 +77,12 @@ export const exportMonthlyPDF = (profiles: DailyProfile[], month: number, year: 
     }
   });
   
-  // Add footer
-  const pageCount = doc.internal.getNumberOfPages();
+  // Add footer with page numbers
+  const pageCount = doc.internal.pages.length - 1;
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
     doc.setFontSize(10);
-    doc.text('ColorPath - Your Daily Numerology Guide', 105, doc.internal.pageSize.height - 10, { align: 'center' });
+    doc.text('ColorPath - Your Daily Numerology Guide', 105, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
   }
   
   // Save the PDF
