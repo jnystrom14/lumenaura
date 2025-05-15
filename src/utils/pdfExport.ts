@@ -2,6 +2,20 @@
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
+// Add type definitions for jspdf-autotable
+declare module "jspdf" {
+  interface jsPDF {
+    autoTable: (options: any) => jsPDF;
+    internal: {
+      getNumberOfPages: () => number;
+      pageSize: {
+        height: number;
+        width: number;
+      };
+    };
+  }
+}
+
 export interface DailyProfile {
   date: Date;
   universalYear: number;
