@@ -171,24 +171,26 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
         </div>
       </div>
 
-      {/* Print-specific styles */}
-      <style jsx global>{`
-        @media print {
-          body {
-            background: white !important;
+      {/* Fix: Remove JSX property from style element */}
+      <style>
+        {`
+          @media print {
+            body {
+              background: white !important;
+            }
+            .print\\:hidden {
+              display: none !important;
+            }
+            .crystal-card {
+              background: white !important;
+            }
+            @page {
+              size: portrait;
+              margin: 1cm;
+            }
           }
-          .print\\:hidden {
-            display: none !important;
-          }
-          .crystal-card {
-            background: white !important;
-          }
-          @page {
-            size: portrait;
-            margin: 1cm;
-          }
-        }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };

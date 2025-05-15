@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { UserProfile, DailyProfile } from "../types";
 import { getDailyProfile } from "../utils/numerologyCalculator";
@@ -78,11 +79,12 @@ const Dashboard: React.FC<DashboardProps> = ({ userProfile, onLogout }) => {
     );
   }
   
+  // Fix: Ensure both from and to dates exist before passing to DateRangeCalendar
   if (showDateRange && dateRange?.from && dateRange?.to) {
     return (
       <DateRangeCalendar
         userProfile={userProfile}
-        dateRange={dateRange}
+        dateRange={{ from: dateRange.from, to: dateRange.to }}
         onBack={() => setShowDateRange(false)}
       />
     );
