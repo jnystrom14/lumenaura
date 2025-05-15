@@ -1,12 +1,23 @@
 
-import { DailyProfile } from "../types";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
-declare module "jspdf" {
-  interface jsPDF {
-    autoTable: (options: any) => jsPDF;
-  }
+export interface DailyProfile {
+  date: Date;
+  universalYear: number;
+  personalYear: number;
+  personalMonth: number;
+  personalDay: number;
+  numerologyData: {
+    number: number;
+    color: string;
+    colorHex: string;
+    gem: string;
+    luckyNumber: number;
+    powerWord: string;
+    affirmation: string;
+    meaning: string;
+  };
 }
 
 export const exportMonthlyPDF = (profiles: DailyProfile[], month: number, year: number): void => {
