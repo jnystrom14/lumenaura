@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { UserProfile } from "./types";
 import { getUserProfile, hasUserProfile, clearUserProfile } from "./utils/storage";
+import { useAuth } from "./hooks/useAuth";
 import Onboarding from "./components/Onboarding";
 import Dashboard from "./components/Dashboard";
 import NotFound from "./pages/NotFound";
@@ -15,6 +16,7 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -24,8 +26,11 @@ const App = () => {
       setUserProfile(profile);
     }
     
-    setLoading(false);
-  }, []);
+    // Only set loading to false when auth is also done loading
+    if (!authLoading) {
+      setLoading(false);
+    }
+  }, [authLoading]);
 
   const handleOnboardingComplete = () => {
     const profile = getUserProfile();
@@ -37,7 +42,7 @@ const App = () => {
     setUserProfile(null);
   };
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="min-h-screen flex justify-center items-center">
         <div className="text-center">
