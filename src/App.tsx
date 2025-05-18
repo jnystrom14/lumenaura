@@ -6,8 +6,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { UserProfile } from "./types";
-import { getUserProfile, hasUserProfile, clearUserProfile } from "./utils/storage";
+import { getUserProfile, hasUserProfile, clearUserProfile, saveUserProfile } from "./utils/storage";
 import { useAuth } from "./hooks/useAuth";
+import { useToast } from "@/components/ui/use-toast";
 import Onboarding from "./components/Onboarding";
 import Dashboard from "./components/Dashboard";
 import NotFound from "./pages/NotFound";
@@ -18,19 +19,38 @@ const App = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
+  const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user profile exists in local storage
-    if (hasUserProfile()) {
+    if (authLoading) return;
+
+    // Check if user is authenticated but no profile exists
+    if (user && !hasUserProfile()) {
+      // Create a default profile for the authenticated user
+      const defaultProfile: UserProfile = {
+        name: user.user_metadata?.full_name || user.email?.split('@')[0] || "User",
+        birthDay: 1,
+        birthMonth: 1,
+        birthYear: 1990,
+        profilePicture: user.user_metadata?.avatar_url || ""
+      };
+
+      // Save the profile and update state
+      saveUserProfile(defaultProfile);
+      setUserProfile(defaultProfile);
+      toast({
+        title: "Profile created",
+        description: "Welcome to ColorPath! Please complete your profile to get personalized insights.",
+      });
+    } else if (hasUserProfile()) {
+      // Normal case: profile exists
       const profile = getUserProfile();
       setUserProfile(profile);
     }
     
-    // Only set loading to false when auth is also done loading
-    if (!authLoading) {
-      setLoading(false);
-    }
-  }, [authLoading]);
+    // Set loading to false once we've handled authentication and profile
+    setLoading(false);
+  }, [user, authLoading, toast]);
 
   const handleOnboardingComplete = () => {
     const profile = getUserProfile();
