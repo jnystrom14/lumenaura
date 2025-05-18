@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { UserProfile, DailyProfile } from "../types";
 import { getDailyProfile } from "../utils/numerologyCalculator";
@@ -11,7 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon, Calendar as CalendarRangeIcon } from "lucide-react";
+import { CalendarIcon, CalendarRange } from "lucide-react";
 import { cn } from "@/lib/utils";
 import NumerologyCard from "./NumerologyCard";
 import MonthlyCalendar from "./MonthlyCalendar";
@@ -112,91 +111,80 @@ const Dashboard: React.FC<DashboardProps> = ({ userProfile, onLogout }) => {
               </p>
             </div>
           </div>
+          
           <div className="flex flex-wrap gap-2">
-            {isRangeMode ? (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="flex items-center space-x-2 border-colorpath-lavender"
-                  >
-                    <CalendarRangeIcon className="h-4 w-4" />
-                    <span>
-                      {dateRange?.from ? (
-                        dateRange.to ? (
-                          <>
-                            {format(dateRange.from, "LLL dd, y")} -{" "}
-                            {format(dateRange.to, "LLL dd, y")}
-                          </>
-                        ) : (
-                          format(dateRange.from, "LLL dd, y")
-                        )
-                      ) : (
-                        "Select date range"
-                      )}
-                    </span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 pointer-events-auto">
-                  <div className="p-3">
-                    <Calendar
-                      initialFocus
-                      mode="range"
-                      defaultMonth={selectedDate}
-                      selected={dateRange}
-                      onSelect={setDateRange}
-                      numberOfMonths={2}
-                    />
-                    <div className="flex justify-end gap-2 mt-4">
-                      <Button 
-                        variant="outline"
-                        onClick={() => setIsRangeMode(false)}
-                      >
-                        Cancel
-                      </Button>
-                      <Button 
-                        onClick={handleDateRangeSelection}
-                        disabled={!dateRange?.from || !dateRange?.to}
-                      >
-                        Apply
-                      </Button>
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            ) : (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="flex items-center space-x-2 border-colorpath-lavender"
-                  >
-                    <CalendarIcon className="h-4 w-4" />
-                    <span>{format(selectedDate, "MMMM d, yyyy")}</span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 pointer-events-auto">
+            {/* Single Date Picker */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={!isRangeMode ? "default" : "outline"}
+                  className="flex items-center space-x-2"
+                >
+                  <CalendarIcon className="h-4 w-4" />
+                  <span>{!isRangeMode ? format(selectedDate, "MMM d, yyyy") : "Select a date"}</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 pointer-events-auto">
+                <div className="p-3">
                   <Calendar
                     mode="single"
                     selected={selectedDate}
-                    onSelect={(date) => date && setSelectedDate(date)}
+                    onSelect={(date) => {
+                      if (date) {
+                        setSelectedDate(date);
+                        setIsRangeMode(false);
+                      }
+                    }}
                     initialFocus
                   />
-                </PopoverContent>
-              </Popover>
-            )}
+                </div>
+              </PopoverContent>
+            </Popover>
             
-            <Button 
-              variant="outline"
-              onClick={() => setIsRangeMode(!isRangeMode)}
-              className="border-colorpath-lavender"
-            >
-              {isRangeMode ? "Single Date" : "Date Range"}
-            </Button>
+            {/* Date Range Picker */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={isRangeMode ? "default" : "outline"}
+                  className="flex items-center space-x-2"
+                >
+                  <CalendarRange className="h-4 w-4" />
+                  <span>
+                    {isRangeMode && dateRange?.from && dateRange?.to
+                      ? `${format(dateRange.from, "MMM d")} - ${format(dateRange.to, "MMM d")}`
+                      : "Date range"}
+                  </span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 pointer-events-auto">
+                <div className="p-3">
+                  <Calendar
+                    initialFocus
+                    mode="range"
+                    defaultMonth={selectedDate}
+                    selected={dateRange}
+                    onSelect={(range) => {
+                      setDateRange(range);
+                      setIsRangeMode(true);
+                    }}
+                    numberOfMonths={2}
+                  />
+                  <div className="flex justify-end gap-2 mt-4">
+                    <Button 
+                      onClick={handleDateRangeSelection}
+                      disabled={!dateRange?.from || !dateRange?.to}
+                    >
+                      View Date Range
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
             
             <Button
               variant="outline"
               onClick={() => setShowMonthly(true)}
+              className="border-colorpath-lavender"
             >
               Monthly View
             </Button>
