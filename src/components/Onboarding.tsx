@@ -1,17 +1,19 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { UserProfile } from "../types";
 import { saveUserProfile } from "../utils/storage";
 import { Button } from "@/components/ui/button";
 import Authentication from "./auth/Authentication";
 import PersonalInfoForm from "./onboarding/PersonalInfoForm";
 import BirthDateForm from "./onboarding/BirthDateForm";
+import { useAuth } from "@/hooks/useAuth";
 
 interface OnboardingProps {
   onComplete: () => void;
 }
 
 const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
+  const { user } = useAuth();
   const [step, setStep] = useState<number>(0); // Start with authentication
   const [profile, setProfile] = useState<UserProfile>({
     name: "",
@@ -21,6 +23,22 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
     profilePicture: ""
   });
   const [error, setError] = useState<string>("");
+  
+  // Pre-fill data from authenticated user if available
+  useEffect(() => {
+    if (user) {
+      setProfile(prevProfile => ({
+        ...prevProfile,
+        name: user.user_metadata?.full_name || user.email?.split('@')[0] || prevProfile.name,
+        profilePicture: user.user_metadata?.avatar_url || prevProfile.profilePicture
+      }));
+      
+      // Skip to personal info step if authenticated
+      if (step === 0) {
+        setStep(1);
+      }
+    }
+  }, [user, step]);
   
   const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

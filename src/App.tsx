@@ -24,33 +24,15 @@ const App = () => {
   useEffect(() => {
     if (authLoading) return;
 
-    // Check if user is authenticated but no profile exists
-    if (user && !hasUserProfile()) {
-      // Create a default profile for the authenticated user
-      const defaultProfile: UserProfile = {
-        name: user.user_metadata?.full_name || user.email?.split('@')[0] || "User",
-        birthDay: 1,
-        birthMonth: 1,
-        birthYear: 1990,
-        profilePicture: user.user_metadata?.avatar_url || ""
-      };
-
-      // Save the profile and update state
-      saveUserProfile(defaultProfile);
-      setUserProfile(defaultProfile);
-      toast({
-        title: "Profile created",
-        description: "Welcome to ColorPath! Please complete your profile to get personalized insights.",
-      });
-    } else if (hasUserProfile()) {
-      // Normal case: profile exists
+    // Only consider existing profiles from storage
+    if (hasUserProfile()) {
       const profile = getUserProfile();
       setUserProfile(profile);
     }
     
     // Set loading to false once we've handled authentication and profile
     setLoading(false);
-  }, [user, authLoading, toast]);
+  }, [user, authLoading]);
 
   const handleOnboardingComplete = () => {
     const profile = getUserProfile();
