@@ -1,22 +1,14 @@
+
 import React, { useState, useEffect } from "react";
 import { UserProfile, DailyProfile } from "../types";
 import { getDailyProfile } from "../utils/numerologyCalculator";
-import { format, isSameDay } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CalendarIcon, CalendarRange } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { DateRange } from "react-day-picker";
 import NumerologyCard from "./NumerologyCard";
 import MonthlyCalendar from "./MonthlyCalendar";
 import DateRangeCalendar from "./DateRangeCalendar";
-import { DateRange } from "react-day-picker";
-import { toast } from "@/components/ui/use-toast";
+import DashboardHeader from "./dashboard/DashboardHeader";
+import DateControls from "./dashboard/DateControls";
+import InsightCards from "./dashboard/InsightCards";
 
 interface DashboardProps {
   userProfile: UserProfile;
@@ -38,34 +30,9 @@ const Dashboard: React.FC<DashboardProps> = ({ userProfile, onLogout }) => {
     }
   }, [userProfile, selectedDate]);
   
-  const handleDateRangeSelection = () => {
-    if (dateRange?.from && dateRange?.to) {
-      const days = Math.floor((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-      toast({
-        title: "Date range selected",
-        description: `You selected ${days} days from ${format(dateRange.from, "MMMM d, yyyy")} to ${format(dateRange.to, "MMMM d, yyyy")}`,
-      });
-      setIsRangeMode(false);
-      setSelectedDate(dateRange.from);
-      setShowDateRange(true);
-    }
-  };
-  
   if (!dailyProfile) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
-  
-  const getGreeting = (): string => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
-  };
-  
-  const isToday = (date: Date): boolean => {
-    const today = new Date();
-    return isSameDay(date, today);
-  };
   
   // Show different views based on state
   if (showMonthly) {
@@ -93,152 +60,24 @@ const Dashboard: React.FC<DashboardProps> = ({ userProfile, onLogout }) => {
     <div className="min-h-screen pb-12">
       <div className="container mx-auto px-4 py-8 space-y-8 animate-fade-in">
         <header className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <div className="flex items-center space-x-4">
-            <Avatar className="h-12 w-12 border-2 border-colorpath-lavender">
-              <AvatarImage src={userProfile.profilePicture} />
-              <AvatarFallback className="bg-colorpath-lavender">
-                {userProfile.name.substring(0, 2).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="text-2xl font-serif">
-                {getGreeting()}, <span className="font-semibold">{userProfile.name}</span>
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                {isToday(selectedDate)
-                  ? "Here's your numerology profile for today"
-                  : `Viewing profile for ${format(selectedDate, "MMMM d, yyyy")}`}
-              </p>
-            </div>
-          </div>
+          <DashboardHeader userProfile={userProfile} selectedDate={selectedDate} />
           
-          <div className="flex flex-wrap gap-2">
-            {/* Single Date Picker */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={!isRangeMode ? "default" : "outline"}
-                  className="flex items-center space-x-2"
-                >
-                  <CalendarIcon className="h-4 w-4" />
-                  <span>{!isRangeMode ? format(selectedDate, "MMM d, yyyy") : "Select a date"}</span>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 pointer-events-auto">
-                <div className="p-3">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={(date) => {
-                      if (date) {
-                        setSelectedDate(date);
-                        setIsRangeMode(false);
-                      }
-                    }}
-                    initialFocus
-                  />
-                </div>
-              </PopoverContent>
-            </Popover>
-            
-            {/* Date Range Picker */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={isRangeMode ? "default" : "outline"}
-                  className="flex items-center space-x-2"
-                >
-                  <CalendarRange className="h-4 w-4" />
-                  <span>
-                    {isRangeMode && dateRange?.from && dateRange?.to
-                      ? `${format(dateRange.from, "MMM d")} - ${format(dateRange.to, "MMM d")}`
-                      : "Date range"}
-                  </span>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 pointer-events-auto">
-                <div className="p-3">
-                  <Calendar
-                    initialFocus
-                    mode="range"
-                    defaultMonth={selectedDate}
-                    selected={dateRange}
-                    onSelect={(range) => {
-                      setDateRange(range);
-                      setIsRangeMode(true);
-                    }}
-                    numberOfMonths={2}
-                  />
-                  <div className="flex justify-end gap-2 mt-4">
-                    <Button 
-                      onClick={handleDateRangeSelection}
-                      disabled={!dateRange?.from || !dateRange?.to}
-                    >
-                      View Date Range
-                    </Button>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-            
-            <Button
-              variant="outline"
-              onClick={() => setShowMonthly(true)}
-              className="border-colorpath-lavender"
-            >
-              Monthly View
-            </Button>
-            
-            <Button
-              variant="ghost"
-              onClick={onLogout}
-            >
-              Logout
-            </Button>
-          </div>
+          <DateControls
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+            isRangeMode={isRangeMode}
+            setIsRangeMode={setIsRangeMode}
+            setShowMonthly={setShowMonthly}
+            setShowDateRange={setShowDateRange}
+            onLogout={onLogout}
+          />
         </header>
         
         <NumerologyCard dailyProfile={dailyProfile} />
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-          <div className="crystal-card p-6 animate-fade-in">
-            <h3 className="text-xl font-semibold mb-4">Your Numbers</h3>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Universal Year:</span>
-                <span className="font-medium">{dailyProfile.universalYear}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Personal Year:</span>
-                <span className="font-medium">{dailyProfile.personalYear}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Personal Month:</span>
-                <span className="font-medium">{dailyProfile.personalMonth}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Personal Day:</span>
-                <span className="font-semibold text-xl text-primary">{dailyProfile.personalDay}</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="crystal-card p-6 animate-fade-in" style={{ animationDelay: "100ms" }}>
-            <h3 className="text-xl font-semibold mb-4">Daily Affirmation</h3>
-            <div className="h-full flex flex-col">
-              <blockquote className="text-lg italic text-gray-700 flex-grow">
-                "{dailyProfile.numerologyData.affirmation}"
-              </blockquote>
-            </div>
-          </div>
-          
-          <div className="crystal-card p-6 animate-fade-in" style={{ animationDelay: "200ms" }}>
-            <h3 className="text-xl font-semibold mb-4">How to Use Today's Energy</h3>
-            <p className="text-gray-700">
-              {dailyProfile.numerologyData.meaning}
-            </p>
-          </div>
-        </div>
+        <InsightCards dailyProfile={dailyProfile} />
       </div>
     </div>
   );
