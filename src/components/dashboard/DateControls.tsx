@@ -1,3 +1,4 @@
+
 import React from "react";
 import { format, addDays, subDays } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -10,6 +11,7 @@ import {
 import { CalendarIcon, CalendarRange, ChevronLeft, ChevronRight } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { toast } from "@/components/ui/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface DateControlsProps {
   selectedDate: Date;
@@ -34,6 +36,8 @@ const DateControls: React.FC<DateControlsProps> = ({
   setShowDateRange,
   onLogout,
 }) => {
+  const isMobile = useIsMobile();
+  
   const handleDateRangeSelection = () => {
     if (dateRange?.from && dateRange?.to) {
       const days = Math.floor((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24)) + 1;
@@ -94,7 +98,8 @@ const DateControls: React.FC<DateControlsProps> = ({
                     setIsRangeMode(false);
                   }
                 }}
-                initialFocus
+                initialFocus={!isMobile}
+                className="touch-manipulation"
               />
             </div>
           </PopoverContent>
@@ -128,7 +133,7 @@ const DateControls: React.FC<DateControlsProps> = ({
         <PopoverContent className="w-auto p-0 pointer-events-auto">
           <div className="p-3">
             <Calendar
-              initialFocus
+              initialFocus={!isMobile}
               mode="range"
               defaultMonth={selectedDate}
               selected={dateRange}
@@ -136,7 +141,8 @@ const DateControls: React.FC<DateControlsProps> = ({
                 setDateRange(range);
                 setIsRangeMode(true);
               }}
-              numberOfMonths={2}
+              numberOfMonths={isMobile ? 1 : 2}
+              className="touch-manipulation"
             />
             <div className="flex justify-end gap-2 mt-4">
               <Button 

@@ -43,12 +43,17 @@ const BirthDateForm: React.FC<BirthDateFormProps> = ({
           <Input 
             id="birthMonth"
             type="number"
+            inputMode="numeric"
+            pattern="[0-9]*"
             min="1"
             max="12"
             placeholder="MM"
-            value={birthMonth}
-            onChange={(e) => onBirthMonthChange(parseInt(e.target.value) || 1)}
-            className="crystal-input"
+            value={birthMonth || ''}
+            onChange={(e) => {
+              const value = e.target.value === '' ? 0 : parseInt(e.target.value);
+              onBirthMonthChange(value || 1);
+            }}
+            className="crystal-input touch-manipulation"
           />
         </div>
         
@@ -57,12 +62,17 @@ const BirthDateForm: React.FC<BirthDateFormProps> = ({
           <Input 
             id="birthDay"
             type="number"
+            inputMode="numeric"
+            pattern="[0-9]*"
             min="1"
             max="31"
             placeholder="DD"
-            value={birthDay}
-            onChange={(e) => onBirthDayChange(parseInt(e.target.value) || 1)}
-            className="crystal-input"
+            value={birthDay || ''}
+            onChange={(e) => {
+              const value = e.target.value === '' ? 0 : parseInt(e.target.value);
+              onBirthDayChange(value || 1);
+            }}
+            className="crystal-input touch-manipulation"
           />
         </div>
         
@@ -71,12 +81,17 @@ const BirthDateForm: React.FC<BirthDateFormProps> = ({
           <Input 
             id="birthYear"
             type="number"
+            inputMode="numeric"
+            pattern="[0-9]*"
             min="1900"
             max={new Date().getFullYear()}
             placeholder="YYYY"
-            value={birthYear}
-            onChange={(e) => onBirthYearChange(parseInt(e.target.value) || 1990)}
-            className="crystal-input"
+            value={birthYear || ''}
+            onChange={(e) => {
+              const value = e.target.value === '' ? 0 : parseInt(e.target.value);
+              onBirthYearChange(value || 1990);
+            }}
+            className="crystal-input touch-manipulation"
           />
         </div>
       </div>
