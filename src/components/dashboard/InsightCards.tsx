@@ -1,12 +1,15 @@
 
 import React from "react";
 import { DailyProfile } from "../../types";
+import { useIsMobile } from "../../hooks/use-mobile";
 
 interface InsightCardsProps {
   dailyProfile: DailyProfile;
 }
 
 const InsightCards: React.FC<InsightCardsProps> = ({ dailyProfile }) => {
+  const isMobile = useIsMobile();
+  
   // Format array values for display
   const formatArrayValues = (values: string[] | undefined): string => {
     if (!values || values.length === 0) return "";
@@ -14,7 +17,7 @@ const InsightCards: React.FC<InsightCardsProps> = ({ dailyProfile }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+    <div className={`grid grid-cols-1 ${isMobile ? 'gap-4 mt-4' : 'md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8'}`}>
       <div className="crystal-card p-6 animate-fade-in">
         <h3 className="text-xl font-semibold mb-4">Your Numbers</h3>
         <div className="space-y-2">

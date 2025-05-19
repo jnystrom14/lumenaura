@@ -1,13 +1,17 @@
+
 import React from "react";
 import { DailyProfile } from "../types";
 import { Separator } from "./ui/separator";
 import { Gem } from "lucide-react";
+import { useIsMobile } from "../hooks/use-mobile";
 
 interface NumerologyCardProps {
   dailyProfile: DailyProfile;
 }
 
 const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
+  const isMobile = useIsMobile();
+  
   // Function to get first item safely or provide a fallback
   const getFirstItem = (arr: string[] | undefined, fallback: string = ""): string => {
     return arr && arr.length > 0 ? arr[0] : fallback;
@@ -168,10 +172,10 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
           style={getColorStyle()}
         ></div>
         
-        {/* Four Panel Horizontal Layout with aligned titles and separators */}
-        <div className="grid grid-cols-4 gap-0">
+        {/* Responsive layout - grid for desktop, stacked for mobile */}
+        <div className={`${isMobile ? 'flex flex-col space-y-6' : 'grid grid-cols-4 gap-0'}`}>
           {/* Today's Theme Panel */}
-          <div className="flex flex-col items-center px-4 relative">
+          <div className={`flex flex-col items-center px-4 relative ${isMobile ? 'pb-6' : ''}`}>
             <h3 className="text-lg font-semibold text-gray-700 mb-4">Today's Theme</h3>
             <div 
               className="text-xl font-serif font-bold text-center mt-2"
@@ -179,13 +183,16 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
             >
               {dailyProfile.numerologyData.todaysTheme || dailyProfile.numerologyData.keyPhrase}
             </div>
-            <div className="absolute right-0 h-full top-0 opacity-50">
-              <Separator orientation="vertical" className="h-full bg-lumenaura-lavender" />
-            </div>
+            {!isMobile && (
+              <div className="absolute right-0 h-full top-0 opacity-50">
+                <Separator orientation="vertical" className="h-full bg-lumenaura-lavender" />
+              </div>
+            )}
+            {isMobile && <Separator className="w-full mt-6 bg-lumenaura-lavender opacity-50" />}
           </div>
           
           {/* Your Colors Panel */}
-          <div className="flex flex-col items-center px-4 relative">
+          <div className={`flex flex-col items-center px-4 relative ${isMobile ? 'pb-6' : ''}`}>
             <h3 className="text-lg font-semibold text-gray-700 mb-4">Your Colors</h3>
             <div className="flex flex-col items-center gap-2 mt-2">
               {getColorCircles()}
@@ -193,13 +200,16 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
                 {dailyProfile.numerologyData.colors ? dailyProfile.numerologyData.colors.join(", ") : ""}
               </span>
             </div>
-            <div className="absolute right-0 h-full top-0 opacity-50">
-              <Separator orientation="vertical" className="h-full bg-lumenaura-lavender" />
-            </div>
+            {!isMobile && (
+              <div className="absolute right-0 h-full top-0 opacity-50">
+                <Separator orientation="vertical" className="h-full bg-lumenaura-lavender" />
+              </div>
+            )}
+            {isMobile && <Separator className="w-full mt-6 bg-lumenaura-lavender opacity-50" />}
           </div>
           
-          {/* Your Gems Panel - Modified to add outline to gem icon for better visibility */}
-          <div className="flex flex-col items-center px-4 relative">
+          {/* Your Gems Panel */}
+          <div className={`flex flex-col items-center px-4 relative ${isMobile ? 'pb-6' : ''}`}>
             <h3 className="text-lg font-semibold text-gray-700 mb-4">Your Gems</h3>
             <div className="flex items-center justify-center mt-2">
               <Gem 
@@ -211,9 +221,12 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
                 {getAllGems()}
               </span>
             </div>
-            <div className="absolute right-0 h-full top-0 opacity-50">
-              <Separator orientation="vertical" className="h-full bg-lumenaura-lavender" />
-            </div>
+            {!isMobile && (
+              <div className="absolute right-0 h-full top-0 opacity-50">
+                <Separator orientation="vertical" className="h-full bg-lumenaura-lavender" />
+              </div>
+            )}
+            {isMobile && <Separator className="w-full mt-6 bg-lumenaura-lavender opacity-50" />}
           </div>
           
           {/* Your Keyword Panel */}
