@@ -5,7 +5,7 @@ export const numerologyDataset: NumerologyData[] = [
   {
     number: 1,
     color: "Red",
-    colorHex: "#FF5252",
+    colorHex: "#E53935", // More vibrant red
     gem: "Ruby",
     luckyNumber: 9,
     powerWord: "Courage",
@@ -55,7 +55,7 @@ export const numerologyDataset: NumerologyData[] = [
   {
     number: 6,
     color: "Indigo",
-    colorHex: "#5C6BC0",
+    colorHex: "#3949AB", // Deeper blue for indigo
     gem: "Sapphire",
     luckyNumber: 6,
     powerWord: "Nurture",
@@ -75,7 +75,7 @@ export const numerologyDataset: NumerologyData[] = [
   {
     number: 8,
     color: "Pink",
-    colorHex: "#EC407A",
+    colorHex: "#F48FB1", // More classic pink (less red)
     gem: "Rose Quartz",
     luckyNumber: 4,
     powerWord: "Abundance",
