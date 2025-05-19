@@ -1,8 +1,9 @@
+
 # masterplan.md
 
 ## 🌟 App Overview
 
-**Name (Tentative)**: *ColorPath*
+**Name**: *LumenAura*
 **Description**: A web-based daily numerology lifestyle guide that uses Louise Hay's "Colors & Numbers" system to provide users with personalized daily guidance on the ideal colors, gems, lucky numbers, affirmations, and daily intentions based on their birthdate.
 
 ---
@@ -140,4 +141,5 @@ PersonalVibration = {
 
 Ready to make your soul-aligned lifestyle app a reality. 🌈 Let me know when you want the other docs!
 
-Yes let's do it!  looks great so far!
+Yes let's do it!  looks great so far!
+
