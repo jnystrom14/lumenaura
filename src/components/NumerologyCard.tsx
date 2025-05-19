@@ -7,14 +7,19 @@ interface NumerologyCardProps {
 }
 
 const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
+  // Function to get first item safely or provide a fallback
+  const getFirstItem = (arr: string[] | undefined, fallback: string = ""): string => {
+    return arr && arr.length > 0 ? arr[0] : fallback;
+  };
+
   return (
     <div className="crystal-card overflow-hidden">
       <div className="relative">
         <div 
           className="absolute inset-0 opacity-10" 
           style={{ 
-            backgroundColor: dailyProfile.numerologyData.colorHex,
-            backgroundImage: `radial-gradient(circle at 30% 30%, ${dailyProfile.numerologyData.colorHex}, transparent 80%)` 
+            backgroundColor: dailyProfile.numerologyData.colorHex || "#6B7280",
+            backgroundImage: `radial-gradient(circle at 30% 30%, ${dailyProfile.numerologyData.colorHex || "#6B7280"}, transparent 80%)` 
           }}
         ></div>
         
@@ -24,10 +29,10 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
               Today's Power Word:
             </h2>
             <div className="text-4xl md:text-5xl font-serif font-bold text-gradient mb-4">
-              {dailyProfile.numerologyData.powerWord}
+              {dailyProfile.numerologyData.powerWord || dailyProfile.numerologyData.keyPhrase}
             </div>
             <p className="text-lg text-gray-700 max-w-md text-center md:text-left">
-              Focus on embodying the energy of <strong>{dailyProfile.numerologyData.powerWord.toLowerCase()}</strong> today 
+              Focus on embodying the energy of <strong>{(dailyProfile.numerologyData.powerWord || dailyProfile.numerologyData.keyPhrase).toLowerCase()}</strong> today 
               to align with your numerological vibration.
             </p>
           </div>
@@ -37,9 +42,9 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
             <div className="flex flex-col items-center">
               <div 
                 className="w-16 h-16 rounded-full mb-2 shadow-inner animate-float" 
-                style={{ backgroundColor: dailyProfile.numerologyData.colorHex }}
+                style={{ backgroundColor: dailyProfile.numerologyData.colorHex || "#6B7280" }}
               ></div>
-              <span className="text-xl font-medium">{dailyProfile.numerologyData.color}</span>
+              <span className="text-xl font-medium">{getFirstItem(dailyProfile.numerologyData.colors)}</span>
             </div>
           </div>
           
@@ -47,18 +52,18 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
             <span className="text-sm uppercase tracking-wider text-gray-500">Your Gem</span>
             <div className="flex flex-col items-center">
               <div className="w-16 h-16 flex items-center justify-center animate-float">
-                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center transform rotate-45 overflow-hidden shadow-lg" style={{ background: `linear-gradient(45deg, ${dailyProfile.numerologyData.colorHex}44, ${dailyProfile.numerologyData.colorHex}99)` }}>
+                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center transform rotate-45 overflow-hidden shadow-lg" style={{ background: `linear-gradient(45deg, ${dailyProfile.numerologyData.colorHex || "#6B7280"}44, ${dailyProfile.numerologyData.colorHex || "#6B7280"}99)` }}>
                   <span className="transform -rotate-45 text-white font-bold">✧</span>
                 </div>
               </div>
-              <span className="text-xl font-medium">{dailyProfile.numerologyData.gem}</span>
+              <span className="text-xl font-medium">{getFirstItem(dailyProfile.numerologyData.gems)}</span>
             </div>
           </div>
           
           <div className="bg-colorpath-teal bg-opacity-10 flex flex-col justify-center items-center p-8 space-y-4">
             <span className="text-sm uppercase tracking-wider text-gray-500">Lucky Number</span>
             <div className="flex flex-col items-center">
-              <span className="text-4xl font-bold text-primary animate-float">{dailyProfile.numerologyData.luckyNumber}</span>
+              <span className="text-4xl font-bold text-primary animate-float">{dailyProfile.numerologyData.luckyNumber || dailyProfile.personalDay}</span>
             </div>
           </div>
         </div>

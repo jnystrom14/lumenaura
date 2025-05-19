@@ -14,6 +14,14 @@ export interface NumerologyData {
   keyPhrase: string;
   description: string;
   meditation: string;
+  // Add color hex and other display properties
+  colorHex?: string;
+  color?: string;
+  gem?: string;
+  powerWord?: string;
+  affirmation?: string;
+  meaning?: string;
+  luckyNumber?: number;
 }
 
 export interface DailyProfile {

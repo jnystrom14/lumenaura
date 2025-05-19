@@ -1,3 +1,4 @@
+
 import React from "react";
 import { UserProfile, DailyProfile } from "../types";
 import { getDailyProfile } from "../utils/numerologyCalculator";
@@ -127,7 +128,7 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
                           <span 
                             className="text-xs px-2 py-1 rounded-full text-white print:border print:border-gray-400"
                             style={{ 
-                              backgroundColor: profile.numerologyData.colorHex,
+                              backgroundColor: profile.numerologyData.colorHex || "#6B7280",
                               WebkitPrintColorAdjust: "exact",
                               printColorAdjust: "exact"
                             }}
@@ -137,13 +138,13 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
                         </div>
                         <div className="mt-2 text-xs">
                           <div className="font-medium text-xs">
-                            {profile.numerologyData.color}
+                            {profile.numerologyData.colors?.[0] || ""}
                           </div>
                           <div className="font-medium break-words hyphens-auto">
-                            {profile.numerologyData.gem}
+                            {profile.numerologyData.gems?.[0] || ""}
                           </div>
                           <div className="text-muted-foreground truncate">
-                            {profile.numerologyData.powerWord}
+                            {profile.numerologyData.powerWord || profile.numerologyData.keyPhrase}
                           </div>
                         </div>
                       </>

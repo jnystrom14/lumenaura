@@ -35,7 +35,7 @@ const InsightCards: React.FC<InsightCardsProps> = ({ dailyProfile }) => {
         <h3 className="text-xl font-semibold mb-4">Daily Affirmation</h3>
         <div className="h-full flex flex-col">
           <blockquote className="text-lg italic text-gray-700 flex-grow">
-            "{dailyProfile.numerologyData.affirmation}"
+            "{dailyProfile.numerologyData.affirmation || dailyProfile.numerologyData.meditation}"
           </blockquote>
         </div>
       </div>
@@ -43,7 +43,7 @@ const InsightCards: React.FC<InsightCardsProps> = ({ dailyProfile }) => {
       <div className="crystal-card p-6 animate-fade-in" style={{ animationDelay: "200ms" }}>
         <h3 className="text-xl font-semibold mb-4">How to Use Today's Energy</h3>
         <p className="text-gray-700">
-          {dailyProfile.numerologyData.meaning}
+          {dailyProfile.numerologyData.meaning || dailyProfile.numerologyData.description}
         </p>
       </div>
     </div>
