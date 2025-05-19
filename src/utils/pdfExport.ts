@@ -1,11 +1,10 @@
-
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
 // Add type definitions for jspdf-autotable
 declare module "jspdf" {
   interface jsPDF {
-    autoTable: (options: any) => jsPDF;
+    autoTable: (options: any) => { previousAutoTable?: { finalY: number }; };
   }
 }
 
@@ -50,7 +49,7 @@ export const exportMonthlyPDF = (profiles: DailyProfile[], month: number, year: 
   ]);
   
   // Create table
-  doc.autoTable({
+  const tableResult = doc.autoTable({
     startY: 30,
     head: [['Date', 'Number', 'Color', 'Gem', 'Lucky Number', 'Power Word']],
     body: calendarData,
@@ -81,7 +80,7 @@ export const exportMonthlyPDF = (profiles: DailyProfile[], month: number, year: 
   
   // Add legend
   const uniqueNumbers = Array.from(new Set(profiles.map(p => p.personalDay))).sort((a, b) => a - b);
-  let legendY = doc.autoTable.previous.finalY + 20;
+  let legendY = (tableResult.previousAutoTable?.finalY || 150) + 20;
   
   doc.setFontSize(14);
   doc.text("Legend", 14, legendY);
@@ -159,7 +158,7 @@ export const exportDateRangePDF = (profiles: DailyProfile[], from: Date, to: Dat
   ]);
   
   // Create table
-  doc.autoTable({
+  const tableResult = doc.autoTable({
     startY: 30,
     head: [['Date', 'Number', 'Color', 'Gem', 'Lucky Number', 'Power Word']],
     body: calendarData,
@@ -190,7 +189,7 @@ export const exportDateRangePDF = (profiles: DailyProfile[], from: Date, to: Dat
   
   // Add legend
   const uniqueNumbers = Array.from(new Set(profiles.map(p => p.personalDay))).sort((a, b) => a - b);
-  let legendY = doc.autoTable.previous.finalY + 20;
+  let legendY = (tableResult.previousAutoTable?.finalY || 150) + 20;
   
   doc.setFontSize(14);
   doc.text("Legend", 14, legendY);
