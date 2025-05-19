@@ -45,13 +45,14 @@ export const exportMonthlyPDF = (profiles: DailyProfile[], month: number, year: 
     profile.personalDay,
     profile.numerologyData.color,
     profile.numerologyData.gem,
+    profile.numerologyData.luckyNumber,
     profile.numerologyData.powerWord
   ]);
   
   // Create table
   doc.autoTable({
     startY: 30,
-    head: [['Date', 'Number', 'Color', 'Gem', 'Power Word']],
+    head: [['Date', 'Number', 'Color', 'Gem', 'Lucky Number', 'Power Word']],
     body: calendarData,
     headStyles: { 
       fillColor: [85, 73, 188],
@@ -69,11 +70,56 @@ export const exportMonthlyPDF = (profiles: DailyProfile[], month: number, year: 
       lineWidth: 0.1
     },
     columnStyles: {
-      0: { cellWidth: 25 },
-      1: { cellWidth: 25 },
-      2: { cellWidth: 35 },
-      3: { cellWidth: 35 },
-      4: { cellWidth: 70 }
+      0: { cellWidth: 15 },
+      1: { cellWidth: 20 },
+      2: { cellWidth: 30 },
+      3: { cellWidth: 30 },
+      4: { cellWidth: 25 },
+      5: { cellWidth: 60 }
+    }
+  });
+  
+  // Add legend
+  const uniqueNumbers = Array.from(new Set(profiles.map(p => p.personalDay))).sort((a, b) => a - b);
+  let legendY = doc.autoTable.previous.finalY + 20;
+  
+  doc.setFontSize(14);
+  doc.text("Legend", 14, legendY);
+  legendY += 10;
+  
+  // Create two columns for the legend
+  let column = 0;
+  const columnWidth = 90;
+  const itemHeight = 25;
+  let startY = legendY;
+  
+  uniqueNumbers.forEach((num, index) => {
+    const data = profiles.find(p => p.personalDay === num)?.numerologyData;
+    if (!data) return;
+    
+    // Calculate position (2 columns)
+    const x = 14 + (column * columnWidth);
+    const y = startY;
+    
+    // Draw color box
+    doc.setFillColor(hexToRgb(data.colorHex).r, hexToRgb(data.colorHex).g, hexToRgb(data.colorHex).b);
+    doc.rect(x, y, 8, 8, 'F');
+    
+    // Add text
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'bold');
+    doc.text(`Number ${num}: ${data.color}`, x + 12, y + 4);
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(8);
+    doc.text(`Gem: ${data.gem}`, x + 12, y + 10);
+    doc.text(`Power: ${data.powerWord}`, x + 12, y + 15);
+    
+    // Switch to next column or row
+    if (column === 0) {
+      column = 1;
+    } else {
+      column = 0;
+      startY += itemHeight;
     }
   });
   
@@ -108,13 +154,14 @@ export const exportDateRangePDF = (profiles: DailyProfile[], from: Date, to: Dat
     profile.personalDay,
     profile.numerologyData.color,
     profile.numerologyData.gem,
+    profile.numerologyData.luckyNumber,
     profile.numerologyData.powerWord
   ]);
   
   // Create table
   doc.autoTable({
     startY: 30,
-    head: [['Date', 'Number', 'Color', 'Gem', 'Power Word']],
+    head: [['Date', 'Number', 'Color', 'Gem', 'Lucky Number', 'Power Word']],
     body: calendarData,
     headStyles: { 
       fillColor: [85, 73, 188],
@@ -132,13 +179,76 @@ export const exportDateRangePDF = (profiles: DailyProfile[], from: Date, to: Dat
       lineWidth: 0.1
     },
     columnStyles: {
-      0: { cellWidth: 30 },
-      1: { cellWidth: 25 },
-      2: { cellWidth: 35 },
-      3: { cellWidth: 35 },
-      4: { cellWidth: 65 }
+      0: { cellWidth: 25 },
+      1: { cellWidth: 20 },
+      2: { cellWidth: 30 },
+      3: { cellWidth: 30 },
+      4: { cellWidth: 25 },
+      5: { cellWidth: 50 }
     }
   });
+  
+  // Add legend
+  const uniqueNumbers = Array.from(new Set(profiles.map(p => p.personalDay))).sort((a, b) => a - b);
+  let legendY = doc.autoTable.previous.finalY + 20;
+  
+  doc.setFontSize(14);
+  doc.text("Legend", 14, legendY);
+  legendY += 10;
+  
+  // Create two columns for the legend
+  let column = 0;
+  const columnWidth = 90;
+  const itemHeight = 25;
+  let startY = legendY;
+  
+  uniqueNumbers.forEach((num, index) => {
+    const data = profiles.find(p => p.personalDay === num)?.numerologyData;
+    if (!data) return;
+    
+    // Calculate position (2 columns)
+    const x = 14 + (column * columnWidth);
+    const y = startY;
+    
+    // Draw color box
+    doc.setFillColor(hexToRgb(data.colorHex).r, hexToRgb(data.colorHex).g, hexToRgb(data.colorHex).b);
+    doc.rect(x, y, 8, 8, 'F');
+    
+    // Add text
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'bold');
+    doc.text(`Number ${num}: ${data.color}`, x + 12, y + 4);
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(8);
+    doc.text(`Gem: ${data.gem}`, x + 12, y + 10);
+    doc.text(`Power: ${data.powerWord}`, x + 12, y + 15);
+    
+    // Switch to next column or row
+    if (column === 0) {
+      column = 1;
+    } else {
+      column = 0;
+      startY += itemHeight;
+    }
+  });
+  
+  // Add affirmations section if there's space
+  if (uniqueNumbers.length <= 6) {
+    const affirmationY = Math.max(startY + itemHeight, legendY + 120);
+    doc.setFontSize(14);
+    doc.text("Daily Affirmations", 14, affirmationY);
+    
+    let affRowY = affirmationY + 10;
+    profiles.slice(0, 7).forEach(profile => {
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'bold');
+      doc.text(`Day ${profile.date.getDate()}: Number ${profile.personalDay}`, 14, affRowY);
+      doc.setFont(undefined, 'normal');
+      doc.setFontSize(9);
+      doc.text(`"${profile.numerologyData.affirmation}"`, 14, affRowY + 6);
+      affRowY += 15;
+    });
+  }
   
   // Add footer with page numbers
   const pageCount = doc.internal.pages.length - 1;
@@ -152,4 +262,17 @@ export const exportDateRangePDF = (profiles: DailyProfile[], from: Date, to: Dat
   const fromMonth = from.toLocaleString('default', { month: 'short' });
   const toMonth = to.toLocaleString('default', { month: 'short' });
   doc.save(`ColorPath_${fromMonth}${from.getDate()}-${toMonth}${to.getDate()}_${to.getFullYear()}.pdf`);
+};
+
+// Helper function to convert hex color to RGB
+const hexToRgb = (hex: string) => {
+  // Remove # if present
+  hex = hex.replace('#', '');
+  
+  // Parse the hex values
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  
+  return { r, g, b };
 };

@@ -4,7 +4,7 @@ import { UserProfile, DailyProfile } from "../types";
 import { getDailyProfile } from "../utils/numerologyCalculator";
 import { format, eachDayOfInterval } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Printer, Download } from "lucide-react";
+import { ArrowLeft, Printer, Download, CircleDot } from "lucide-react";
 import { exportDateRangePDF } from "../utils/pdfExport";
 
 interface DateRangeCalendarProps {
@@ -125,13 +125,18 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
                       <>
                         <div className="flex justify-between items-start">
                           <span className="font-medium">{profile.date.getDate()}</span>
-                          <span className="text-xs px-2 py-1 rounded-full bg-primary text-white">
+                          <span className="text-xs px-2 py-1 rounded-full bg-primary text-white print:bg-white print:text-black print:border print:border-gray-400">
                             {profile.personalDay}
                           </span>
                         </div>
                         <div 
-                          className="w-full h-2 rounded mt-2" 
-                          style={{ backgroundColor: profile.numerologyData.colorHex }}
+                          className="w-full h-2 rounded mt-2 print:border print:border-gray-400" 
+                          style={{ 
+                            backgroundColor: profile.numerologyData.colorHex,
+                            // Ensure color prints by adding inline style with !important
+                            WebkitPrintColorAdjust: "exact",
+                            printColorAdjust: "exact"
+                          }}
                         ></div>
                         <div className="mt-2 text-xs">
                           <div className="font-medium">{profile.numerologyData.gem}</div>
@@ -150,19 +155,25 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
         
         <div className="mt-6 crystal-card p-6 print:mt-2 print:border-none print:p-2 print:shadow-none">
           <h3 className="text-xl font-semibold mb-4">Legend</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {Array.from(new Set(profiles.map(p => p.personalDay))).sort((a, b) => a - b).map(num => {
               const data = profiles.find(p => p.personalDay === num)?.numerologyData;
               if (!data) return null;
               return (
                 <div key={num} className="flex items-center space-x-3">
                   <div 
-                    className="w-6 h-6 rounded-full" 
-                    style={{ backgroundColor: data.colorHex }}
+                    className="w-6 h-6 rounded-full border border-gray-200 print:border-gray-400" 
+                    style={{ 
+                      backgroundColor: data.colorHex,
+                      WebkitPrintColorAdjust: "exact",
+                      printColorAdjust: "exact" 
+                    }}
                   ></div>
                   <div>
-                    <div className="font-medium">Number {num}</div>
-                    <div className="text-sm text-muted-foreground">{data.powerWord}</div>
+                    <div className="font-medium">Number {num}: {data.color}</div>
+                    <div className="text-sm">Gem: {data.gem}</div>
+                    <div className="text-sm text-muted-foreground">Power: {data.powerWord}</div>
+                    <div className="text-sm hidden print:block">Lucky Number: {data.luckyNumber}</div>
                   </div>
                 </div>
               );
@@ -171,22 +182,29 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
         </div>
       </div>
 
-      {/* Fix: Remove JSX property from style element */}
       <style>
         {`
           @media print {
             body {
               background: white !important;
+              color: black !important;
             }
             .print\\:hidden {
               display: none !important;
             }
             .crystal-card {
               background: white !important;
+              box-shadow: none !important;
             }
             @page {
               size: portrait;
               margin: 1cm;
+            }
+            /* Force color printing */
+            * {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+              color-adjust: exact !important;
             }
           }
         `}
