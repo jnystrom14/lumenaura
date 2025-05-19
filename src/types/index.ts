@@ -7,6 +7,11 @@ export interface UserProfile {
   profilePicture?: string;
 }
 
+export interface PersonalYearData {
+  yearNumber: number;
+  description: string;
+}
+
 export interface NumerologyData {
   number: number | string;
   colors: string[];
@@ -25,6 +30,7 @@ export interface NumerologyData {
   meaning?: string;
   todaysTheme?: string;
   keyWord?: string;
+  personalYear?: PersonalYearData;
 }
 
 export interface DailyProfile {
