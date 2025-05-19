@@ -37,6 +37,12 @@ const InsightCards: React.FC<InsightCardsProps> = ({ dailyProfile }) => {
             <span className="text-muted-foreground">Personal Day:</span>
             <span className="font-semibold text-xl text-primary">{dailyProfile.personalDay}</span>
           </div>
+          {dailyProfile.numerologyData.todaysTheme && (
+            <div className="flex justify-between items-center pt-2 border-t mt-2">
+              <span className="text-muted-foreground">Today's Theme:</span>
+              <span className="font-medium text-primary">{dailyProfile.numerologyData.todaysTheme}</span>
+            </div>
+          )}
         </div>
       </div>
       

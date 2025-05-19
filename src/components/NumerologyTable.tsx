@@ -14,6 +14,7 @@ const NumerologyTable: React.FC = () => {
           <TableHeader>
             <TableRow>
               <TableHead className="text-center">NUMBER</TableHead>
+              <TableHead className="text-center">THEME</TableHead>
               <TableHead className="text-center">COLOR(S)</TableHead>
               <TableHead className="text-center">GEM(S)/PRECIOUS METAL(S)</TableHead>
               <TableHead className="text-center">KEY PHRASE</TableHead>
@@ -23,6 +24,7 @@ const NumerologyTable: React.FC = () => {
             {numerologyDataset.map((data, index) => (
               <TableRow key={index} className={index % 2 === 0 ? "bg-gray-100" : ""}>
                 <TableCell className="text-center font-medium">{data.number}</TableCell>
+                <TableCell className="text-center">{data.todaysTheme || data.powerWord || ""}</TableCell>
                 <TableCell className="text-center">{data.colors.join(", ")}</TableCell>
                 <TableCell className="text-center whitespace-normal break-words max-w-[120px] hyphens-auto">
                   {data.gems.join(", ")}
