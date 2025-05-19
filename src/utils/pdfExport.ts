@@ -1,3 +1,4 @@
+
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
@@ -103,6 +104,14 @@ export const exportMonthlyPDF = (profiles: DailyProfile[], month: number, year: 
     // Draw color box
     doc.setFillColor(hexToRgb(data.colorHex).r, hexToRgb(data.colorHex).g, hexToRgb(data.colorHex).b);
     doc.rect(x, y, 8, 8, 'F');
+    
+    // Draw number over color box
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(7);
+    doc.text(num.toString(), x + 4, y + 5, { align: 'center' });
+    
+    // Reset text color for other text
+    doc.setTextColor(0, 0, 0);
     
     // Add text
     doc.setFontSize(10);
@@ -212,6 +221,14 @@ export const exportDateRangePDF = (profiles: DailyProfile[], from: Date, to: Dat
     // Draw color box
     doc.setFillColor(hexToRgb(data.colorHex).r, hexToRgb(data.colorHex).g, hexToRgb(data.colorHex).b);
     doc.rect(x, y, 8, 8, 'F');
+    
+    // Draw number over color box
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(7);
+    doc.text(num.toString(), x + 4, y + 5, { align: 'center' });
+    
+    // Reset text color for other text
+    doc.setTextColor(0, 0, 0);
     
     // Add text
     doc.setFontSize(10);

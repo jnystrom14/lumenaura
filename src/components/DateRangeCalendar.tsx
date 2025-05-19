@@ -125,20 +125,21 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
                       <>
                         <div className="flex justify-between items-start">
                           <span className="font-medium">{profile.date.getDate()}</span>
-                          <span className="text-xs px-2 py-1 rounded-full bg-primary text-white print:bg-white print:text-black print:border print:border-gray-400">
+                          <span 
+                            className="text-xs px-2 py-1 rounded-full text-white print:border print:border-gray-400"
+                            style={{ 
+                              backgroundColor: profile.numerologyData.colorHex,
+                              WebkitPrintColorAdjust: "exact",
+                              printColorAdjust: "exact"
+                            }}
+                          >
                             {profile.personalDay}
                           </span>
                         </div>
-                        <div 
-                          className="w-full h-2 rounded mt-2 print:border print:border-gray-400" 
-                          style={{ 
-                            backgroundColor: profile.numerologyData.colorHex,
-                            // Ensure color prints by adding inline style with !important
-                            WebkitPrintColorAdjust: "exact",
-                            printColorAdjust: "exact"
-                          }}
-                        ></div>
                         <div className="mt-2 text-xs">
+                          <div className="font-medium text-xs">
+                            {profile.numerologyData.color}
+                          </div>
                           <div className="font-medium">{profile.numerologyData.gem}</div>
                           <div className="text-muted-foreground truncate">
                             {profile.numerologyData.powerWord}
@@ -162,13 +163,15 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
               return (
                 <div key={num} className="flex items-center space-x-3">
                   <div 
-                    className="w-6 h-6 rounded-full border border-gray-200 print:border-gray-400" 
+                    className="w-6 h-6 rounded-full border border-gray-200 flex items-center justify-center text-white font-medium print:border-gray-400" 
                     style={{ 
                       backgroundColor: data.colorHex,
                       WebkitPrintColorAdjust: "exact",
                       printColorAdjust: "exact" 
                     }}
-                  ></div>
+                  >
+                    {num}
+                  </div>
                   <div>
                     <div className="font-medium">Number {num}: {data.color}</div>
                     <div className="text-sm">Gem: {data.gem}</div>
