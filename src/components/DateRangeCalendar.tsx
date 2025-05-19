@@ -70,6 +70,20 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
     return items.slice(0, 2).join(", ") + (items.length > 2 ? "..." : "");
   };
 
+  // Function to determine if text color should be light or dark based on background
+  const getContrastColor = (hexColor: string) => {
+    // Convert hex to RGB
+    const r = parseInt(hexColor.slice(1, 3), 16);
+    const g = parseInt(hexColor.slice(3, 5), 16);
+    const b = parseInt(hexColor.slice(5, 7), 16);
+    
+    // Calculate luminance using the formula for relative luminance
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    
+    // Return white for dark backgrounds, black for light backgrounds
+    return luminance > 0.5 ? "#000000" : "#FFFFFF";
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 animate-fade-in print:p-0">
       <div className="flex justify-between items-center mb-6 print:hidden">
@@ -116,17 +130,27 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
                     className={`p-2 min-h-24 border rounded-md ${
                       !profile
                         ? "bg-gray-50"
-                        : "hover:bg-colorpath-lavender hover:bg-opacity-10 transition-colors"
+                        : "hover:bg-lumenaura-lavender hover:bg-opacity-10 transition-colors"
                     }`}
                   >
                     {profile && (
                       <>
                         <div className="flex justify-between items-start">
-                          <span className="font-medium">{profile.date.getDate()}</span>
+                          <span 
+                            className="font-medium px-1 rounded"
+                            style={{ 
+                              color: getContrastColor(profile.numerologyData.colorHex || "#6B7280"),
+                              backgroundColor: profile.numerologyData.colorHex ? `${profile.numerologyData.colorHex}33` : undefined, // 20% opacity
+                              textShadow: getContrastColor(profile.numerologyData.colorHex || "#6B7280") === "#000000" ? "none" : "0px 0px 2px rgba(0,0,0,0.5)"
+                            }}
+                          >
+                            {profile.date.getDate()}
+                          </span>
                           <span 
                             className="text-xs px-2 py-1 rounded-full text-white print:border print:border-gray-400"
                             style={{ 
                               backgroundColor: profile.numerologyData.colorHex || "#6B7280",
+                              color: getContrastColor(profile.numerologyData.colorHex || "#6B7280"),
                               WebkitPrintColorAdjust: "exact",
                               printColorAdjust: "exact"
                             }}

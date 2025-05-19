@@ -1,4 +1,3 @@
-
 import React from "react";
 import { format, addDays, subDays } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -154,7 +153,7 @@ const DateControls: React.FC<DateControlsProps> = ({
       <Button
         variant="outline"
         onClick={() => setShowMonthly(true)}
-        className="border-colorpath-lavender"
+        className="border-lumenaura-lavender"
       >
         Monthly View
       </Button>
