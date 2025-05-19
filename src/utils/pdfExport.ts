@@ -1,4 +1,3 @@
-
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
@@ -79,56 +78,20 @@ export const exportMonthlyPDF = (profiles: DailyProfile[], month: number, year: 
     }
   });
   
-  // Add legend
-  const uniqueNumbers = Array.from(new Set(profiles.map(p => p.personalDay))).sort((a, b) => a - b);
-  let legendY = (tableResult.previousAutoTable?.finalY || 150) + 20;
-  
+  // Add affirmations section if there's space
+  const affirmationY = (tableResult.previousAutoTable?.finalY || 150) + 20;
   doc.setFontSize(14);
-  doc.text("Legend", 14, legendY);
-  legendY += 10;
+  doc.text("Daily Affirmations", 14, affirmationY);
   
-  // Create two columns for the legend
-  let column = 0;
-  const columnWidth = 90;
-  const itemHeight = 25;
-  let startY = legendY;
-  
-  uniqueNumbers.forEach((num, index) => {
-    const data = profiles.find(p => p.personalDay === num)?.numerologyData;
-    if (!data) return;
-    
-    // Calculate position (2 columns)
-    const x = 14 + (column * columnWidth);
-    const y = startY;
-    
-    // Draw color box
-    doc.setFillColor(hexToRgb(data.colorHex).r, hexToRgb(data.colorHex).g, hexToRgb(data.colorHex).b);
-    doc.rect(x, y, 8, 8, 'F');
-    
-    // Draw number over color box
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(7);
-    doc.text(num.toString(), x + 4, y + 5, { align: 'center' });
-    
-    // Reset text color for other text
-    doc.setTextColor(0, 0, 0);
-    
-    // Add text
+  let affRowY = affirmationY + 10;
+  profiles.slice(0, 7).forEach(profile => {
     doc.setFontSize(10);
     doc.setFont(undefined, 'bold');
-    doc.text(`Number ${num}: ${data.color}`, x + 12, y + 4);
+    doc.text(`Day ${profile.date.getDate()}: Number ${profile.personalDay}`, 14, affRowY);
     doc.setFont(undefined, 'normal');
-    doc.setFontSize(8);
-    doc.text(`Gem: ${data.gem}`, x + 12, y + 10);
-    doc.text(`Power: ${data.powerWord}`, x + 12, y + 15);
-    
-    // Switch to next column or row
-    if (column === 0) {
-      column = 1;
-    } else {
-      column = 0;
-      startY += itemHeight;
-    }
+    doc.setFontSize(9);
+    doc.text(`"${profile.numerologyData.affirmation}"`, 14, affRowY + 6);
+    affRowY += 15;
   });
   
   // Add footer with page numbers
@@ -196,75 +159,21 @@ export const exportDateRangePDF = (profiles: DailyProfile[], from: Date, to: Dat
     }
   });
   
-  // Add legend
-  const uniqueNumbers = Array.from(new Set(profiles.map(p => p.personalDay))).sort((a, b) => a - b);
-  let legendY = (tableResult.previousAutoTable?.finalY || 150) + 20;
-  
+  // Add affirmations section
+  const affirmationY = (tableResult.previousAutoTable?.finalY || 150) + 20;
   doc.setFontSize(14);
-  doc.text("Legend", 14, legendY);
-  legendY += 10;
+  doc.text("Daily Affirmations", 14, affirmationY);
   
-  // Create two columns for the legend
-  let column = 0;
-  const columnWidth = 90;
-  const itemHeight = 25;
-  let startY = legendY;
-  
-  uniqueNumbers.forEach((num, index) => {
-    const data = profiles.find(p => p.personalDay === num)?.numerologyData;
-    if (!data) return;
-    
-    // Calculate position (2 columns)
-    const x = 14 + (column * columnWidth);
-    const y = startY;
-    
-    // Draw color box
-    doc.setFillColor(hexToRgb(data.colorHex).r, hexToRgb(data.colorHex).g, hexToRgb(data.colorHex).b);
-    doc.rect(x, y, 8, 8, 'F');
-    
-    // Draw number over color box
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(7);
-    doc.text(num.toString(), x + 4, y + 5, { align: 'center' });
-    
-    // Reset text color for other text
-    doc.setTextColor(0, 0, 0);
-    
-    // Add text
+  let affRowY = affirmationY + 10;
+  profiles.slice(0, 7).forEach(profile => {
     doc.setFontSize(10);
     doc.setFont(undefined, 'bold');
-    doc.text(`Number ${num}: ${data.color}`, x + 12, y + 4);
+    doc.text(`Day ${profile.date.getDate()}: Number ${profile.personalDay}`, 14, affRowY);
     doc.setFont(undefined, 'normal');
-    doc.setFontSize(8);
-    doc.text(`Gem: ${data.gem}`, x + 12, y + 10);
-    doc.text(`Power: ${data.powerWord}`, x + 12, y + 15);
-    
-    // Switch to next column or row
-    if (column === 0) {
-      column = 1;
-    } else {
-      column = 0;
-      startY += itemHeight;
-    }
+    doc.setFontSize(9);
+    doc.text(`"${profile.numerologyData.affirmation}"`, 14, affRowY + 6);
+    affRowY += 15;
   });
-  
-  // Add affirmations section if there's space
-  if (uniqueNumbers.length <= 6) {
-    const affirmationY = Math.max(startY + itemHeight, legendY + 120);
-    doc.setFontSize(14);
-    doc.text("Daily Affirmations", 14, affirmationY);
-    
-    let affRowY = affirmationY + 10;
-    profiles.slice(0, 7).forEach(profile => {
-      doc.setFontSize(10);
-      doc.setFont(undefined, 'bold');
-      doc.text(`Day ${profile.date.getDate()}: Number ${profile.personalDay}`, 14, affRowY);
-      doc.setFont(undefined, 'normal');
-      doc.setFontSize(9);
-      doc.text(`"${profile.numerologyData.affirmation}"`, 14, affRowY + 6);
-      affRowY += 15;
-    });
-  }
   
   // Add footer with page numbers
   const pageCount = doc.internal.pages.length - 1;

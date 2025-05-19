@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { UserProfile, DailyProfile } from "../types";
 import { getMonthlyProfiles } from "../utils/numerologyCalculator";
@@ -166,36 +165,6 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
               ))}
             </React.Fragment>
           ))}
-        </div>
-      </div>
-      
-      <div className="mt-6 crystal-card p-6 print:mt-2 print:border-none print:p-2 print:shadow-none">
-        <h3 className="text-xl font-semibold mb-4">Legend</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array.from(new Set(profiles.map(p => p.personalDay))).sort((a, b) => a - b).map(num => {
-            const data = profiles.find(p => p.personalDay === num)?.numerologyData;
-            if (!data) return null;
-            return (
-              <div key={num} className="flex items-center space-x-3">
-                <div 
-                  className="w-6 h-6 rounded-full border border-gray-200 flex items-center justify-center text-white font-medium print:border-gray-400" 
-                  style={{ 
-                    backgroundColor: data.colorHex,
-                    WebkitPrintColorAdjust: "exact",
-                    printColorAdjust: "exact"
-                  }}
-                >
-                  {num}
-                </div>
-                <div>
-                  <div className="font-medium">Number {num}: {data.color}</div>
-                  <div className="text-sm">Gem: {data.gem}</div>
-                  <div className="text-sm text-muted-foreground">Power: {data.powerWord}</div>
-                  <div className="text-sm hidden print:block">Lucky Number: {data.luckyNumber}</div>
-                </div>
-              </div>
-            );
-          })}
         </div>
       </div>
 
