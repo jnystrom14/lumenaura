@@ -74,7 +74,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
         {primaryColor && (
           <div 
             key="primary"
-            className="w-16 h-16 rounded-full mb-2 shadow-inner" 
+            className="w-12 h-12 rounded-full shadow-inner" 
             style={{ backgroundColor: primaryColor }}
           ></div>
         )}
@@ -82,7 +82,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
         {secondaryColor && colors.length > 1 && (
           <div 
             key="secondary"
-            className="w-16 h-16 rounded-full mb-2 shadow-inner -ml-4" 
+            className="w-12 h-12 rounded-full shadow-inner -ml-3" 
             style={{ backgroundColor: secondaryColor, zIndex: 1 }}
           ></div>
         )}
@@ -90,7 +90,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
         {tertiaryColor && colors.length > 2 && (
           <div 
             key="tertiary"
-            className="w-16 h-16 rounded-full mb-2 shadow-inner -ml-4" 
+            className="w-12 h-12 rounded-full shadow-inner -ml-3" 
             style={{ backgroundColor: tertiaryColor, zIndex: 0 }}
           ></div>
         )}
@@ -98,7 +98,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
         {quaternaryColor && colors.length > 3 && (
           <div 
             key="quaternary"
-            className="w-16 h-16 rounded-full mb-2 shadow-inner -ml-4" 
+            className="w-12 h-12 rounded-full shadow-inner -ml-3" 
             style={{ backgroundColor: quaternaryColor, zIndex: 0 }}
           ></div>
         )}
@@ -143,51 +143,58 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
           style={getColorStyle()}
         ></div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
-          <div className="p-8 md:col-span-2 lg:col-span-2 flex flex-col justify-center items-center md:items-start">
-            <h2 className="text-2xl md:text-3xl font-semibold mb-2">
-              Today's Theme:
-            </h2>
-            <div 
-              className="text-4xl md:text-5xl font-serif font-bold mb-4 inline-block"
-              style={getThemeTextStyle()}
-            >
-              {dailyProfile.numerologyData.todaysTheme || dailyProfile.numerologyData.keyPhrase}
+        <div className="grid grid-cols-1 gap-4 p-6">
+          {/* Today's Theme Section */}
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="flex items-center gap-4 mb-4 md:mb-0">
+              <h2 className="text-xl md:text-2xl font-semibold">
+                Today's Theme:
+              </h2>
+              <div 
+                className="text-2xl md:text-3xl font-serif font-bold inline-block"
+                style={getThemeTextStyle()}
+              >
+                {dailyProfile.numerologyData.todaysTheme || dailyProfile.numerologyData.keyPhrase}
+              </div>
             </div>
-            <p className="text-lg text-gray-700 max-w-md text-center md:text-left">
-              Focus on embodying the energy of <strong>{(dailyProfile.numerologyData.todaysTheme || dailyProfile.numerologyData.keyPhrase).toLowerCase()}</strong> today 
-              to align with your numerological vibration.
+            
+            <p className="text-sm text-gray-600 italic max-w-md text-center md:text-right">
+              Focus on embodying this energy today to align with your numerological vibration.
             </p>
           </div>
           
-          <div className="bg-colorpath-lavender bg-opacity-20 flex flex-col justify-center items-center p-8 space-y-4">
-            <span className="text-sm uppercase tracking-wider text-gray-500">Your Colors</span>
-            <div className="flex flex-col items-center">
-              {getColorCircles()}
-              <span className="text-xl font-medium mt-2">
-                {dailyProfile.numerologyData.colors ? dailyProfile.numerologyData.colors.join(", ") : ""}
-              </span>
-            </div>
-          </div>
-          
-          <div className="bg-colorpath-rose bg-opacity-10 flex flex-col justify-center items-center p-8 space-y-4">
-            <span className="text-sm uppercase tracking-wider text-gray-500">Your Gems & Keyword</span>
-            <div className="flex flex-col items-center space-y-4">
-              <div className="w-16 h-16 flex items-center justify-center">
-                <div 
-                  className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center transform rotate-45 overflow-hidden shadow-lg" 
-                  style={{ background: `linear-gradient(45deg, ${dailyProfile.numerologyData.colorHex || "#6B7280"}44, ${dailyProfile.numerologyData.colorHex || "#6B7280"}99)` }}
-                >
-                  <span className="transform -rotate-45 text-white font-bold">✧</span>
-                </div>
+          {/* Horizontal Card Layout for Colors, Gems, and Keyword */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            {/* Colors Section */}
+            <div className="bg-colorpath-lavender bg-opacity-20 rounded-lg p-4 flex flex-col md:flex-row items-center gap-4">
+              <div className="bg-white bg-opacity-50 p-2 rounded-lg">
+                <h3 className="text-lg font-semibold text-gray-700">Your Colors</h3>
               </div>
-              <div className="text-center">
-                <span className="text-xl font-medium">{getAllGems()}</span>
-                <div className="mt-2 text-xl font-medium">
-                  <span className="px-3 py-1 bg-gray-100 rounded-full" style={{ color: dailyProfile.numerologyData.colorHex || 'inherit' }}>
-                    {dailyProfile.numerologyData.keyWord || ""}
-                  </span>
-                </div>
+              <div className="flex items-center gap-2">
+                {getColorCircles()}
+                <span className="text-sm font-medium ml-2">
+                  {dailyProfile.numerologyData.colors ? dailyProfile.numerologyData.colors.join(", ") : ""}
+                </span>
+              </div>
+            </div>
+            
+            {/* Gems Section */}
+            <div className="bg-colorpath-rose bg-opacity-10 rounded-lg p-4 flex flex-col md:flex-row items-center gap-4">
+              <div className="bg-white bg-opacity-50 p-2 rounded-lg">
+                <h3 className="text-lg font-semibold text-gray-700">Your Gems</h3>
+              </div>
+              <div className="text-center md:text-left">
+                <span className="text-sm font-medium">{getAllGems()}</span>
+              </div>
+            </div>
+            
+            {/* Keyword Section */}
+            <div className="bg-colorpath-teal bg-opacity-20 rounded-lg p-4 flex flex-col md:flex-row items-center gap-4">
+              <div className="bg-white bg-opacity-50 p-2 rounded-lg">
+                <h3 className="text-lg font-semibold text-gray-700">Your Keyword</h3>
+              </div>
+              <div className="px-3 py-1 bg-white bg-opacity-70 rounded-full" style={{ color: dailyProfile.numerologyData.colorHex || 'inherit' }}>
+                <span className="font-medium">{dailyProfile.numerologyData.keyWord || ""}</span>
               </div>
             </div>
           </div>
