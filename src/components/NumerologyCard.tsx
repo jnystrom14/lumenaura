@@ -74,7 +74,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
         {primaryColor && (
           <div 
             key="primary"
-            className="w-12 h-12 rounded-full shadow-inner" 
+            className="w-10 h-10 rounded-full shadow-inner" 
             style={{ backgroundColor: primaryColor }}
           ></div>
         )}
@@ -82,7 +82,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
         {secondaryColor && colors.length > 1 && (
           <div 
             key="secondary"
-            className="w-12 h-12 rounded-full shadow-inner -ml-3" 
+            className="w-10 h-10 rounded-full shadow-inner -ml-3" 
             style={{ backgroundColor: secondaryColor, zIndex: 1 }}
           ></div>
         )}
@@ -90,7 +90,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
         {tertiaryColor && colors.length > 2 && (
           <div 
             key="tertiary"
-            className="w-12 h-12 rounded-full shadow-inner -ml-3" 
+            className="w-10 h-10 rounded-full shadow-inner -ml-3" 
             style={{ backgroundColor: tertiaryColor, zIndex: 0 }}
           ></div>
         )}
@@ -98,7 +98,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
         {quaternaryColor && colors.length > 3 && (
           <div 
             key="quaternary"
-            className="w-12 h-12 rounded-full shadow-inner -ml-3" 
+            className="w-10 h-10 rounded-full shadow-inner -ml-3" 
             style={{ backgroundColor: quaternaryColor, zIndex: 0 }}
           ></div>
         )}
@@ -137,65 +137,55 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
 
   return (
     <div className="crystal-card overflow-hidden">
-      <div className="relative">
+      <div className="relative p-6">
         <div 
           className="absolute inset-0 opacity-10" 
           style={getColorStyle()}
         ></div>
         
-        <div className="grid grid-cols-1 gap-4 p-6">
-          {/* Today's Theme Section */}
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="flex items-center gap-4 mb-4 md:mb-0">
-              <h2 className="text-xl md:text-2xl font-semibold">
-                Today's Theme:
-              </h2>
-              <div 
-                className="text-2xl md:text-3xl font-serif font-bold inline-block"
-                style={getThemeTextStyle()}
-              >
-                {dailyProfile.numerologyData.todaysTheme || dailyProfile.numerologyData.keyPhrase}
-              </div>
+        {/* Four Panel Horizontal Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {/* Today's Theme Panel */}
+          <div className="bg-white bg-opacity-70 rounded-lg p-4 flex flex-col items-center justify-center">
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">Today's Theme</h3>
+            <div 
+              className="text-xl font-serif font-bold text-center"
+              style={getThemeTextStyle()}
+            >
+              {dailyProfile.numerologyData.todaysTheme || dailyProfile.numerologyData.keyPhrase}
             </div>
-            
-            <p className="text-sm text-gray-600 italic max-w-md text-center md:text-right">
-              Focus on embodying this energy today to align with your numerological vibration.
-            </p>
           </div>
           
-          {/* Horizontal Card Layout for Colors, Gems, and Keyword */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            {/* Colors Section */}
-            <div className="bg-colorpath-lavender bg-opacity-20 rounded-lg p-4 flex flex-col md:flex-row items-center gap-4">
-              <div className="bg-white bg-opacity-50 p-2 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-700">Your Colors</h3>
-              </div>
-              <div className="flex items-center gap-2">
-                {getColorCircles()}
-                <span className="text-sm font-medium ml-2">
-                  {dailyProfile.numerologyData.colors ? dailyProfile.numerologyData.colors.join(", ") : ""}
-                </span>
-              </div>
+          {/* Your Colors Panel */}
+          <div className="bg-white bg-opacity-70 rounded-lg p-4 flex flex-col items-center">
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">Your Colors</h3>
+            <div className="flex flex-col items-center gap-2">
+              {getColorCircles()}
+              <span className="text-sm font-medium mt-2 text-center">
+                {dailyProfile.numerologyData.colors ? dailyProfile.numerologyData.colors.join(", ") : ""}
+              </span>
             </div>
-            
-            {/* Gems Section */}
-            <div className="bg-colorpath-rose bg-opacity-10 rounded-lg p-4 flex flex-col md:flex-row items-center gap-4">
-              <div className="bg-white bg-opacity-50 p-2 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-700">Your Gems</h3>
-              </div>
-              <div className="text-center md:text-left">
-                <span className="text-sm font-medium">{getAllGems()}</span>
-              </div>
+          </div>
+          
+          {/* Your Gems Panel */}
+          <div className="bg-white bg-opacity-70 rounded-lg p-4 flex flex-col items-center">
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">Your Gems</h3>
+            <div className="text-center">
+              <span className="text-sm font-medium">{getAllGems()}</span>
             </div>
-            
-            {/* Keyword Section */}
-            <div className="bg-colorpath-teal bg-opacity-20 rounded-lg p-4 flex flex-col md:flex-row items-center gap-4">
-              <div className="bg-white bg-opacity-50 p-2 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-700">Your Keyword</h3>
-              </div>
-              <div className="px-3 py-1 bg-white bg-opacity-70 rounded-full" style={{ color: dailyProfile.numerologyData.colorHex || 'inherit' }}>
-                <span className="font-medium">{dailyProfile.numerologyData.keyWord || ""}</span>
-              </div>
+          </div>
+          
+          {/* Your Keyword Panel */}
+          <div className="bg-white bg-opacity-70 rounded-lg p-4 flex flex-col items-center">
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">Your Keyword</h3>
+            <div 
+              className="px-3 py-1 bg-opacity-80 rounded-full text-center"
+              style={{ 
+                backgroundColor: dailyProfile.numerologyData.colorHex || 'white',
+                color: getContrastColor(dailyProfile.numerologyData.colorHex || '#FFFFFF')
+              }}
+            >
+              <span className="font-medium">{dailyProfile.numerologyData.keyWord || dailyProfile.numerologyData.powerWord || ""}</span>
             </div>
           </div>
         </div>

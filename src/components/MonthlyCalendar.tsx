@@ -1,8 +1,6 @@
-
 import React, { useState, useEffect } from "react";
 import { UserProfile, DailyProfile } from "../types";
 import { getMonthlyProfiles } from "../utils/numerologyCalculator";
-import { exportMonthlyPDF } from "../utils/pdfExport";
 import { format, addMonths, subMonths } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Printer } from "lucide-react";
@@ -27,12 +25,6 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
     const monthlyData = getMonthlyProfiles(userProfile, year, month);
     setProfiles(monthlyData);
   }, [currentDate, userProfile]);
-
-  const handleExport = () => {
-    const month = currentDate.getMonth() + 1;
-    const year = currentDate.getFullYear();
-    exportMonthlyPDF(profiles, month, year);
-  };
 
   const handlePrint = () => {
     window.print();
@@ -99,10 +91,7 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
         <h1 className="text-3xl font-serif text-center">
           Monthly Overview
         </h1>
-        <div className="flex gap-2">
-          <Button onClick={handleExport} variant="outline">
-            Export PDF
-          </Button>
+        <div>
           <Button onClick={handlePrint} variant="default" className="gap-2">
             <Printer className="h-4 w-4" />
             Print

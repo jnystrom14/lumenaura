@@ -1,10 +1,9 @@
-
 import React from "react";
 import { UserProfile, DailyProfile } from "../types";
 import { getDailyProfile } from "../utils/numerologyCalculator";
 import { format, eachDayOfInterval } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Printer, Download } from "lucide-react";
+import { ArrowLeft, Printer } from "lucide-react";
 import { exportDateRangePDF } from "../utils/pdfExport";
 
 interface DateRangeCalendarProps {
@@ -26,10 +25,6 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
   
   const handlePrint = () => {
     window.print();
-  };
-  
-  const handleExportPDF = () => {
-    exportDateRangePDF(profiles, from, to);
   };
   
   // Group profiles by week for display
@@ -85,11 +80,7 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
         <h1 className="text-3xl font-serif text-center">
           Date Range Calendar
         </h1>
-        <div className="flex gap-2">
-          <Button onClick={handleExportPDF} variant="outline" className="gap-2">
-            <Download className="h-4 w-4" />
-            Export PDF
-          </Button>
+        <div>
           <Button onClick={handlePrint} variant="default" className="gap-2">
             <Printer className="h-4 w-4" />
             Print
