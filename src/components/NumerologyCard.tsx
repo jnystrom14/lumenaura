@@ -194,8 +194,10 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
           {/* Your Colors Panel */}
           <div className={`flex flex-col items-center px-4 relative ${isMobile ? 'pb-6' : ''}`}>
             <h3 className="text-lg font-semibold text-gray-700 mb-4">Your Colors</h3>
-            <div className="flex flex-col items-center gap-2 mt-2">
-              {getColorCircles()}
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex items-center justify-center">
+                {getColorCircles()}
+              </div>
               <span className="text-sm font-medium mt-2 text-center">
                 {dailyProfile.numerologyData.colors ? dailyProfile.numerologyData.colors.join(", ") : ""}
               </span>
@@ -211,13 +213,15 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
           {/* Your Gems Panel */}
           <div className={`flex flex-col items-center px-4 relative ${isMobile ? 'pb-6' : ''}`}>
             <h3 className="text-lg font-semibold text-gray-700 mb-4">Your Gems</h3>
-            <div className="flex items-center justify-center mt-2">
-              <Gem 
-                size={22} 
-                className="mr-2" 
-                style={getGemStyle()}
-              />
-              <span className="text-sm font-medium">
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex items-center justify-center">
+                <Gem 
+                  size={32} 
+                  className="mb-1" 
+                  style={getGemStyle()}
+                />
+              </div>
+              <span className="text-sm font-medium text-center">
                 {getAllGems()}
               </span>
             </div>
