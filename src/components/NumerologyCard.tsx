@@ -106,6 +106,32 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
     );
   };
 
+  // Function to determine if text color should be light or dark based on background
+  const getContrastColor = (hexColor: string) => {
+    // Convert hex to RGB
+    const r = parseInt(hexColor.slice(1, 3), 16);
+    const g = parseInt(hexColor.slice(3, 5), 16);
+    const b = parseInt(hexColor.slice(5, 7), 16);
+    
+    // Calculate luminance using the formula for relative luminance
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    
+    // Return white for dark backgrounds, black for light backgrounds
+    return luminance > 0.5 ? "#000000" : "#FFFFFF";
+  };
+
+  // Get the best text color for the theme based on background color
+  const getThemeTextStyle = () => {
+    const baseColor = dailyProfile.numerologyData.colorHex || "#6B7280";
+    const textColor = getContrastColor(baseColor);
+    
+    return {
+      color: baseColor,
+      textShadow: `0px 0px 3px ${textColor === "#FFFFFF" ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.6)"}`,
+      fontWeight: 'bold'
+    };
+  };
+
   return (
     <div className="crystal-card overflow-hidden">
       <div className="relative">
@@ -121,12 +147,12 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
             </h2>
             <div 
               className="text-4xl md:text-5xl font-serif font-bold mb-4"
-              style={{ color: dailyProfile.numerologyData.colorHex || 'inherit' }}
+              style={getThemeTextStyle()}
             >
-              {dailyProfile.numerologyData.powerWord || dailyProfile.numerologyData.keyPhrase}
+              {dailyProfile.numerologyData.todaysTheme || dailyProfile.numerologyData.keyPhrase}
             </div>
             <p className="text-lg text-gray-700 max-w-md text-center md:text-left">
-              Focus on embodying the energy of <strong>{(dailyProfile.numerologyData.powerWord || dailyProfile.numerologyData.keyPhrase).toLowerCase()}</strong> today 
+              Focus on embodying the energy of <strong>{(dailyProfile.numerologyData.todaysTheme || dailyProfile.numerologyData.keyPhrase).toLowerCase()}</strong> today 
               to align with your numerological vibration.
             </p>
           </div>
@@ -142,7 +168,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
           </div>
           
           <div className="bg-colorpath-rose bg-opacity-10 flex flex-col justify-center items-center p-8 space-y-4">
-            <span className="text-sm uppercase tracking-wider text-gray-500">Your Gems</span>
+            <span className="text-sm uppercase tracking-wider text-gray-500">Your Gems & Keyword</span>
             <div className="flex flex-col items-center space-y-4">
               <div className="w-16 h-16 flex items-center justify-center animate-float">
                 <div 
@@ -156,7 +182,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
                 <span className="text-xl font-medium">{getAllGems()}</span>
                 <div className="mt-2 text-xl font-medium">
                   <span className="px-3 py-1 bg-gray-100 rounded-full" style={{ color: dailyProfile.numerologyData.colorHex || 'inherit' }}>
-                    {dailyProfile.numerologyData.powerWord || ""}
+                    {dailyProfile.numerologyData.keyWord || ""}
                   </span>
                 </div>
               </div>

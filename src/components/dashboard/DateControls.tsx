@@ -1,6 +1,6 @@
 
 import React from "react";
-import { format } from "date-fns";
+import { format, addDays, subDays } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,7 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon, CalendarRange } from "lucide-react";
+import { CalendarIcon, CalendarRange, ChevronLeft, ChevronRight } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { toast } from "@/components/ui/use-toast";
 
@@ -48,35 +48,68 @@ const DateControls: React.FC<DateControlsProps> = ({
     }
   };
 
+  const handlePreviousDay = () => {
+    const previousDay = subDays(selectedDate, 1);
+    setSelectedDate(previousDay);
+    setIsRangeMode(false);
+  };
+
+  const handleNextDay = () => {
+    const nextDay = addDays(selectedDate, 1);
+    setSelectedDate(nextDay);
+    setIsRangeMode(false);
+  };
+
   return (
     <div className="flex flex-wrap gap-2">
-      {/* Single Date Picker */}
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant={!isRangeMode ? "default" : "outline"}
-            className="flex items-center space-x-2"
-          >
-            <CalendarIcon className="h-4 w-4" />
-            <span>{!isRangeMode ? format(selectedDate, "MMM d, yyyy") : "Select a date"}</span>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0 pointer-events-auto">
-          <div className="p-3">
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={(date) => {
-                if (date) {
-                  setSelectedDate(date);
-                  setIsRangeMode(false);
-                }
-              }}
-              initialFocus
-            />
-          </div>
-        </PopoverContent>
-      </Popover>
+      {/* Date Navigation Arrows */}
+      <div className="flex items-center">
+        <Button
+          variant="outline" 
+          size="icon"
+          onClick={handlePreviousDay}
+          className="mr-1"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        
+        {/* Single Date Picker */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={!isRangeMode ? "default" : "outline"}
+              className="flex items-center space-x-2"
+            >
+              <CalendarIcon className="h-4 w-4" />
+              <span>{!isRangeMode ? format(selectedDate, "MMM d, yyyy") : "Select a date"}</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 pointer-events-auto">
+            <div className="p-3">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={(date) => {
+                  if (date) {
+                    setSelectedDate(date);
+                    setIsRangeMode(false);
+                  }
+                }}
+                initialFocus
+              />
+            </div>
+          </PopoverContent>
+        </Popover>
+        
+        <Button
+          variant="outline" 
+          size="icon"
+          onClick={handleNextDay}
+          className="ml-1"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
       
       {/* Date Range Picker */}
       <Popover>
