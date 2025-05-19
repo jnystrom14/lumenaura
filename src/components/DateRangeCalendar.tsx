@@ -1,9 +1,10 @@
+
 import React from "react";
 import { UserProfile, DailyProfile } from "../types";
 import { getDailyProfile } from "../utils/numerologyCalculator";
 import { format, eachDayOfInterval } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Printer, Download, CircleDot } from "lucide-react";
+import { ArrowLeft, Printer, Download } from "lucide-react";
 import { exportDateRangePDF } from "../utils/pdfExport";
 
 interface DateRangeCalendarProps {
@@ -177,6 +178,13 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
               color-adjust: exact !important;
+            }
+            /* Hide toast notifications */
+            [role="status"],
+            [aria-live="polite"],
+            [data-radix-toast-viewport],
+            [data-sonner-toast-group] {
+              display: none !important;
             }
           }
         `}

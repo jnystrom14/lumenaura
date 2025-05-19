@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { UserProfile, DailyProfile } from "../types";
 import { getMonthlyProfiles } from "../utils/numerologyCalculator";
@@ -191,6 +192,13 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
               color-adjust: exact !important;
+            }
+            /* Hide toast notifications */
+            [role="status"],
+            [aria-live="polite"],
+            [data-radix-toast-viewport],
+            [data-sonner-toast-group] {
+              display: none !important;
             }
           }
         `}
