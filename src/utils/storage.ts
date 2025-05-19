@@ -1,7 +1,7 @@
 
 import { UserProfile } from "../types";
 
-const USER_PROFILE_KEY = 'colorpath_user_profile';
+const USER_PROFILE_KEY = 'lumenaura_user_profile';
 
 export const saveUserProfile = (userProfile: UserProfile): void => {
   localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(userProfile));

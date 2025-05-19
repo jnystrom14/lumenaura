@@ -53,8 +53,8 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				// ColorPath custom colors
-				colorpath: {
+				// LumenAura custom colors
+				lumenaura: {
 					lavender: '#E5DEFF',
 					ivory: '#FFFDF8',
 					rose: '#FFDEE2', 
