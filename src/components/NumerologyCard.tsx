@@ -1,6 +1,8 @@
 
 import React from "react";
 import { DailyProfile } from "../types";
+import { Separator } from "./ui/separator";
+import { Sparkles } from "lucide-react";
 
 interface NumerologyCardProps {
   dailyProfile: DailyProfile;
@@ -143,43 +145,55 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
           style={getColorStyle()}
         ></div>
         
-        {/* Four Panel Horizontal Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {/* Four Panel Horizontal Layout with aligned titles and separators */}
+        <div className="grid grid-cols-4 gap-0">
           {/* Today's Theme Panel */}
-          <div className="bg-white bg-opacity-70 rounded-lg p-4 flex flex-col items-center justify-center">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">Today's Theme</h3>
+          <div className="flex flex-col items-center px-4 relative">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">Today's Theme</h3>
             <div 
-              className="text-xl font-serif font-bold text-center"
+              className="text-xl font-serif font-bold text-center mt-2"
               style={getThemeTextStyle()}
             >
               {dailyProfile.numerologyData.todaysTheme || dailyProfile.numerologyData.keyPhrase}
             </div>
+            <div className="absolute right-0 h-full top-0 opacity-50">
+              <Separator orientation="vertical" className="h-full bg-colorpath-lavender" />
+            </div>
           </div>
           
           {/* Your Colors Panel */}
-          <div className="bg-white bg-opacity-70 rounded-lg p-4 flex flex-col items-center">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">Your Colors</h3>
-            <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center px-4 relative">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">Your Colors</h3>
+            <div className="flex flex-col items-center gap-2 mt-2">
               {getColorCircles()}
               <span className="text-sm font-medium mt-2 text-center">
                 {dailyProfile.numerologyData.colors ? dailyProfile.numerologyData.colors.join(", ") : ""}
               </span>
             </div>
+            <div className="absolute right-0 h-full top-0 opacity-50">
+              <Separator orientation="vertical" className="h-full bg-colorpath-lavender" />
+            </div>
           </div>
           
           {/* Your Gems Panel */}
-          <div className="bg-white bg-opacity-70 rounded-lg p-4 flex flex-col items-center">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">Your Gems</h3>
-            <div className="text-center">
-              <span className="text-sm font-medium">{getAllGems()}</span>
+          <div className="flex flex-col items-center px-4 relative">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">Your Gems</h3>
+            <div className="bg-gradient-to-r from-colorpath-gold/30 to-colorpath-rose/30 rounded-lg p-3 mt-2 backdrop-blur-sm flex items-center">
+              <Sparkles size={18} className="text-colorpath-gold mr-2" />
+              <span className="text-sm font-medium text-center">
+                {getAllGems()}
+              </span>
+            </div>
+            <div className="absolute right-0 h-full top-0 opacity-50">
+              <Separator orientation="vertical" className="h-full bg-colorpath-lavender" />
             </div>
           </div>
           
           {/* Your Keyword Panel */}
-          <div className="bg-white bg-opacity-70 rounded-lg p-4 flex flex-col items-center">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">Your Keyword</h3>
+          <div className="flex flex-col items-center px-4">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">Your Keyword</h3>
             <div 
-              className="px-3 py-1 bg-opacity-80 rounded-full text-center"
+              className="px-4 py-2 bg-opacity-80 rounded-full text-center mt-2"
               style={{ 
                 backgroundColor: dailyProfile.numerologyData.colorHex || 'white',
                 color: getContrastColor(dailyProfile.numerologyData.colorHex || '#FFFFFF')
