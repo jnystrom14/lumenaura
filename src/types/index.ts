@@ -23,6 +23,8 @@ export interface NumerologyData {
   powerWord?: string;
   affirmation?: string;
   meaning?: string;
+  todaysTheme?: string;
+  keyWord?: string;
 }
 
 export interface DailyProfile {

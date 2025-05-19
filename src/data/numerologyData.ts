@@ -55,7 +55,7 @@ export const numerologyDataset: NumerologyData[] = [
   {
     number: 6,
     colors: ["indigo"],
-    colorHex: "#4B0082",
+    colorHex: "#000080",
     gems: ["pearl", "sapphire", "lapis"],
     keyPhrase: "Take a personal inventory.",
     description: "Take a personal inventory. Look at your home. Could you make it more comfortable? How about you? Could you be more polished? Review your diet. Does it need adjusting? Look at your personality. Could it be more cheerful? Look at your responsibilities. Do any need taking care of? Are you sticking your nose into other people's business?",
@@ -77,7 +77,7 @@ export const numerologyDataset: NumerologyData[] = [
     number: 8,
     colors: ["beige", "brown", "pink"],
     colorHex: "#F5F5DC",
-    colorHexSecondary: "#A52A2A",
+    colorHexSecondary: "#744700",
     colorHexTertiary: "#FFC0CB",
     gems: ["diamond"],
     keyPhrase: "Look and act successful.",
@@ -88,7 +88,7 @@ export const numerologyDataset: NumerologyData[] = [
   {
     number: 9,
     colors: ["all pastels"],
-    colorHex: "#FFD1DC", // Using pastel pink as primary
+    colorHex: "#FFD1DC", // pastel pink
     colorHexSecondary: "#AEC6CF", // pastel blue
     colorHexTertiary: "#FDFD96", // pastel yellow
     colorHexQuaternary: "#AAF0D1", // pastel mint

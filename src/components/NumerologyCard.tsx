@@ -67,6 +67,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
     const primaryColor = dailyProfile.numerologyData.colorHex || "#6B7280";
     const secondaryColor = dailyProfile.numerologyData.colorHexSecondary;
     const tertiaryColor = dailyProfile.numerologyData.colorHexTertiary;
+    const quaternaryColor = dailyProfile.numerologyData.colorHexQuaternary;
     
     return (
       <div className="flex items-center justify-center">
@@ -91,6 +92,14 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
             key="tertiary"
             className="w-16 h-16 rounded-full mb-2 shadow-inner animate-float -ml-4" 
             style={{ backgroundColor: tertiaryColor, zIndex: 0, animationDelay: "0.4s" }}
+          ></div>
+        )}
+
+        {quaternaryColor && colors.length > 3 && (
+          <div 
+            key="quaternary"
+            className="w-16 h-16 rounded-full mb-2 shadow-inner animate-float -ml-4" 
+            style={{ backgroundColor: quaternaryColor, zIndex: 0, animationDelay: "0.6s" }}
           ></div>
         )}
       </div>
@@ -134,7 +143,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
           
           <div className="bg-colorpath-rose bg-opacity-10 flex flex-col justify-center items-center p-8 space-y-4">
             <span className="text-sm uppercase tracking-wider text-gray-500">Your Gems</span>
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center space-y-4">
               <div className="w-16 h-16 flex items-center justify-center animate-float">
                 <div 
                   className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center transform rotate-45 overflow-hidden shadow-lg" 
@@ -143,7 +152,14 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
                   <span className="transform -rotate-45 text-white font-bold">✧</span>
                 </div>
               </div>
-              <span className="text-xl font-medium">{getAllGems()}</span>
+              <div className="text-center">
+                <span className="text-xl font-medium">{getAllGems()}</span>
+                <div className="mt-2 text-xl font-medium">
+                  <span className="px-3 py-1 bg-gray-100 rounded-full" style={{ color: dailyProfile.numerologyData.colorHex || 'inherit' }}>
+                    {dailyProfile.numerologyData.powerWord || ""}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
