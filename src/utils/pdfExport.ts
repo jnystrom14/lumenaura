@@ -16,14 +16,12 @@ export interface DailyProfile {
   personalMonth: number;
   personalDay: number;
   numerologyData: {
-    number: number;
-    color: string;
-    colorHex: string;
-    gem: string;
-    luckyNumber: number;
-    powerWord: string;
-    affirmation: string;
-    meaning: string;
+    number: number | string;
+    colors: string[];
+    gems: string[];
+    keyPhrase: string;
+    description: string;
+    meditation: string;
   };
 }
 
@@ -43,16 +41,15 @@ export const exportMonthlyPDF = (profiles: DailyProfile[], month: number, year: 
   const calendarData = profiles.map(profile => [
     profile.date.getDate(),
     profile.personalDay,
-    profile.numerologyData.color,
-    profile.numerologyData.gem,
-    profile.numerologyData.luckyNumber,
-    profile.numerologyData.powerWord
+    profile.numerologyData.colors.join(", "),
+    profile.numerologyData.gems.join(", "),
+    profile.numerologyData.keyPhrase
   ]);
   
   // Create table
   const tableResult = doc.autoTable({
     startY: 30,
-    head: [['Date', 'Number', 'Color', 'Gem', 'Lucky Number', 'Power Word']],
+    head: [['Date', 'Number', 'Color(s)', 'Gem(s)', 'Key Phrase']],
     body: calendarData,
     headStyles: { 
       fillColor: [85, 73, 188],
@@ -75,15 +72,14 @@ export const exportMonthlyPDF = (profiles: DailyProfile[], month: number, year: 
       1: { cellWidth: 20 },
       2: { cellWidth: 30 },
       3: { cellWidth: 30, overflow: 'linebreak' },
-      4: { cellWidth: 25 },
-      5: { cellWidth: 60 }
+      4: { cellWidth: 60 }
     }
   });
   
   // Add affirmations section if there's space
   const affirmationY = (tableResult.previousAutoTable?.finalY || 150) + 20;
   doc.setFontSize(14);
-  doc.text("Daily Affirmations", 14, affirmationY);
+  doc.text("Daily Meditations", 14, affirmationY);
   
   let affRowY = affirmationY + 10;
   profiles.slice(0, 7).forEach(profile => {
@@ -92,7 +88,7 @@ export const exportMonthlyPDF = (profiles: DailyProfile[], month: number, year: 
     doc.text(`Day ${profile.date.getDate()}: Number ${profile.personalDay}`, 14, affRowY);
     doc.setFont(undefined, 'normal');
     doc.setFontSize(9);
-    doc.text(`"${profile.numerologyData.affirmation}"`, 14, affRowY + 6);
+    doc.text(`"${profile.numerologyData.meditation}"`, 14, affRowY + 6);
     affRowY += 15;
   });
   
@@ -125,16 +121,15 @@ export const exportDateRangePDF = (profiles: DailyProfile[], from: Date, to: Dat
   const calendarData = profiles.map(profile => [
     profile.date.toLocaleString('default', { month: 'short', day: 'numeric' }),
     profile.personalDay,
-    profile.numerologyData.color,
-    profile.numerologyData.gem,
-    profile.numerologyData.luckyNumber,
-    profile.numerologyData.powerWord
+    profile.numerologyData.colors.join(", "),
+    profile.numerologyData.gems.join(", "),
+    profile.numerologyData.keyPhrase
   ]);
   
   // Create table
   const tableResult = doc.autoTable({
     startY: 30,
-    head: [['Date', 'Number', 'Color', 'Gem', 'Lucky Number', 'Power Word']],
+    head: [['Date', 'Number', 'Color(s)', 'Gem(s)', 'Key Phrase']],
     body: calendarData,
     headStyles: { 
       fillColor: [85, 73, 188],
@@ -157,15 +152,14 @@ export const exportDateRangePDF = (profiles: DailyProfile[], from: Date, to: Dat
       1: { cellWidth: 20 },
       2: { cellWidth: 30 },
       3: { cellWidth: 30, overflow: 'linebreak' },
-      4: { cellWidth: 25 },
-      5: { cellWidth: 50 }
+      4: { cellWidth: 50 }
     }
   });
   
   // Add affirmations section
   const affirmationY = (tableResult.previousAutoTable?.finalY || 150) + 20;
   doc.setFontSize(14);
-  doc.text("Daily Affirmations", 14, affirmationY);
+  doc.text("Daily Meditations", 14, affirmationY);
   
   let affRowY = affirmationY + 10;
   profiles.slice(0, 7).forEach(profile => {
@@ -174,7 +168,7 @@ export const exportDateRangePDF = (profiles: DailyProfile[], from: Date, to: Dat
     doc.text(`Day ${profile.date.getDate()}: Number ${profile.personalDay}`, 14, affRowY);
     doc.setFont(undefined, 'normal');
     doc.setFontSize(9);
-    doc.text(`"${profile.numerologyData.affirmation}"`, 14, affRowY + 6);
+    doc.text(`"${profile.numerologyData.meditation}"`, 14, affRowY + 6);
     affRowY += 15;
   });
   

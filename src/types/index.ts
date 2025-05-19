@@ -8,14 +8,12 @@ export interface UserProfile {
 }
 
 export interface NumerologyData {
-  number: number;
-  color: string;
-  colorHex: string;
-  gem: string;
-  luckyNumber: number;
-  powerWord: string;
-  affirmation: string;
-  meaning: string;
+  number: number | string;
+  colors: string[];
+  gems: string[];
+  keyPhrase: string;
+  description: string;
+  meditation: string;
 }
 
 export interface DailyProfile {

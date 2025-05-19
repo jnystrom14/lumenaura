@@ -16,16 +16,18 @@ const NumerologyTable: React.FC = () => {
               <TableHead className="text-center">NUMBER</TableHead>
               <TableHead className="text-center">COLOR(S)</TableHead>
               <TableHead className="text-center">GEM(S)/PRECIOUS METAL(S)</TableHead>
-              <TableHead className="text-center">KEY WORD</TableHead>
+              <TableHead className="text-center">KEY PHRASE</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {numerologyDataset.map((data, index) => (
-              <TableRow key={data.number} className={index % 2 === 0 ? "bg-gray-100" : ""}>
+              <TableRow key={index} className={index % 2 === 0 ? "bg-gray-100" : ""}>
                 <TableCell className="text-center font-medium">{data.number}</TableCell>
-                <TableCell className="text-center">{data.color}</TableCell>
-                <TableCell className="text-center whitespace-normal break-words max-w-[120px]">{data.gem}</TableCell>
-                <TableCell className="text-center">{data.powerWord}</TableCell>
+                <TableCell className="text-center">{data.colors.join(", ")}</TableCell>
+                <TableCell className="text-center whitespace-normal break-words max-w-[120px] hyphens-auto">
+                  {data.gems.join(", ")}
+                </TableCell>
+                <TableCell className="text-center">{data.keyPhrase}</TableCell>
               </TableRow>
             ))}
           </TableBody>
