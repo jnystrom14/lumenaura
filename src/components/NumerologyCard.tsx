@@ -1,3 +1,4 @@
+
 import React from "react";
 import { DailyProfile } from "../types";
 import { Separator } from "./ui/separator";
@@ -174,25 +175,18 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
             </div>
           </div>
           
-          {/* Your Gems Panel */}
+          {/* Your Gems Panel - Modified to remove diagonal background box */}
           <div className="flex flex-col items-center px-4 relative">
             <h3 className="text-lg font-semibold text-gray-700 mb-4">Your Gems</h3>
-            <div className="relative mt-2">
-              <div className="absolute inset-0 transform rotate-45" style={{ 
-                backgroundColor: dailyProfile.numerologyData.colorHex || '#6B7280',
-                opacity: 0.3,
-                borderRadius: '4px'
-              }}></div>
-              <div className="relative flex items-center py-3 px-5">
-                <Gem 
-                  size={22} 
-                  className="mr-2" 
-                  style={{ color: dailyProfile.numerologyData.colorHex }}
-                />
-                <span className="text-sm font-medium text-center">
-                  {getAllGems()}
-                </span>
-              </div>
+            <div className="flex items-center justify-center mt-2">
+              <Gem 
+                size={22} 
+                className="mr-2" 
+                style={{ color: dailyProfile.numerologyData.colorHex }}
+              />
+              <span className="text-sm font-medium">
+                {getAllGems()}
+              </span>
             </div>
             <div className="absolute right-0 h-full top-0 opacity-50">
               <Separator orientation="vertical" className="h-full bg-lumenaura-lavender" />
