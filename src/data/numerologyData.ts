@@ -5,10 +5,10 @@ export const numerologyDataset: NumerologyData[] = [
   {
     number: 1,
     color: "Red",
-    colorHex: "#E53935", // More vibrant red
+    colorHex: "#E53935",
     gem: "Ruby",
     luckyNumber: 9,
-    powerWord: "Courage",
+    powerWord: "Beginnings",
     affirmation: "I am a powerful creator and manifest my desires easily.",
     meaning: "A day for new beginnings, leadership, and taking initiative. Today favors bold actions and self-assertion."
   },
@@ -18,7 +18,7 @@ export const numerologyDataset: NumerologyData[] = [
     colorHex: "#FFA726",
     gem: "Moonstone",
     luckyNumber: 8,
-    powerWord: "Harmony",
+    powerWord: "Cooperate",
     affirmation: "I flow with life's rhythms and find balance in all situations.",
     meaning: "A day for cooperation, diplomacy, and partnerships. Focus on relationships and finding peaceful solutions."
   },
@@ -26,9 +26,9 @@ export const numerologyDataset: NumerologyData[] = [
     number: 3,
     color: "Yellow",
     colorHex: "#FFEB3B",
-    gem: "Citrine",
+    gem: "Topaz",
     luckyNumber: 6,
-    powerWord: "Expression",
+    powerWord: "Enjoyment",
     affirmation: "I express my unique gifts with joy and enthusiasm.",
     meaning: "A day for creativity, communication, and social connection. Share your ideas and enjoy artistic pursuits."
   },
@@ -36,9 +36,9 @@ export const numerologyDataset: NumerologyData[] = [
     number: 4,
     color: "Green",
     colorHex: "#66BB6A",
-    gem: "Emerald",
+    gem: "Emerald/Jade",
     luckyNumber: 4,
-    powerWord: "Structure",
+    powerWord: "Practical",
     affirmation: "I build solid foundations for lasting success in all areas of my life.",
     meaning: "A day for organization, stability, and practical matters. Focus on building solid foundations and managing details."
   },
@@ -46,47 +46,47 @@ export const numerologyDataset: NumerologyData[] = [
     number: 5,
     color: "Blue",
     colorHex: "#42A5F5",
-    gem: "Aquamarine",
+    gem: "Turquoise/Aquamarine",
     luckyNumber: 1,
-    powerWord: "Freedom",
+    powerWord: "Change",
     affirmation: "I embrace change and adventure as pathways to growth.",
     meaning: "A day for change, freedom, and adventure. Explore new possibilities and embrace unexpected opportunities."
   },
   {
     number: 6,
-    color: "Indigo",
-    colorHex: "#3949AB", // Deeper blue for indigo
-    gem: "Sapphire",
+    color: "Indigo (Navy Blue)",
+    colorHex: "#3949AB",
+    gem: "Pearl/Sapphire/Lapis",
     luckyNumber: 6,
-    powerWord: "Nurture",
+    powerWord: "Responsibility",
     affirmation: "I create harmony and beauty in my environment and relationships.",
     meaning: "A day for responsibility, nurturing, and service. Focus on caring for others and creating harmony at home."
   },
   {
     number: 7,
-    color: "Violet",
+    color: "Purple/Violet",
     colorHex: "#AB47BC",
     gem: "Amethyst",
     luckyNumber: 7,
-    powerWord: "Wisdom",
+    powerWord: "Faith",
     affirmation: "I trust my inner wisdom and follow my spiritual path with confidence.",
     meaning: "A day for reflection, analysis, and spiritual insight. Take time for solitude and connect with your inner guidance."
   },
   {
     number: 8,
-    color: "Pink",
-    colorHex: "#F48FB1", // More classic pink (less red)
-    gem: "Rose Quartz",
+    color: "Beige/Brown/Pink",
+    colorHex: "#F48FB1",
+    gem: "Diamond",
     luckyNumber: 4,
-    powerWord: "Abundance",
+    powerWord: "Achievement",
     affirmation: "I attract unlimited abundance through the power of love and gratitude.",
     meaning: "A day for manifesting abundance, power, and achievement. Focus on practical goals and material success."
   },
   {
     number: 9,
-    color: "Gold",
+    color: "All Pastels",
     colorHex: "#FFC107",
-    gem: "Topaz",
+    gem: "Opal/Gold",
     luckyNumber: 9,
     powerWord: "Completion",
     affirmation: "I release the old with love and welcome new beginnings with open arms.",
@@ -94,21 +94,21 @@ export const numerologyDataset: NumerologyData[] = [
   },
   {
     number: 11,
-    color: "Silver",
+    color: "Black/White or Pearl Gray",
     colorHex: "#B0BEC5",
-    gem: "Labradorite",
+    gem: "Silver",
     luckyNumber: 11,
-    powerWord: "Inspiration",
+    powerWord: "Intuition",
     affirmation: "I am a channel for divine wisdom and inspired ideas.",
     meaning: "A day for intuition, inspiration, and spiritual insight. Pay attention to your dreams and intuitive flashes."
   },
   {
     number: 22,
-    color: "Platinum",
+    color: "Coral/Russet",
     colorHex: "#E0E0E0",
-    gem: "Diamond",
+    gem: "Coral/Copper",
     luckyNumber: 22,
-    powerWord: "Mastery",
+    powerWord: "Greatness",
     affirmation: "I transform visions into reality through practical action and divine guidance.",
     meaning: "A day for mastery, large-scale projects, and material manifestation. Think big and act with practical wisdom."
   }
