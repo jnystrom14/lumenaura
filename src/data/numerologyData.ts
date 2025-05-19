@@ -88,8 +88,8 @@ export const numerologyDataset: NumerologyData[] = [
     colorHexTertiary: "#FFC0CB",
     gems: ["diamond"],
     keyPhrase: "Look and act successful.",
-    description: "Ambition stirs within you. It's a time for advancement. Look and act successful. It's a good business day. Be an executive. Organize and reorganize. Use your best judgment. Pay your bills. Do all your financial and legal work. It's the ideal day for signing leases or contracts.",
-    meditation: "I AM POWERFUL AND PROSPEROUS! The bountiful harvest is in and ready for the marketplace. I am the executive of my life and affairs. I have innate good judgment, for I am connected at all times to Universal Intelligence. With the Universe as my partner, I go from success to success.",
+    description: "Ambition stirs within you. It's a time for advancement. Look and act successful. It's a good business day. Be an executive. Organize and reorganize. Use your best judgment. Pay your bills. Do all your financial and legal work. It's the ideal day for signing leases or contracts. Go to the gym or have a health checkup. You might receive unexpected money. Help someone less fortunate. Success is already yours.",
+    meditation: "I AM POWERFUL AND PROSPEROUS! The bountiful harvest is in and ready for the marketplace. I am the executive of my life and affairs. I have innate good judgment, for I am connected at all times to Universal Intelligence. With the Universe as my partner, I go from success to success. I am the benevolent and loving director of the kingdom I have created. The more I help others, the more I prosper and grow. Where I am, everybody wins.",
     powerWord: "achievement",
     todaysTheme: "SUCCESSFUL BUSINESS"
   },
