@@ -1,4 +1,3 @@
-
 import React from "react";
 import { DailyProfile } from "../types";
 import { Separator } from "./ui/separator";
@@ -137,6 +136,30 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
     };
   };
 
+  // Function to determine if the gem icon needs an outline based on color brightness
+  const getGemStyle = () => {
+    const gemColor = dailyProfile.numerologyData.colorHex || '#6B7280';
+    
+    // Convert hex to RGB
+    const r = parseInt(gemColor.slice(1, 3), 16);
+    const g = parseInt(gemColor.slice(3, 5), 16);
+    const b = parseInt(gemColor.slice(5, 7), 16);
+    
+    // Calculate luminance using the formula for relative luminance
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    
+    // Add outline for lighter colors (higher luminance values)
+    if (luminance > 0.6) {
+      return { 
+        color: gemColor,
+        stroke: "#000000", 
+        strokeWidth: "1px"
+      };
+    }
+    
+    return { color: gemColor };
+  };
+
   return (
     <div className="crystal-card overflow-hidden">
       <div className="relative p-6">
@@ -175,14 +198,14 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
             </div>
           </div>
           
-          {/* Your Gems Panel - Modified to remove diagonal background box */}
+          {/* Your Gems Panel - Modified to add outline to gem icon for better visibility */}
           <div className="flex flex-col items-center px-4 relative">
             <h3 className="text-lg font-semibold text-gray-700 mb-4">Your Gems</h3>
             <div className="flex items-center justify-center mt-2">
               <Gem 
                 size={22} 
                 className="mr-2" 
-                style={{ color: dailyProfile.numerologyData.colorHex }}
+                style={getGemStyle()}
               />
               <span className="text-sm font-medium">
                 {getAllGems()}
