@@ -74,7 +74,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
         {primaryColor && (
           <div 
             key="primary"
-            className="w-16 h-16 rounded-full mb-2 shadow-inner animate-float" 
+            className="w-16 h-16 rounded-full mb-2 shadow-inner" 
             style={{ backgroundColor: primaryColor }}
           ></div>
         )}
@@ -82,24 +82,24 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
         {secondaryColor && colors.length > 1 && (
           <div 
             key="secondary"
-            className="w-16 h-16 rounded-full mb-2 shadow-inner animate-float -ml-4" 
-            style={{ backgroundColor: secondaryColor, zIndex: 1, animationDelay: "0.2s" }}
+            className="w-16 h-16 rounded-full mb-2 shadow-inner -ml-4" 
+            style={{ backgroundColor: secondaryColor, zIndex: 1 }}
           ></div>
         )}
         
         {tertiaryColor && colors.length > 2 && (
           <div 
             key="tertiary"
-            className="w-16 h-16 rounded-full mb-2 shadow-inner animate-float -ml-4" 
-            style={{ backgroundColor: tertiaryColor, zIndex: 0, animationDelay: "0.4s" }}
+            className="w-16 h-16 rounded-full mb-2 shadow-inner -ml-4" 
+            style={{ backgroundColor: tertiaryColor, zIndex: 0 }}
           ></div>
         )}
 
         {quaternaryColor && colors.length > 3 && (
           <div 
             key="quaternary"
-            className="w-16 h-16 rounded-full mb-2 shadow-inner animate-float -ml-4" 
-            style={{ backgroundColor: quaternaryColor, zIndex: 0, animationDelay: "0.6s" }}
+            className="w-16 h-16 rounded-full mb-2 shadow-inner -ml-4" 
+            style={{ backgroundColor: quaternaryColor, zIndex: 0 }}
           ></div>
         )}
       </div>
@@ -125,10 +125,13 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
     const baseColor = dailyProfile.numerologyData.colorHex || "#6B7280";
     const textColor = getContrastColor(baseColor);
     
+    // Enhanced style with better visibility and contrast
     return {
-      color: baseColor,
-      textShadow: `0px 0px 3px ${textColor === "#FFFFFF" ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.6)"}`,
-      fontWeight: 'bold'
+      color: textColor,
+      backgroundColor: baseColor,
+      padding: '0.25rem 0.5rem',
+      borderRadius: '0.25rem',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
     };
   };
 
@@ -146,7 +149,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
               Today's Theme:
             </h2>
             <div 
-              className="text-4xl md:text-5xl font-serif font-bold mb-4"
+              className="text-4xl md:text-5xl font-serif font-bold mb-4 inline-block"
               style={getThemeTextStyle()}
             >
               {dailyProfile.numerologyData.todaysTheme || dailyProfile.numerologyData.keyPhrase}
@@ -170,7 +173,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
           <div className="bg-colorpath-rose bg-opacity-10 flex flex-col justify-center items-center p-8 space-y-4">
             <span className="text-sm uppercase tracking-wider text-gray-500">Your Gems & Keyword</span>
             <div className="flex flex-col items-center space-y-4">
-              <div className="w-16 h-16 flex items-center justify-center animate-float">
+              <div className="w-16 h-16 flex items-center justify-center">
                 <div 
                   className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center transform rotate-45 overflow-hidden shadow-lg" 
                   style={{ background: `linear-gradient(45deg, ${dailyProfile.numerologyData.colorHex || "#6B7280"}44, ${dailyProfile.numerologyData.colorHex || "#6B7280"}99)` }}
