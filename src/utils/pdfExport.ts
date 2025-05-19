@@ -1,3 +1,4 @@
+
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
@@ -66,13 +67,14 @@ export const exportMonthlyPDF = (profiles: DailyProfile[], month: number, year: 
       fontSize: 10,
       valign: 'middle',
       overflow: 'linebreak',
-      lineWidth: 0.1
+      lineWidth: 0.1,
+      cellWidth: 'wrap'
     },
     columnStyles: {
       0: { cellWidth: 15 },
       1: { cellWidth: 20 },
       2: { cellWidth: 30 },
-      3: { cellWidth: 30 },
+      3: { cellWidth: 30, overflow: 'linebreak' },
       4: { cellWidth: 25 },
       5: { cellWidth: 60 }
     }
@@ -147,13 +149,14 @@ export const exportDateRangePDF = (profiles: DailyProfile[], from: Date, to: Dat
       fontSize: 10,
       valign: 'middle',
       overflow: 'linebreak',
-      lineWidth: 0.1
+      lineWidth: 0.1,
+      cellWidth: 'wrap'
     },
     columnStyles: {
       0: { cellWidth: 25 },
       1: { cellWidth: 20 },
       2: { cellWidth: 30 },
-      3: { cellWidth: 30 },
+      3: { cellWidth: 30, overflow: 'linebreak' },
       4: { cellWidth: 25 },
       5: { cellWidth: 50 }
     }

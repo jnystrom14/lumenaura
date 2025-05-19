@@ -24,7 +24,7 @@ const NumerologyTable: React.FC = () => {
               <TableRow key={data.number} className={index % 2 === 0 ? "bg-gray-100" : ""}>
                 <TableCell className="text-center font-medium">{data.number}</TableCell>
                 <TableCell className="text-center">{data.color}</TableCell>
-                <TableCell className="text-center">{data.gem}</TableCell>
+                <TableCell className="text-center whitespace-normal break-words max-w-[120px]">{data.gem}</TableCell>
                 <TableCell className="text-center">{data.powerWord}</TableCell>
               </TableRow>
             ))}

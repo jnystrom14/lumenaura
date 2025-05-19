@@ -1,4 +1,3 @@
-
 import React from "react";
 import { UserProfile, DailyProfile } from "../types";
 import { getDailyProfile } from "../utils/numerologyCalculator";
@@ -140,7 +139,9 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
                           <div className="font-medium text-xs">
                             {profile.numerologyData.color}
                           </div>
-                          <div className="font-medium">{profile.numerologyData.gem}</div>
+                          <div className="font-medium break-words hyphens-auto">
+                            {profile.numerologyData.gem}
+                          </div>
                           <div className="text-muted-foreground truncate">
                             {profile.numerologyData.powerWord}
                           </div>
