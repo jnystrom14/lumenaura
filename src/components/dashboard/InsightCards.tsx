@@ -34,6 +34,10 @@ const InsightCards: React.FC<InsightCardsProps> = ({ dailyProfile }) => {
             <span className="text-muted-foreground">Personal Day:</span>
             <span className="font-semibold text-xl text-primary">{dailyProfile.personalDay}</span>
           </div>
+          <div className="flex justify-between items-center">
+            <span className="text-muted-foreground">Key Word:</span>
+            <span className="font-medium">{dailyProfile.numerologyData.powerWord}</span>
+          </div>
         </div>
       </div>
       

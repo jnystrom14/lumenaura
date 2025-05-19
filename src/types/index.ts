@@ -14,14 +14,15 @@ export interface NumerologyData {
   keyPhrase: string;
   description: string;
   meditation: string;
-  // Add color hex and other display properties
+  // Color hex values for display
   colorHex?: string;
-  color?: string;
-  gem?: string;
+  colorHexSecondary?: string;
+  colorHexTertiary?: string;
+  colorHexQuaternary?: string;
+  // Additional properties
   powerWord?: string;
   affirmation?: string;
   meaning?: string;
-  luckyNumber?: number;
 }
 
 export interface DailyProfile {

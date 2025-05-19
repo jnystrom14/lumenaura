@@ -12,36 +12,89 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
     return arr && arr.length > 0 ? arr[0] : fallback;
   };
 
-  // Create a gradient for multiple colors
-  const getColorStyle = () => {
-    const colors = dailyProfile.numerologyData.colors || [];
-    
-    if (!colors.length) return { backgroundColor: "#6B7280" };
-    
-    if (colors.length === 1) {
-      return { 
-        backgroundColor: dailyProfile.numerologyData.colorHex || "#6B7280",
-        backgroundImage: `radial-gradient(circle at 30% 30%, ${dailyProfile.numerologyData.colorHex || "#6B7280"}, transparent 80%)` 
-      };
-    }
-    
-    // For multiple colors, create a gradient
-    const colorStops = colors.map((_, i) => {
-      const percent = (i * 100) / (colors.length - 1);
-      return `${percent}%`;
-    });
-    
-    return {
-      background: `linear-gradient(135deg, ${colors.map((c, i) => `${dailyProfile.numerologyData.colorHex || "#6B7280"} ${colorStops[i]}`).join(', ')})`
-    };
-  };
-
   // Display all gems
   const getAllGems = () => {
     const gems = dailyProfile.numerologyData.gems || [];
     if (!gems.length) return "";
     
     return gems.join(", ");
+  };
+
+  // Get color values for display
+  const getColorStyle = () => {
+    const colors = dailyProfile.numerologyData.colors || [];
+    
+    if (!colors.length) return { backgroundColor: "#6B7280" };
+    
+    // Use the specific hex values
+    const primaryColor = dailyProfile.numerologyData.colorHex || "#6B7280";
+    const secondaryColor = dailyProfile.numerologyData.colorHexSecondary;
+    const tertiaryColor = dailyProfile.numerologyData.colorHexTertiary;
+    
+    if (colors.length === 1) {
+      return { 
+        backgroundColor: primaryColor,
+        backgroundImage: `radial-gradient(circle at 30% 30%, ${primaryColor}, transparent 80%)` 
+      };
+    }
+    
+    // For multiple colors, create a gradient
+    if (colors.length === 2 && secondaryColor) {
+      return {
+        background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`
+      };
+    } else if (colors.length === 3 && secondaryColor && tertiaryColor) {
+      return {
+        background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 50%, ${tertiaryColor} 100%)`
+      };
+    } else if (colors.length > 3 && secondaryColor) {
+      // For "all pastels" or other multi-color scenarios
+      return {
+        background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`
+      };
+    }
+    
+    // Default fallback
+    return { backgroundColor: primaryColor };
+  };
+
+  // Get individual color circles for the display
+  const getColorCircles = () => {
+    const colors = dailyProfile.numerologyData.colors || [];
+    if (!colors.length) return null;
+    
+    // Use the specific hex values
+    const primaryColor = dailyProfile.numerologyData.colorHex || "#6B7280";
+    const secondaryColor = dailyProfile.numerologyData.colorHexSecondary;
+    const tertiaryColor = dailyProfile.numerologyData.colorHexTertiary;
+    
+    return (
+      <div className="flex items-center justify-center">
+        {primaryColor && (
+          <div 
+            key="primary"
+            className="w-16 h-16 rounded-full mb-2 shadow-inner animate-float" 
+            style={{ backgroundColor: primaryColor }}
+          ></div>
+        )}
+        
+        {secondaryColor && colors.length > 1 && (
+          <div 
+            key="secondary"
+            className="w-16 h-16 rounded-full mb-2 shadow-inner animate-float -ml-4" 
+            style={{ backgroundColor: secondaryColor, zIndex: 1, animationDelay: "0.2s" }}
+          ></div>
+        )}
+        
+        {tertiaryColor && colors.length > 2 && (
+          <div 
+            key="tertiary"
+            className="w-16 h-16 rounded-full mb-2 shadow-inner animate-float -ml-4" 
+            style={{ backgroundColor: tertiaryColor, zIndex: 0, animationDelay: "0.4s" }}
+          ></div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -57,7 +110,10 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
             <h2 className="text-2xl md:text-3xl font-semibold mb-2">
               Today's Theme:
             </h2>
-            <div className="text-4xl md:text-5xl font-serif font-bold text-gradient mb-4">
+            <div 
+              className="text-4xl md:text-5xl font-serif font-bold mb-4"
+              style={{ color: dailyProfile.numerologyData.colorHex || 'inherit' }}
+            >
               {dailyProfile.numerologyData.powerWord || dailyProfile.numerologyData.keyPhrase}
             </div>
             <p className="text-lg text-gray-700 max-w-md text-center md:text-left">
@@ -69,26 +125,8 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
           <div className="bg-colorpath-lavender bg-opacity-20 flex flex-col justify-center items-center p-8 space-y-4">
             <span className="text-sm uppercase tracking-wider text-gray-500">Your Colors</span>
             <div className="flex flex-col items-center">
-              <div className="flex items-center justify-center">
-                {dailyProfile.numerologyData.colors && dailyProfile.numerologyData.colors.length > 0 ? (
-                  dailyProfile.numerologyData.colors.map((color, index) => (
-                    <div 
-                      key={index}
-                      className={`w-16 h-16 rounded-full mb-2 shadow-inner animate-float ${index > 0 ? '-ml-4' : ''}`} 
-                      style={{ 
-                        backgroundColor: dailyProfile.numerologyData.colorHex || "#6B7280",
-                        zIndex: dailyProfile.numerologyData.colors!.length - index
-                      }}
-                    ></div>
-                  ))
-                ) : (
-                  <div 
-                    className="w-16 h-16 rounded-full mb-2 shadow-inner animate-float" 
-                    style={{ backgroundColor: "#6B7280" }}
-                  ></div>
-                )}
-              </div>
-              <span className="text-xl font-medium">
+              {getColorCircles()}
+              <span className="text-xl font-medium mt-2">
                 {dailyProfile.numerologyData.colors ? dailyProfile.numerologyData.colors.join(", ") : ""}
               </span>
             </div>
@@ -98,7 +136,10 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
             <span className="text-sm uppercase tracking-wider text-gray-500">Your Gems</span>
             <div className="flex flex-col items-center">
               <div className="w-16 h-16 flex items-center justify-center animate-float">
-                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center transform rotate-45 overflow-hidden shadow-lg" style={{ background: `linear-gradient(45deg, ${dailyProfile.numerologyData.colorHex || "#6B7280"}44, ${dailyProfile.numerologyData.colorHex || "#6B7280"}99)` }}>
+                <div 
+                  className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center transform rotate-45 overflow-hidden shadow-lg" 
+                  style={{ background: `linear-gradient(45deg, ${dailyProfile.numerologyData.colorHex || "#6B7280"}44, ${dailyProfile.numerologyData.colorHex || "#6B7280"}99)` }}
+                >
                   <span className="transform -rotate-45 text-white font-bold">✧</span>
                 </div>
               </div>
