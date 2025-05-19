@@ -82,6 +82,13 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
     return weeks;
   };
 
+  // Format colors and gems for display
+  const formatList = (items: string[] | undefined): string => {
+    if (!items || items.length === 0) return "";
+    if (items.length === 1) return items[0];
+    return items.slice(0, 2).join(", ") + (items.length > 2 ? "..." : "");
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 animate-fade-in print:p-0">
       <div className="flex justify-between items-center mb-6 print:hidden">
@@ -152,11 +159,11 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
                         </span>
                       </div>
                       <div className="mt-2 text-xs">
-                        <div className="font-medium text-xs">
-                          {profile.numerologyData.colors?.[0] || ""}
+                        <div className="font-medium text-xs truncate">
+                          {formatList(profile.numerologyData.colors)}
                         </div>
-                        <div className="font-medium break-words hyphens-auto">
-                          {profile.numerologyData.gems?.[0] || ""}
+                        <div className="font-medium break-words hyphens-auto truncate">
+                          {formatList(profile.numerologyData.gems)}
                         </div>
                         <div className="text-muted-foreground truncate">
                           {profile.numerologyData.powerWord || profile.numerologyData.keyPhrase}
@@ -201,6 +208,17 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
             [data-radix-toast-viewport],
             [data-sonner-toast-group] {
               display: none !important;
+            }
+            /* Prevent content overflow */
+            .grid > div {
+              overflow: hidden !important;
+              page-break-inside: avoid !important;
+            }
+            .truncate {
+              white-space: nowrap !important;
+              overflow: hidden !important;
+              text-overflow: ellipsis !important;
+              max-width: 100% !important;
             }
           }
         `}

@@ -1,11 +1,8 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { format, isSameDay } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserProfile } from "../../types";
-import { Button } from "@/components/ui/button";
-import { InfoIcon, XIcon } from "lucide-react";
-import NumerologyTable from "../NumerologyTable";
 
 interface DashboardHeaderProps {
   userProfile: UserProfile;
@@ -16,8 +13,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   userProfile,
   selectedDate,
 }) => {
-  const [showReferenceTable, setShowReferenceTable] = useState(false);
-
   const getGreeting = (): string => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good morning";
@@ -49,25 +44,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               : `Viewing profile for ${format(selectedDate, "MMMM d, yyyy")}`}
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="ml-auto flex items-center gap-1"
-          onClick={() => setShowReferenceTable(!showReferenceTable)}
-        >
-          {showReferenceTable ? (
-            <>
-              <XIcon className="h-4 w-4" /> Hide Reference
-            </>
-          ) : (
-            <>
-              <InfoIcon className="h-4 w-4" /> Numbers & Colors
-            </>
-          )}
-        </Button>
       </div>
-      
-      {showReferenceTable && <NumerologyTable />}
     </div>
   );
 };

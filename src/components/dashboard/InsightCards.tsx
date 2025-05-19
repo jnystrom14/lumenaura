@@ -7,6 +7,12 @@ interface InsightCardsProps {
 }
 
 const InsightCards: React.FC<InsightCardsProps> = ({ dailyProfile }) => {
+  // Format array values for display
+  const formatArrayValues = (values: string[] | undefined): string => {
+    if (!values || values.length === 0) return "";
+    return values.join(", ");
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
       <div className="crystal-card p-6 animate-fade-in">
