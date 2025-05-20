@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,7 +17,7 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const { user, loading: authLoading, isLoggedOut } = useAuth();
+  const { user, loading: authLoading, isLoggedOut, setIsLoggedOut } = useAuth(); // 🔄 expose setter
   const [loading, setLoading] = useState<boolean>(true);
   const [showAuth, setShowAuth] = useState<boolean>(false);
   const { toast } = useToast();
@@ -26,45 +25,46 @@ const App = () => {
   // Effect to handle authentication state changes and user profile loading
   useEffect(() => {
     if (authLoading) return;
-    
-    // If user logged out, always show auth screen
+
     if (isLoggedOut) {
       setShowAuth(true);
       setUserProfile(null);
       setLoading(false);
       return;
     }
-    
-    // Check for existing profiles from storage
+
     if (hasUserProfile()) {
       const profile = getUserProfile();
       setUserProfile(profile);
       setLoading(false);
       return;
     }
-    
-    // If authenticated but no profile exists, we need to show auth screen
-    // This prevents asking for onboarding again for logged in users
+
     if (user) {
       setShowAuth(false);
     } else {
       setShowAuth(true);
     }
-    
+
     setLoading(false);
   }, [user, authLoading, isLoggedOut]);
 
-  // Handle onboarding completion
+  // Reset isLoggedOut once we've shown the Auth screen
+  useEffect(() => {
+    if (showAuth && isLoggedOut) {
+      setIsLoggedOut(false); // ✅ Reset for future logins
+    }
+  }, [showAuth, isLoggedOut, setIsLoggedOut]);
+
   const handleOnboardingComplete = () => {
     const profile = getUserProfile();
     setUserProfile(profile);
   };
 
-  // Handle logout
   const handleLogout = () => {
     clearUserProfile();
     setUserProfile(null);
-    setShowAuth(true); // This shows the Authentication component
+    setShowAuth(true);
   };
 
   if (loading || authLoading) {
@@ -87,9 +87,9 @@ const App = () => {
           {showAuth ? (
             <Authentication 
               onContinueWithoutAccount={() => setShowAuth(false)} 
-              defaultToSignUp={false} // Default to sign in mode
+              defaultToSignUp={false}
             />
-          ) : !userProfile ? (
+          ) : user && !userProfile && !isLoggedOut ? ( // ✅ defensive onboarding condition
             <Onboarding onComplete={handleOnboardingComplete} />
           ) : (
             <Routes>
