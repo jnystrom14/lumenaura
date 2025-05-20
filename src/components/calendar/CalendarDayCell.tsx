@@ -14,15 +14,7 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) 
   // Format colors and gems for display
   const formatList = (items: string[] | undefined): string => {
     if (!items || items.length === 0) return "";
-    
-    // On mobile, just show first item
-    if (isMobile) {
-      return items[0] || "";
-    }
-    
-    // On desktop, show more
-    if (items.length === 1) return items[0];
-    return items.slice(0, 2).join(", ") + (items.length > 2 ? "..." : "");
+    return items[0] || "";
   };
 
   // Function to determine if text color should be light or dark based on background
@@ -39,6 +31,21 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) 
     return luminance > 0.5 ? "#000000" : "#FFFFFF";
   };
 
+  // Helper function to check if the primary color needs an asterisk
+  const shouldShowAsterisk = (primaryColor?: string): boolean => {
+    if (!primaryColor) return false;
+    
+    const colorLower = primaryColor.toLowerCase();
+    
+    // Check if it's one of our special color groups
+    return (
+      colorLower === "purple" || 
+      colorLower === "beige" || 
+      colorLower === "black" || 
+      colorLower === "coral"
+    );
+  };
+
   if (!profile) {
     return (
       <div className={`${
@@ -46,6 +53,9 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) 
       } print:p-2 print:min-h-[5rem] border rounded-md bg-gray-50`}></div>
     );
   }
+
+  // Get primary color
+  const primaryColor = profile.numerologyData.colors?.[0];
 
   return (
     <div className={`${
@@ -70,7 +80,7 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) 
       <div className={`${isMobile ? 'mt-1' : 'mt-2'} ${isMobile ? 'text-[10px]' : 'text-xs'} print:mt-2 print:text-xs`}>
         <div className="font-medium truncate flex items-center gap-0.5">
           {formatList(profile.numerologyData.colors)}
-          {(profile.numerologyData.colors && profile.numerologyData.colors.length > 1) && (
+          {shouldShowAsterisk(primaryColor) && (
             <Asterisk className={cn(
               isMobile ? "h-2 w-2" : "h-3 w-3",
               "print:h-2 print:w-2"

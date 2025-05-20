@@ -14,22 +14,80 @@ interface CalendarLegendProps {
   legendItems: LegendItem[];
 }
 
+// Define our color groups
+const COLOR_GROUPS = {
+  PURPLE: ["Purple", "Violet"],
+  BEIGE: ["Beige", "Brown", "Pink"],
+  BLACK: ["Black", "White", "Pearl Gray"],
+  CORAL: ["Coral", "Russet"]
+};
+
+// Function to standardize color names for comparison
+const normalizeColor = (color: string): string => {
+  return color.trim().toLowerCase();
+};
+
 const CalendarLegend: React.FC<CalendarLegendProps> = ({ legendItems }) => {
   const isMobile = useIsMobile();
   
-  // Group legend items by their first color to avoid duplicates
-  const groupedItems = legendItems.reduce((acc, item) => {
-    const firstColor = item.colors[0];
-    if (!acc[firstColor]) {
-      acc[firstColor] = item;
-    } else if (item.colors.length > acc[firstColor].colors.length) {
-      // If this item has more colors, use it instead
-      acc[firstColor] = item;
+  // Process the legend items to ensure our color groups are represented
+  const processLegendItems = () => {
+    const uniqueItems: LegendItem[] = [];
+    const processed = new Set<string>();
+    
+    // Helper function to add standard color groups
+    const addColorGroup = (primaryColor: string, allColors: string[], colorHex?: string) => {
+      if (!processed.has(normalizeColor(primaryColor))) {
+        uniqueItems.push({
+          label: primaryColor,
+          colors: allColors,
+          colorHex
+        });
+        processed.add(normalizeColor(primaryColor));
+      }
+    };
+    
+    // First, add any colors from the provided legend items
+    legendItems.forEach(item => {
+      if (item.colors && item.colors.length > 0) {
+        const primaryColor = item.colors[0];
+        const primaryNormalized = normalizeColor(primaryColor);
+        
+        // Check if this is one of our special color groups
+        if (primaryNormalized === "purple") {
+          addColorGroup(primaryColor, COLOR_GROUPS.PURPLE, item.colorHex);
+        } else if (primaryNormalized === "beige") {
+          addColorGroup(primaryColor, COLOR_GROUPS.BEIGE, item.colorHex);
+        } else if (primaryNormalized === "black") {
+          addColorGroup(primaryColor, COLOR_GROUPS.BLACK, item.colorHex);
+        } else if (primaryNormalized === "coral") {
+          addColorGroup(primaryColor, COLOR_GROUPS.CORAL, item.colorHex);
+        } else if (!processed.has(primaryNormalized)) {
+          // For other colors, just add them as-is
+          uniqueItems.push(item);
+          processed.add(primaryNormalized);
+        }
+      }
+    });
+    
+    // Ensure all our special color groups are always included
+    if (!processed.has("purple")) {
+      addColorGroup("Purple", COLOR_GROUPS.PURPLE, "#9b87f5"); // Using the primary purple hex
     }
-    return acc;
-  }, {} as Record<string, LegendItem>);
-
-  const uniqueItems = Object.values(groupedItems);
+    if (!processed.has("beige")) {
+      addColorGroup("Beige", COLOR_GROUPS.BEIGE, "#f5f5dc"); // Standard beige hex
+    }
+    if (!processed.has("black")) {
+      addColorGroup("Black", COLOR_GROUPS.BLACK, "#000000"); // Standard black hex
+    }
+    if (!processed.has("coral")) {
+      addColorGroup("Coral", COLOR_GROUPS.CORAL, "#ff7f50"); // Standard coral hex
+    }
+    
+    return uniqueItems;
+  };
+  
+  const finalLegendItems = processLegendItems();
   
   return (
     <div className={cn(
@@ -48,7 +106,7 @@ const CalendarLegend: React.FC<CalendarLegendProps> = ({ legendItems }) => {
         isMobile ? "text-xs" : "text-sm",
         "print:text-xs print:grid-cols-3 print:gap-x-2"
       )}>
-        {uniqueItems.map((item, index) => (
+        {finalLegendItems.map((item, index) => (
           <div key={index} className="flex items-center">
             <div 
               className={cn(
@@ -84,7 +142,7 @@ const CalendarLegend: React.FC<CalendarLegendProps> = ({ legendItems }) => {
         isMobile ? "text-[10px]" : "",
         "print:text-[10px]"
       )}>
-        {uniqueItems.filter(item => item.colors.length > 1).map((item, index) => (
+        {finalLegendItems.filter(item => item.colors.length > 1).map((item, index) => (
           <div key={`expanded-${index}`} className="flex items-start gap-1">
             <Asterisk className={cn(
               "inline-block shrink-0",
