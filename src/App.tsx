@@ -12,6 +12,7 @@ import { useToast } from "@/components/ui/use-toast";
 import Onboarding from "./components/Onboarding";
 import Dashboard from "./components/Dashboard";
 import NotFound from "./pages/NotFound";
+import Authentication from "./components/auth/Authentication";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ const App = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
+  const [showAuth, setShowAuth] = useState<boolean>(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -45,6 +47,7 @@ const App = () => {
   const handleLogout = () => {
     clearUserProfile();
     setUserProfile(null);
+    setShowAuth(true);
   };
 
   if (loading || authLoading) {
@@ -64,7 +67,9 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          {!userProfile ? (
+          {showAuth ? (
+            <Authentication onContinueWithoutAccount={() => setShowAuth(false)} />
+          ) : !userProfile ? (
             <Onboarding onComplete={handleOnboardingComplete} />
           ) : (
             <Routes>
