@@ -108,35 +108,34 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
       //
       // ⏫ NEW: write to your Supabase “profiles” table (or your own /api endpoint).
       //
-    +        if (user) {
-    +          const { error } = await supabase
-    +            .from("profiles")
-    +            .upsert({
-    +              id: user.id,
-    +              name: profile.name,
-    +              birth_day: profile.birthDay,
-    +              birth_month: profile.birthMonth,
-    +              birth_year: profile.birthYear,
-    +              profile_picture: profile.profilePicture,
-    +            });
-    +          if (error) {
-    +            console.error("Failed to save profile:", error);
-    +            setError("Unable to save profile to server");
-    +            return;
-    +          }
-    +        }
-    +
-    +        // Now save locally and finish onboarding
-    +        saveUserProfile({
-    +          ...profile,
-    +          profilePicture: profile.profilePicture || ""
-    +        });
-    +        toast({
-    +          title: "Profile saved",
-    +          description: "Your profile has been saved successfully"
-    +        });
-    +        onComplete();
-
+           if (user) {
+            const { error } = await supabase
+               .from("profiles")
+              .upsert({
+                  id: user.id,
+              name: profile.name,
+                  birth_day: profile.birthDay,
+                  birth_month: profile.birthMonth,
+                birth_year: profile.birthYear,
+                profile_picture: profile.profilePicture,
+               });
+             if (error) {
+               console.error("Failed to save profile:", error);
+               setError("Unable to save profile to server");
+               return;
+             }
+           }
+  
+           // Now save locally and finish onboarding
+           saveUserProfile({
+             ...profile,
+            profilePicture: profile.profilePicture || ""
+          });
+          toast({
+             title: "Profile saved",
+             description: "Your profile has been saved successfully"
+          });
+        onComplete();
     }
   };
 
