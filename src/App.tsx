@@ -85,21 +85,22 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           {showAuth ? (
-            <Authentication
-              onContinueWithoutAccount={() => setShowAuth(false)}
-              defaultToSignUp={false}
-            />
-          ) : user && !userProfile && !isLoggedOut ? (
-            <Onboarding onComplete={handleOnboardingComplete} />
-          ) : (
-            <Routes>
-              <Route
-                path="/"
-                element={<Dashboard userProfile={userProfile} onLogout={handleLogout} />}
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          )}
+    <Authentication
+      onContinueWithoutAccount={() => setShowAuth(false)}
+      defaultToSignUp={false}
+    />
+  ) : user && !userProfile && !isLoggedOut ? (
+    <Onboarding onComplete={handleOnboardingComplete} />
+  ) : (
+    <Routes>
+      <Route
+        path="/"
+        element={<Dashboard userProfile={userProfile} onLogout={handleLogout} />}
+      />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+)}
+
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
