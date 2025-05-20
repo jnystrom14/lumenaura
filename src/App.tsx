@@ -26,6 +26,7 @@ const App = () => {
     loading: authLoading,
     isLoggedOut,
     setIsLoggedOut,
+    signOut,             // ← added signOut here
   } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const [showAuth, setShowAuth] = useState<boolean>(false);
@@ -73,10 +74,12 @@ const App = () => {
     setUserProfile(profile);
   };
 
-  const handleLogout = () => {
-    clearUserProfile(); // Clear localStorage
-    setUserProfile(null); // Clear React state
-    setShowAuth(true); // Trigger Auth screen
+  // UPDATED: actually call signOut() then clear local profile
+  const handleLogout = async () => {
+    await signOut();           // ← sign the user out at the provider
+    clearUserProfile();        // Clear localStorage
+    setUserProfile(null);      // Clear React state
+    setShowAuth(true);         // Trigger Auth screen
   };
 
   if (loading || authLoading) {
@@ -110,7 +113,7 @@ const App = () => {
                 element={
                   <Dashboard
                     userProfile={userProfile}
-                    onLogout={handleLogout}
+                    onLogout={handleLogout}    // ← this now calls signOut first
                   />
                 }
               />
