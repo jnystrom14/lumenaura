@@ -1,11 +1,12 @@
-
 import React, { useState, useEffect } from "react";
 import { UserProfile, DailyProfile } from "../types";
 import { getMonthlyProfiles } from "../utils/numerologyCalculator";
 import { format, addMonths, subMonths } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ChevronLeft, ChevronRight, Printer } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Printer, Asterisk } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import CalendarLegend from "./CalendarLegend";
+import { cn } from "@/lib/utils";
 
 interface MonthlyCalendarProps {
   userProfile: UserProfile;
@@ -105,6 +106,34 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
     return luminance > 0.5 ? "#000000" : "#FFFFFF";
   };
 
+  // Collect legend data from all profiles
+  const getLegendItems = () => {
+    const legendMap = new Map();
+    
+    profiles.forEach(profile => {
+      const colors = profile.numerologyData.colors || [];
+      if (colors.length > 0) {
+        const firstColor = colors[0];
+        if (!legendMap.has(firstColor)) {
+          legendMap.set(firstColor, {
+            label: firstColor,
+            colors: colors,
+            colorHex: profile.numerologyData.colorHex
+          });
+        } else if (colors.length > legendMap.get(firstColor).colors.length) {
+          // Update if this entry has more colors
+          legendMap.set(firstColor, {
+            label: firstColor,
+            colors: colors,
+            colorHex: profile.numerologyData.colorHex
+          });
+        }
+      }
+    });
+    
+    return Array.from(legendMap.values());
+  };
+
   return (
     <div className="container mx-auto px-2 print:px-0 print:w-full print:max-w-none animate-fade-in">
       <div className="flex justify-between items-center mb-4 print:hidden">
@@ -177,8 +206,14 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
                         </span>
                       </div>
                       <div className={`${isMobile ? 'mt-1' : 'mt-2'} ${isMobile ? 'text-[10px]' : 'text-xs'} print:mt-2 print:text-xs`}>
-                        <div className="font-medium truncate">
+                        <div className="font-medium truncate flex items-center gap-0.5">
                           {formatList(profile.numerologyData.colors)}
+                          {(profile.numerologyData.colors && profile.numerologyData.colors.length > 1) && (
+                            <Asterisk className={cn(
+                              isMobile ? "h-2 w-2" : "h-3 w-3",
+                              "print:h-2 print:w-2"
+                            )} />
+                          )}
                         </div>
                         {(!isMobile || true) && (
                           <div className="font-medium break-words hyphens-auto truncate print:block">
@@ -199,6 +234,9 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
           ))}
         </div>
       </div>
+      
+      {/* Add the calendar legend */}
+      <CalendarLegend legendItems={getLegendItems()} />
 
       <style>
         {`

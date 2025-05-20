@@ -1,4 +1,3 @@
-
 import React from "react";
 import { UserProfile, DailyProfile } from "../types";
 import { getDailyProfile } from "../utils/numerologyCalculator";
@@ -7,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Printer } from "lucide-react";
 import { exportDateRangePDF } from "../utils/pdfExport";
 import { useIsMobile } from "@/hooks/use-mobile";
+import CalendarLegend from "./CalendarLegend";
 
 interface DateRangeCalendarProps {
   userProfile: UserProfile;
@@ -94,6 +94,34 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
     return luminance > 0.5 ? "#000000" : "#FFFFFF";
   };
 
+  // Collect legend data from all profiles
+  const getLegendItems = () => {
+    const legendMap = new Map();
+    
+    profiles.forEach(profile => {
+      const colors = profile.numerologyData.colors || [];
+      if (colors.length > 0) {
+        const firstColor = colors[0];
+        if (!legendMap.has(firstColor)) {
+          legendMap.set(firstColor, {
+            label: firstColor,
+            colors: colors,
+            colorHex: profile.numerologyData.colorHex
+          });
+        } else if (colors.length > legendMap.get(firstColor).colors.length) {
+          // Update if this entry has more colors
+          legendMap.set(firstColor, {
+            label: firstColor,
+            colors: colors,
+            colorHex: profile.numerologyData.colorHex
+          });
+        }
+      }
+    });
+    
+    return Array.from(legendMap.values());
+  };
+
   return (
     <div className="container mx-auto px-2 print:px-0 print:w-full print:max-w-none animate-fade-in">
       <div className="flex justify-between items-center mb-4 print:hidden">
@@ -162,8 +190,14 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
                           </span>
                         </div>
                         <div className={`${isMobile ? 'mt-1' : 'mt-2'} ${isMobile ? 'text-[10px]' : 'text-xs'} print:mt-2 print:text-xs`}>
-                          <div className="font-medium truncate">
+                          <div className="font-medium truncate flex items-center gap-0.5">
                             {formatList(profile.numerologyData.colors)}
+                            {(profile.numerologyData.colors && profile.numerologyData.colors.length > 1) && (
+                              <Asterisk className={cn(
+                                isMobile ? "h-2 w-2" : "h-3 w-3",
+                                "print:h-2 print:w-2"
+                              )} />
+                            )}
                           </div>
                           {(!isMobile || true) && (
                             <div className="font-medium break-words hyphens-auto truncate print:block">
@@ -184,6 +218,9 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
             ))}
           </div>
         </div>
+
+        {/* Add the calendar legend */}
+        <CalendarLegend legendItems={getLegendItems()} />
       </div>
 
       <style>
