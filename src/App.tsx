@@ -34,8 +34,14 @@ const App = () => {
       return;
     }
     
-    // If authenticated but no profile exists, we still need to go through onboarding
-    // to collect necessary information like birth date
+    // If authenticated but no profile exists, we need to show auth screen
+    // This prevents asking for onboarding again for logged in users
+    if (user) {
+      setShowAuth(false);
+    } else {
+      setShowAuth(true);
+    }
+    
     setLoading(false);
   }, [user, authLoading]);
 

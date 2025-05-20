@@ -1,11 +1,13 @@
+
 import React, { useState, useEffect } from "react";
 import { UserProfile } from "../types";
-import { saveUserProfile } from "../utils/storage";
+import { saveUserProfile, getUserProfile, hasUserProfile } from "../utils/storage";
 import { Button } from "@/components/ui/button";
 import Authentication from "./auth/Authentication";
 import PersonalInfoForm from "./onboarding/PersonalInfoForm";
 import BirthDateForm from "./onboarding/BirthDateForm";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/components/ui/use-toast";
 
 interface OnboardingProps {
   onComplete: () => void;
@@ -13,7 +15,8 @@ interface OnboardingProps {
 
 const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   const { user } = useAuth();
-  const [step, setStep] = useState<number>(0); // Start with authentication
+  const { toast } = useToast();
+  const [step, setStep] = useState<number>(1); // Start with personal info
   const [profile, setProfile] = useState<UserProfile>({
     name: "",
     birthDay: 1,
@@ -23,21 +26,28 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   });
   const [error, setError] = useState<string>("");
   
-  // Only pre-fill profile picture if available from authenticated user
+  // Check for existing user profile or fill from authenticated user info
   useEffect(() => {
+    if (hasUserProfile()) {
+      // If there's a profile in storage, use it to complete the onboarding
+      const existingProfile = getUserProfile();
+      if (existingProfile) {
+        saveUserProfile(existingProfile);
+        onComplete();
+        return;
+      }
+    }
+    
+    // Pre-fill profile picture if available from authenticated user
     if (user) {
       setProfile(prevProfile => ({
         ...prevProfile,
-        // Don't pre-fill name anymore
-        profilePicture: user.user_metadata?.avatar_url || prevProfile.profilePicture
+        profilePicture: user.user_metadata?.avatar_url || prevProfile.profilePicture,
+        // Try to get name from user metadata if available
+        name: user.user_metadata?.full_name || user.user_metadata?.name || prevProfile.name
       }));
-      
-      // Skip to personal info step if authenticated
-      if (step === 0) {
-        setStep(1);
-      }
     }
-  }, [user, step]);
+  }, [user, onComplete]);
   
   const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -86,6 +96,10 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
       }
       
       saveUserProfile(profile);
+      toast({
+        title: "Profile saved",
+        description: "Your profile has been saved successfully"
+      });
       onComplete();
     }
   };
@@ -113,11 +127,6 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
     setStep(1);
     setError("");
   };
-  
-  // Render authentication step
-  if (step === 0) {
-    return <Authentication onContinueWithoutAccount={handleContinueWithoutAccount} />;
-  }
   
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-10 animate-fade-in">
