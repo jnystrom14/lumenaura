@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { UserProfile } from "./types";
-import { getUserProfile, hasUserProfile, clearUserProfile, saveUserProfile } from "./utils/storage";
+import { getUserProfile, hasUserProfile, clearUserProfile } from "./utils/storage";
 import { useAuth } from "./hooks/useAuth";
 import { useToast } from "@/components/ui/use-toast";
 import Onboarding from "./components/Onboarding";
@@ -17,12 +17,12 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const { user, loading: authLoading, isLoggedOut, setIsLoggedOut } = useAuth(); // 🔄 expose setter
+  const { user, loading: authLoading, isLoggedOut, setIsLoggedOut } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const [showAuth, setShowAuth] = useState<boolean>(false);
   const { toast } = useToast();
 
-  // Effect to handle authentication state changes and user profile loading
+  // Handle auth state changes
   useEffect(() => {
     if (authLoading) return;
 
@@ -49,10 +49,10 @@ const App = () => {
     setLoading(false);
   }, [user, authLoading, isLoggedOut]);
 
-  // Reset isLoggedOut once we've shown the Auth screen
+  // Reset logout flag once we've rendered the auth screen
   useEffect(() => {
     if (showAuth && isLoggedOut) {
-      setIsLoggedOut(false); // ✅ Reset for future logins
+      setIsLoggedOut(false); // Ready for next login cycle
     }
   }, [showAuth, isLoggedOut, setIsLoggedOut]);
 
@@ -64,7 +64,7 @@ const App = () => {
   const handleLogout = () => {
     clearUserProfile();
     setUserProfile(null);
-    setShowAuth(true);
+    setShowAuth(true); // Show Auth screen explicitly
   };
 
   if (loading || authLoading) {
@@ -85,15 +85,18 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           {showAuth ? (
-            <Authentication 
-              onContinueWithoutAccount={() => setShowAuth(false)} 
+            <Authentication
+              onContinueWithoutAccount={() => setShowAuth(false)}
               defaultToSignUp={false}
             />
-          ) : user && !userProfile && !isLoggedOut ? ( // ✅ defensive onboarding condition
+          ) : user && !userProfile && !isLoggedOut ? (
             <Onboarding onComplete={handleOnboardingComplete} />
           ) : (
             <Routes>
-              <Route path="/" element={<Dashboard userProfile={userProfile} onLogout={handleLogout} />} />
+              <Route
+                path="/"
+                element={<Dashboard userProfile={userProfile} onLogout={handleLogout} />}
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           )}
