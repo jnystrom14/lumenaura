@@ -10,6 +10,14 @@ interface CalendarDayCellProps {
   isMobile: boolean;
 }
 
+// Define our special color groups that need asterisks
+const SPECIAL_COLOR_GROUPS = [
+  "purple", "violet",
+  "beige", "brown", "pink",
+  "black", "white", "pearl gray",
+  "coral", "russet"
+];
+
 const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) => {
   // Format colors and gems for display
   const formatList = (items: string[] | undefined): string => {
@@ -38,12 +46,7 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) 
     const colorLower = primaryColor.toLowerCase();
     
     // Check if it's one of our special color groups
-    return (
-      colorLower === "purple" || 
-      colorLower === "beige" || 
-      colorLower === "black" || 
-      colorLower === "coral"
-    );
+    return SPECIAL_COLOR_GROUPS.includes(colorLower);
   };
 
   if (!profile) {

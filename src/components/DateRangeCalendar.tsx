@@ -31,91 +31,6 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
   const handlePrint = () => {
     window.print();
   };
-  
-  // Collect legend data from all profiles with the improved logic
-  const getLegendItems = () => {
-    const legendMap = new Map();
-    
-    // Helper to get primary color and hex from profile
-    const processProfileColors = (profile: DailyProfile) => {
-      const colors = profile.numerologyData.colors || [];
-      if (colors.length > 0) {
-        const primaryColor = colors[0];
-        const primaryColorLower = primaryColor.toLowerCase();
-        
-        // Check for our special color groups
-        if (primaryColorLower === "purple" || primaryColorLower === "violet") {
-          legendMap.set("purple", {
-            label: "Purple",
-            colors: ["Purple", "Violet"],
-            colorHex: "#9b87f5"
-          });
-        } else if (primaryColorLower === "beige" || primaryColorLower === "brown" || primaryColorLower === "pink") {
-          legendMap.set("beige", {
-            label: "Beige",
-            colors: ["Beige", "Brown", "Pink"],
-            colorHex: "#f5f5dc"
-          });
-        } else if (primaryColorLower === "black" || primaryColorLower === "white" || primaryColorLower.includes("pearl")) {
-          legendMap.set("black", {
-            label: "Black",
-            colors: ["Black", "White", "Pearl Gray"],
-            colorHex: "#000000"
-          });
-        } else if (primaryColorLower === "coral" || primaryColorLower === "russet") {
-          legendMap.set("coral", {
-            label: "Coral",
-            colors: ["Coral", "Russet"],
-            colorHex: "#ff7f50"
-          });
-        } else {
-          // For other colors, store them normally
-          if (!legendMap.has(primaryColorLower)) {
-            legendMap.set(primaryColorLower, {
-              label: primaryColor,
-              colors: colors,
-              colorHex: profile.numerologyData.colorHex
-            });
-          }
-        }
-      }
-    };
-    
-    // Process all profiles
-    profiles.forEach(processProfileColors);
-    
-    // Always include our special color groups
-    if (!legendMap.has("purple")) {
-      legendMap.set("purple", {
-        label: "Purple",
-        colors: ["Purple", "Violet"],
-        colorHex: "#9b87f5"
-      });
-    }
-    if (!legendMap.has("beige")) {
-      legendMap.set("beige", {
-        label: "Beige",
-        colors: ["Beige", "Brown", "Pink"],
-        colorHex: "#f5f5dc"
-      });
-    }
-    if (!legendMap.has("black")) {
-      legendMap.set("black", {
-        label: "Black",
-        colors: ["Black", "White", "Pearl Gray"],
-        colorHex: "#000000"
-      });
-    }
-    if (!legendMap.has("coral")) {
-      legendMap.set("coral", {
-        label: "Coral",
-        colors: ["Coral", "Russet"],
-        colorHex: "#ff7f50"
-      });
-    }
-    
-    return Array.from(legendMap.values());
-  };
 
   return (
     <PrintStyles>
@@ -146,8 +61,8 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
 
           <CalendarGrid profiles={profiles} />
 
-          {/* Add the calendar legend with improved data */}
-          <CalendarLegend legendItems={getLegendItems()} />
+          {/* Use the simplified calendar legend */}
+          <CalendarLegend />
         </div>
       </div>
     </PrintStyles>
