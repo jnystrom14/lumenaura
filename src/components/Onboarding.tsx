@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { UserProfile } from "../types";
 import { saveUserProfile, getUserProfile, hasUserProfile } from "../utils/storage";
@@ -80,7 +79,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
     reader.readAsDataURL(file);
   };
   
-    const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (step === 1) {
@@ -105,37 +104,35 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         return;
       }
       
-      //
-      // ⏫ NEW: write to your Supabase “profiles” table (or your own /api endpoint).
-      //
-           if (user) {
-            const { error } = await supabase
-               .from("profiles")
-              .upsert({
-                  id: user.id,
-              name: profile.name,
-                  birth_day: profile.birthDay,
-                  birth_month: profile.birthMonth,
-                birth_year: profile.birthYear,
-                profile_picture: profile.profilePicture,
-               });
-             if (error) {
-               console.error("Failed to save profile:", error);
-               setError("Unable to save profile to server");
-               return;
-             }
-           }
-  
-           // Now save locally and finish onboarding
-           saveUserProfile({
-             ...profile,
-            profilePicture: profile.profilePicture || ""
+      // Write to your Supabase "profiles" table
+      if (user) {
+        const { error } = await supabase
+          .from("profiles")
+          .upsert({
+            id: user.id,
+            name: profile.name,
+            birth_day: profile.birthDay,
+            birth_month: profile.birthMonth,
+            birth_year: profile.birthYear,
+            profile_picture: profile.profilePicture,
           });
-          toast({
-             title: "Profile saved",
-             description: "Your profile has been saved successfully"
-          });
-        onComplete();
+        if (error) {
+          console.error("Failed to save profile:", error);
+          setError("Unable to save profile to server");
+          return;
+        }
+      }
+
+      // Now save locally and finish onboarding
+      saveUserProfile({
+        ...profile,
+        profilePicture: profile.profilePicture || ""
+      });
+      toast({
+        title: "Profile saved",
+        description: "Your profile has been saved successfully"
+      });
+      onComplete();
     }
   };
 
