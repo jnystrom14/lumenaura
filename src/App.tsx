@@ -45,6 +45,13 @@ const App = () => {
     setLoading(false);
   }, [user, authLoading]);
 
+  // Reset showAuth when user logs in
+  useEffect(() => {
+    if (user) {
+      setShowAuth(false);
+    }
+  }, [user]);
+
   const handleOnboardingComplete = () => {
     const profile = getUserProfile();
     setUserProfile(profile);

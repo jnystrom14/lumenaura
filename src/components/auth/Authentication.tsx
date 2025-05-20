@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,11 +23,20 @@ const Authentication: React.FC<AuthenticationProps> = ({
   const {
     signUpWithEmail,
     signInWithEmail,
-    signInWithGoogle
+    signInWithGoogle,
+    user
   } = useAuth();
   const {
     toast
   } = useToast();
+  
+  // If the user is already authenticated, call onContinueWithoutAccount
+  useEffect(() => {
+    if (user) {
+      onContinueWithoutAccount();
+    }
+  }, [user, onContinueWithoutAccount]);
+  
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -52,6 +62,7 @@ const Authentication: React.FC<AuthenticationProps> = ({
       setIsLoading(false);
     }
   };
+  
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     setError("");
@@ -67,6 +78,7 @@ const Authentication: React.FC<AuthenticationProps> = ({
       setIsLoading(false);
     }
   };
+  
   return <div className="min-h-screen flex items-center justify-center px-4 py-10 animate-fade-in">
       <div className="w-full max-w-md crystal-card p-8 space-y-8">
         <div className="text-center">
