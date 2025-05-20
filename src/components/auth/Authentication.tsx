@@ -1,45 +1,45 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/components/ui/use-toast";
-
 interface AuthenticationProps {
   onContinueWithoutAccount: () => void;
 }
-
-const Authentication: React.FC<AuthenticationProps> = ({ onContinueWithoutAccount }) => {
+const Authentication: React.FC<AuthenticationProps> = ({
+  onContinueWithoutAccount
+}) => {
   const [isSignUp, setIsSignUp] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
-  
-  const { signUpWithEmail, signInWithEmail, signInWithGoogle } = useAuth();
-  const { toast } = useToast();
-  
+  const {
+    signUpWithEmail,
+    signInWithEmail,
+    signInWithGoogle
+  } = useAuth();
+  const {
+    toast
+  } = useToast();
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    
     try {
       let result;
-      
       if (isSignUp) {
         result = await signUpWithEmail(email, password);
       } else {
         result = await signInWithEmail(email, password);
       }
-      
       if (result.error) {
         setError(result.error);
       } else if (isSignUp) {
         toast({
           title: "Account created",
-          description: "Please check your email for verification instructions.",
+          description: "Please check your email for verification instructions."
         });
       }
     } catch (err: any) {
@@ -48,11 +48,9 @@ const Authentication: React.FC<AuthenticationProps> = ({ onContinueWithoutAccoun
       setIsLoading(false);
     }
   };
-  
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     setError("");
-    
     try {
       const result = await signInWithGoogle();
       if (result.error) {
@@ -65,12 +63,10 @@ const Authentication: React.FC<AuthenticationProps> = ({ onContinueWithoutAccoun
       setIsLoading(false);
     }
   };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-10 animate-fade-in">
+  return <div className="min-h-screen flex items-center justify-center px-4 py-10 animate-fade-in">
       <div className="w-full max-w-md crystal-card p-8 space-y-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gradient mb-2">ColorPath</h1>
+          <h1 className="text-4xl font-bold text-gradient mb-2">LumenAura</h1>
           <p className="text-gray-600">Your Daily Numerology Guide</p>
         </div>
         
@@ -86,40 +82,17 @@ const Authentication: React.FC<AuthenticationProps> = ({ onContinueWithoutAccoun
         <form onSubmit={handleAuth} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input 
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="crystal-input"
-              required
-            />
+            <Input id="email" type="email" placeholder="Enter your email" value={email} onChange={e => setEmail(e.target.value)} className="crystal-input" required />
           </div>
           
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input 
-              id="password"
-              type="password"
-              placeholder="Create a password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="crystal-input"
-              minLength={6}
-              required
-            />
+            <Input id="password" type="password" placeholder="Create a password" value={password} onChange={e => setPassword(e.target.value)} className="crystal-input" minLength={6} required />
           </div>
           
-          {error && (
-            <p className="text-destructive text-sm">{error}</p>
-          )}
+          {error && <p className="text-destructive text-sm">{error}</p>}
           
-          <Button 
-            type="submit" 
-            className="w-full bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 transition-opacity"
-            disabled={isLoading}
-          >
+          <Button type="submit" className="w-full bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 transition-opacity" disabled={isLoading}>
             {isLoading ? "Processing..." : isSignUp ? "Sign Up" : "Sign In"}
           </Button>
           
@@ -134,13 +107,7 @@ const Authentication: React.FC<AuthenticationProps> = ({ onContinueWithoutAccoun
             </div>
           </div>
           
-          <Button 
-            type="button" 
-            variant="outline"
-            className="w-full flex items-center justify-center gap-2"
-            onClick={handleGoogleSignIn}
-            disabled={isLoading}
-          >
+          <Button type="button" variant="outline" className="w-full flex items-center justify-center gap-2" onClick={handleGoogleSignIn} disabled={isLoading}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -153,31 +120,21 @@ const Authentication: React.FC<AuthenticationProps> = ({ onContinueWithoutAccoun
           
           <p className="text-center text-sm">
             {isSignUp ? "Already have an account?" : "Don't have an account?"} 
-            <button 
-              type="button"
-              className="text-primary hover:underline ml-1"
-              onClick={() => {
-                setIsSignUp(!isSignUp);
-                setError("");
-              }}
-            >
+            <button type="button" className="text-primary hover:underline ml-1" onClick={() => {
+            setIsSignUp(!isSignUp);
+            setError("");
+          }}>
               {isSignUp ? "Sign In" : "Sign Up"}
             </button>
           </p>
           
           <p className="text-center text-sm">
-            <button 
-              type="button"
-              className="text-primary hover:underline"
-              onClick={onContinueWithoutAccount}
-            >
+            <button type="button" className="text-primary hover:underline" onClick={onContinueWithoutAccount}>
               Continue without an account
             </button>
           </p>
         </form>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Authentication;
