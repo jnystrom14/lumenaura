@@ -1,43 +1,40 @@
+// src/App.tsx
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { UserProfile } from "./types";
+import { useToast } from "@/components/ui/use-toast";
+
+import { useAuth } from "./hooks/useAuth";
 import {
   getUserProfile,
   hasUserProfile,
-  saveUserProfile,     // ← new utility to write to localStorage
+  saveUserProfile,
   clearUserProfile,
 } from "./utils/storage";
-import { fetchUserProfileFromServer } from "./utils/api";  // ← your API call
-import { useAuth } from "./hooks/useAuth";
-import { useToast } from "@/components/ui/use-toast";
+import { fetchUserProfileFromServer } from "./utils/api";
+
+import Authentication from "./components/auth/Authentication";
 import Onboarding from "./components/Onboarding";
 import Dashboard from "./components/Dashboard";
 import NotFound from "./pages/NotFound";
-import Authentication from "./components/auth/Authentication";
 
 const queryClient = new QueryClient();
 
-const App = () => {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const {
-    user,
-    loading: authLoading,
-    isLoggedOut,
-    setIsLoggedOut,
-    signOut,
-  } = useAuth();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [showAuth, setShowAuth] = useState<boolean>(false);
+const App: React.FC = () => {
+  const { user, loading: authLoading, isLoggedOut, setIsLoggedOut, signOut } =
+    useAuth();
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [showAuth, setShowAuth] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     if (authLoading) return;
 
-    // 1) Explicit logout
+    // 1) If they’ve explicitly hit “logout,” show login screen
     if (isLoggedOut) {
       setShowAuth(true);
       setUserProfile(null);
@@ -45,26 +42,25 @@ const App = () => {
       return;
     }
 
-    // 2) LocalStorage profile exists → restore and go to Dashboard
+    // 2) If we have a saved profile locally, go straight to Dashboard
     if (hasUserProfile()) {
-      setUserProfile(getUserProfile()!);
+      setUserProfile(getUserProfile());
       setShowAuth(false);
       setLoading(false);
       return;
     }
 
-    // 3) Authenticated but no local profile → try fetch from server
+    // 3) If authenticated but no local profile, fetch from server
     if (user) {
       setLoading(true);
       fetchUserProfileFromServer(user.id)
         .then((profile) => {
-          // Save for future visits
           saveUserProfile(profile);
           setUserProfile(profile);
           setShowAuth(false);
         })
         .catch(() => {
-          // No saved profile remotely → first‐time user
+          // truly first-time user: run onboarding
           setShowAuth(true);
         })
         .finally(() => {
@@ -73,12 +69,12 @@ const App = () => {
       return;
     }
 
-    // 4) Not authenticated → show login
+    // 4) Not authenticated: show login
     setShowAuth(true);
     setLoading(false);
   }, [user, authLoading, isLoggedOut]);
 
-  // Reset the logout flag once we show the login screen
+  // After showing login, clear the “logged out” flag
   useEffect(() => {
     if (showAuth && isLoggedOut) {
       setIsLoggedOut(false);
@@ -86,8 +82,7 @@ const App = () => {
   }, [showAuth, isLoggedOut, setIsLoggedOut]);
 
   const handleOnboardingComplete = () => {
-    // After they finish onboarding, we assume you write to your server
-    // then fetch the fresh profile into localStorage:
+    // Onboarding should save to your server & localStorage
     const profile = getUserProfile();
     setUserProfile(profile);
     setShowAuth(false);
@@ -102,11 +97,8 @@ const App = () => {
 
   if (loading || authLoading) {
     return (
-      <div className="min-h-screen flex justify-center items-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
-          <p className="text-lg">Loading LumenAura...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin h-10 w-10 border-4 border-primary rounded-full" />
       </div>
     );
   }
