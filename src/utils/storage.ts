@@ -1,6 +1,5 @@
 // src/utils/storage.ts
 import { UserProfile } from "../types";
-
 const USER_PROFILE_KEY = "userProfile";
 
 export function hasUserProfile(): boolean {
@@ -12,7 +11,7 @@ export function getUserProfile(): UserProfile | null {
   return json ? (JSON.parse(json) as UserProfile) : null;
 }
 
-/** NEW: persist profile so other tabs/browsers pick it up */
+// ← ADD THIS:
 export function saveUserProfile(profile: UserProfile): void {
   localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile));
 }
@@ -20,5 +19,4 @@ export function saveUserProfile(profile: UserProfile): void {
 export function clearUserProfile(): void {
   localStorage.removeItem(USER_PROFILE_KEY);
 }
-
 
