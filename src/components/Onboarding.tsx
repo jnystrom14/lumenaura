@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { UserProfile } from "../types";
 import { saveUserProfile, getUserProfile, hasUserProfile } from "../utils/storage";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import Authentication from "./auth/Authentication";
 import PersonalInfoForm from "./onboarding/PersonalInfoForm";
