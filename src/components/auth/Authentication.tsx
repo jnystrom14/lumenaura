@@ -33,11 +33,11 @@ const Authentication: React.FC<AuthenticationProps> = ({
   
   // If the user is already authenticated and hasn't just logged out,
   // call onContinueWithoutAccount to move to the next screen
-  useEffect(() => {
-    if (user && !isLoggedOut) {
-      onContinueWithoutAccount();
-    }
-  }, [user, isLoggedOut, onContinueWithoutAccount]);
+useEffect(() => {
+  if (!user || isLoggedOut) return; // ⛔ block misfired onboarding after logout
+
+  onContinueWithoutAccount();
+}, [user, isLoggedOut, onContinueWithoutAccount]);
   
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
