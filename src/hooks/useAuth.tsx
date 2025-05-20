@@ -106,9 +106,11 @@ export function useAuth() {
     session,
     loading,
     isLoggedOut,
+    setIsLoggedOut, // ✅ expose this so App can reset it
     signInWithEmail,
     signUpWithEmail,
     signInWithGoogle,
     signOut,
   };
+
 }
