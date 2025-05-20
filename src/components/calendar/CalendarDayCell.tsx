@@ -1,4 +1,3 @@
-
 import React from "react";
 import { DailyProfile } from "../../types";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -22,8 +21,9 @@ const SPECIAL_COLOR_GROUPS = [
 const SPECIAL_GEM_GROUPS = [
   "emerald", "jade",
   "turquoise", "aquamarine",
-  "pearl", "opal",
-  "coral", "ruby"
+  "pearl", "sapphire", "lapis",
+  "opal", "gold",
+  "coral", "copper"
 ];
 
 const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) => {
