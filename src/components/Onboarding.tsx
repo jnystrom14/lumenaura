@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { UserProfile } from "../types";
 import { saveUserProfile, getUserProfile, hasUserProfile } from "../utils/storage";
@@ -106,8 +107,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
       
       // Write to your Supabase "profiles" table
       if (user) {
-        const { error } = await supabase
-          .from("profiles")
+        const { error: upsertError } = await supabase
+          .from('profiles')
           .upsert({
             id: user.id,
             name: profile.name,
@@ -116,8 +117,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             birth_year: profile.birthYear,
             profile_picture: profile.profilePicture,
           });
-        if (error) {
-          console.error("Failed to save profile:", error);
+        if (upsertError) {
+          console.error("Failed to save profile:", upsertError);
           setError("Unable to save profile to server");
           return;
         }
