@@ -4,13 +4,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/components/ui/use-toast";
+
 interface AuthenticationProps {
   onContinueWithoutAccount: () => void;
+  defaultToSignUp?: boolean;
 }
+
 const Authentication: React.FC<AuthenticationProps> = ({
-  onContinueWithoutAccount
+  onContinueWithoutAccount,
+  defaultToSignUp = false
 }) => {
-  const [isSignUp, setIsSignUp] = useState(true);
+  const [isSignUp, setIsSignUp] = useState(defaultToSignUp);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);

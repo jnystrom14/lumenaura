@@ -47,7 +47,7 @@ const App = () => {
   const handleLogout = () => {
     clearUserProfile();
     setUserProfile(null);
-    setShowAuth(true);
+    setShowAuth(true); // This shows the Authentication component
   };
 
   if (loading || authLoading) {
@@ -68,7 +68,10 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           {showAuth ? (
-            <Authentication onContinueWithoutAccount={() => setShowAuth(false)} />
+            <Authentication 
+              onContinueWithoutAccount={() => setShowAuth(false)} 
+              defaultToSignUp={false} // Default to sign in mode
+            />
           ) : !userProfile ? (
             <Onboarding onComplete={handleOnboardingComplete} />
           ) : (
