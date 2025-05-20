@@ -136,14 +136,7 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
                     {profile && (
                       <>
                         <div className="flex justify-between items-start">
-                          <span 
-                            className="font-medium px-1 rounded"
-                            style={{ 
-                              color: getContrastColor(profile.numerologyData.colorHex || "#6B7280"),
-                              backgroundColor: profile.numerologyData.colorHex ? `${profile.numerologyData.colorHex}33` : undefined, // 20% opacity
-                              textShadow: getContrastColor(profile.numerologyData.colorHex || "#6B7280") === "#000000" ? "none" : "0px 0px 2px rgba(0,0,0,0.5)"
-                            }}
-                          >
+                          <span className="font-medium">
                             {profile.date.getDate()}
                           </span>
                           <span 
