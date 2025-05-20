@@ -24,13 +24,16 @@ const App = () => {
   useEffect(() => {
     if (authLoading) return;
 
-    // Only consider existing profiles from storage
+    // Check for existing profiles from storage
     if (hasUserProfile()) {
       const profile = getUserProfile();
       setUserProfile(profile);
+      setLoading(false);
+      return;
     }
     
-    // Set loading to false once we've handled authentication and profile
+    // If authenticated but no profile exists, we still need to go through onboarding
+    // to collect necessary information like birth date
     setLoading(false);
   }, [user, authLoading]);
 

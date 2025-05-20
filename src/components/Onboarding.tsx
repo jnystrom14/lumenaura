@@ -23,12 +23,12 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   });
   const [error, setError] = useState<string>("");
   
-  // Pre-fill data from authenticated user if available
+  // Only pre-fill profile picture if available from authenticated user
   useEffect(() => {
     if (user) {
       setProfile(prevProfile => ({
         ...prevProfile,
-        name: user.user_metadata?.full_name || user.email?.split('@')[0] || prevProfile.name,
+        // Don't pre-fill name anymore
         profilePicture: user.user_metadata?.avatar_url || prevProfile.profilePicture
       }));
       
