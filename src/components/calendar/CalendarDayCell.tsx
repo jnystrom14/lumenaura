@@ -18,6 +18,12 @@ const SPECIAL_COLOR_GROUPS = [
   "coral", "russet"
 ];
 
+// Define our special gem groups that need asterisks
+const SPECIAL_GEM_GROUPS = [
+  "emerald", "jade",
+  "turquoise", "aquamarine"
+];
+
 const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) => {
   // Format colors and gems for display
   const formatList = (items: string[] | undefined): string => {
@@ -49,6 +55,16 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) 
     return SPECIAL_COLOR_GROUPS.includes(colorLower);
   };
 
+  // Helper function to check if the primary gem needs an asterisk
+  const shouldShowGemAsterisk = (primaryGem?: string): boolean => {
+    if (!primaryGem) return false;
+    
+    const gemLower = primaryGem.toLowerCase();
+    
+    // Check if it's one of our special gem groups
+    return SPECIAL_GEM_GROUPS.includes(gemLower);
+  };
+
   if (!profile) {
     return (
       <div className={`${
@@ -57,8 +73,9 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) 
     );
   }
 
-  // Get primary color
+  // Get primary color and gem
   const primaryColor = profile.numerologyData.colors?.[0];
+  const primaryGem = profile.numerologyData.gems?.[0];
 
   return (
     <div className={`${
@@ -91,8 +108,14 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) 
           )}
         </div>
         {(!isMobile || true) && (
-          <div className="font-medium break-words hyphens-auto truncate print:block">
+          <div className="font-medium break-words hyphens-auto truncate flex items-center gap-0">
             {formatList(profile.numerologyData.gems)}
+            {shouldShowGemAsterisk(primaryGem) && (
+              <Asterisk className={cn(
+                isMobile ? "h-2 w-2" : "h-3 w-3",
+                "print:h-2 print:w-2"
+              )} />
+            )}
           </div>
         )}
         <div className="text-muted-foreground truncate">

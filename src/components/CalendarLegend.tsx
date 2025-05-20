@@ -2,6 +2,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Gem } from "lucide-react";
 
 // Define our color groups with their hex values
 const COLOR_GROUPS = {
@@ -20,6 +21,18 @@ const COLOR_GROUPS = {
   CORAL: {
     colors: ["Coral", "Russet"],
     colorHexes: ["#ff7f50", "#80461b"]
+  }
+};
+
+// Define our gem groups
+const GEM_GROUPS = {
+  EMERALD: {
+    gems: ["Emerald", "Jade"],
+    iconColor: "#50C878" // Emerald green
+  },
+  TURQUOISE: {
+    gems: ["Turquoise", "Aquamarine"],
+    iconColor: "#40E0D0" // Turquoise blue
   }
 };
 
@@ -53,6 +66,37 @@ const ColorBallGroup = ({ colorHexes, size = "w-4 h-4", mobileSize = "w-3 h-3" }
   );
 };
 
+// Component for displaying multiple gem icons
+const GemGroup = ({ gems, iconColor, size = "w-4 h-4", mobileSize = "w-3 h-3" }: {
+  gems: string[],
+  iconColor: string,
+  size?: string,
+  mobileSize?: string
+}) => {
+  const isMobile = useIsMobile();
+  
+  return (
+    <div className="flex -space-x-1 mr-2 items-center">
+      {gems.map((_, index) => (
+        <Gem
+          key={index}
+          className={cn(
+            isMobile ? mobileSize : size,
+            "print:w-2 print:h-2"
+          )}
+          style={{ 
+            color: iconColor,
+            zIndex: gems.length - index,
+            transform: `translateX(${index * 2}px)`,
+            WebkitPrintColorAdjust: "exact",
+            printColorAdjust: "exact"
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 const CalendarLegend: React.FC = () => {
   const isMobile = useIsMobile();
   
@@ -66,7 +110,7 @@ const CalendarLegend: React.FC = () => {
         isMobile ? "text-xs" : "",
         "print:text-xs print:mb-1"
       )}>
-        Color Legend
+        Legend
       </h3>
       
       <div className={cn(
@@ -74,8 +118,9 @@ const CalendarLegend: React.FC = () => {
         isMobile ? "text-xs" : "text-sm",
         "print:text-xs"
       )}>
+        {/* Color Groups */}
         {Object.values(COLOR_GROUPS).map((group, index) => (
-          <div key={index} className="flex items-center">
+          <div key={`color-${index}`} className="flex items-center">
             <ColorBallGroup 
               colorHexes={group.colorHexes}
               size={isMobile ? "w-3 h-3" : "w-4 h-4"}
@@ -83,6 +128,21 @@ const CalendarLegend: React.FC = () => {
             />
             <span className="flex items-center gap-1">
               {group.colors.join(", ")}
+            </span>
+          </div>
+        ))}
+        
+        {/* Gem Groups */}
+        {Object.values(GEM_GROUPS).map((group, index) => (
+          <div key={`gem-${index}`} className="flex items-center">
+            <GemGroup 
+              gems={group.gems}
+              iconColor={group.iconColor}
+              size={isMobile ? "w-3 h-3" : "w-4 h-4"}
+              mobileSize="w-2 h-2"
+            />
+            <span className="flex items-center gap-1">
+              {group.gems.join(", ")}
             </span>
           </div>
         ))}
