@@ -26,17 +26,17 @@ const App = () => {
     loading: authLoading,
     isLoggedOut,
     setIsLoggedOut,
-    signOut,             // ← added signOut here
+    signOut,            // ← make sure this comes from your useAuth hook
   } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const [showAuth, setShowAuth] = useState<boolean>(false);
   const { toast } = useToast();
 
-  // Handle auth state changes
+  // React to auth state or explicit logout
   useEffect(() => {
     if (authLoading) return;
 
-    // Explicit logout — show auth screen
+    // If we’ve explicitly logged out, show the login screen
     if (isLoggedOut) {
       setShowAuth(true);
       setUserProfile(null);
@@ -44,25 +44,23 @@ const App = () => {
       return;
     }
 
-    // Restore from storage if profile exists
+    // If we have a saved profile, restore it
     if (hasUserProfile()) {
-      const profile = getUserProfile();
-      setUserProfile(profile);
+      setUserProfile(getUserProfile()!);
       setLoading(false);
       return;
     }
 
-    // Authenticated but no profile yet
+    // Otherwise, decide based on whether the provider says we’re signed in
     if (user) {
       setShowAuth(false);
     } else {
       setShowAuth(true);
     }
-
     setLoading(false);
   }, [user, authLoading, isLoggedOut]);
 
-  // Reset logout state after showing Auth screen
+  // After showing the auth screen, reset the logout flag
   useEffect(() => {
     if (showAuth && isLoggedOut) {
       setIsLoggedOut(false);
@@ -74,19 +72,24 @@ const App = () => {
     setUserProfile(profile);
   };
 
-  // UPDATED: actually call signOut() then clear local profile
+  // ——— LOGOUT FIX ———
   const handleLogout = async () => {
-    await signOut();           // ← sign the user out at the provider
-    clearUserProfile();        // Clear localStorage
-    setUserProfile(null);      // Clear React state
-    setShowAuth(true);         // Trigger Auth screen
+    // 1) Tell your auth provider to sign out
+    await signOut();
+
+    // 2) Signal our app that we’re logged out (so the effect jumps to login)
+    setIsLoggedOut(true);
+
+    // 3) Wipe any saved profile
+    clearUserProfile();
+    setUserProfile(null);
   };
 
   if (loading || authLoading) {
     return (
       <div className="min-h-screen flex justify-center items-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
           <p className="text-lg">Loading LumenAura...</p>
         </div>
       </div>
@@ -113,7 +116,7 @@ const App = () => {
                 element={
                   <Dashboard
                     userProfile={userProfile}
-                    onLogout={handleLogout}    // ← this now calls signOut first
+                    onLogout={handleLogout}  // ← logout now goes through our new flow
                   />
                 }
               />
