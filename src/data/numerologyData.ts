@@ -160,7 +160,7 @@ export const numerologyDataset: NumerologyData[] = [
     colorHexTertiary: "#BEBEBE", // pearl gray
     gems: ["silver"],
     keyPhrase: "Leave commercialism behind you.",
-    description: "11/2 is a Master Number. The vibrations today are highly attuned and very spiritual. Your intuition is strong. Do not force anything. Be silent. Keep the peace. Let the day flow and be on time. Do not read. Go within. Don't argue; you won't win. It's not your fault anyway. Be a shining light in the world. You can be greatly inspired today, or you can inspire others.",
+    description: "11/2 is a Master Number. Leave commercialism behind you. The vibrations today are highly attuned and very spiritual. Your intuition is strong. Do not force anything. Be silent. Keep the peace. Let the day flow and be on time. Do not read. Go within. Don't argue; you won't win. It's not your fault anyway. Be a shining light in the world. You can be greatly inspired today, or you can inspire others.",
     meditation: "I FOLLOW MY INNER STAR! I have a direct pipeline of wisdom and knowledge from the highest source. As I turn within, all the answers I seek are available to me. I inspire others. I am a shining example of love and light. Today I sparkle and shine in a quiet and peaceful way.",
     powerWord: "intuition",
     todaysTheme: "FOLLOW YOUR STAR",
