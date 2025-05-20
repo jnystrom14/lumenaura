@@ -21,7 +21,9 @@ const SPECIAL_COLOR_GROUPS = [
 // Define our special gem groups that need asterisks
 const SPECIAL_GEM_GROUPS = [
   "emerald", "jade",
-  "turquoise", "aquamarine"
+  "turquoise", "aquamarine",
+  "pearl", "opal",
+  "coral", "ruby"
 ];
 
 const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) => {

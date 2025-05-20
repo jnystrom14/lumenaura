@@ -33,6 +33,14 @@ const GEM_GROUPS = {
   TURQUOISE: {
     gems: ["Turquoise", "Aquamarine"],
     iconColor: "#40E0D0" // Turquoise blue
+  },
+  PEARL: {
+    gems: ["Pearl", "Opal"],
+    iconColor: "#F0F8FF" // Pearl white
+  },
+  CORAL: {
+    gems: ["Coral", "Ruby"],
+    iconColor: "#FF7F50" // Coral red
   }
 };
 
