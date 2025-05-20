@@ -1,12 +1,13 @@
+
 import React from "react";
 import { UserProfile, DailyProfile } from "../types";
 import { getDailyProfile } from "../utils/numerologyCalculator";
 import { format, eachDayOfInterval } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Printer } from "lucide-react";
-import { exportDateRangePDF } from "../utils/pdfExport";
 import { useIsMobile } from "@/hooks/use-mobile";
 import CalendarLegend from "./CalendarLegend";
+import CalendarGrid from "./calendar/CalendarGrid";
 
 interface DateRangeCalendarProps {
   userProfile: UserProfile;
@@ -30,70 +31,6 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
     window.print();
   };
   
-  // Group profiles by week for display
-  const getWeeks = () => {
-    const weeks: DailyProfile[][] = [];
-    let currentWeek: DailyProfile[] = [];
-    
-    // Find the first day of the interval and determine its day of week
-    const firstDay = profiles[0]?.date;
-    if (!firstDay) return [];
-    
-    // Add empty placeholders for days before the first day
-    const dayOfWeek = firstDay.getDay(); // 0 = Sunday, 1 = Monday, etc.
-    for (let i = 0; i < dayOfWeek; i++) {
-      currentWeek.push(null as unknown as DailyProfile);
-    }
-    
-    // Add all days of the interval
-    profiles.forEach(profile => {
-      currentWeek.push(profile);
-      if (currentWeek.length === 7) {
-        weeks.push(currentWeek);
-        currentWeek = [];
-      }
-    });
-    
-    // If there are remaining days, add them as the last week
-    if (currentWeek.length > 0) {
-      // Fill the rest of the week with null
-      while (currentWeek.length < 7) {
-        currentWeek.push(null as unknown as DailyProfile);
-      }
-      weeks.push(currentWeek);
-    }
-    
-    return weeks;
-  };
-
-  // Format colors and gems for display
-  const formatList = (items: string[] | undefined): string => {
-    if (!items || items.length === 0) return "";
-    
-    // On mobile, just show first item
-    if (isMobile) {
-      return items[0] || "";
-    }
-    
-    // On desktop, show more
-    if (items.length === 1) return items[0];
-    return items.slice(0, 2).join(", ") + (items.length > 2 ? "..." : "");
-  };
-
-  // Function to determine if text color should be light or dark based on background
-  const getContrastColor = (hexColor: string) => {
-    // Convert hex to RGB
-    const r = parseInt(hexColor.slice(1, 3), 16);
-    const g = parseInt(hexColor.slice(3, 5), 16);
-    const b = parseInt(hexColor.slice(5, 7), 16);
-    
-    // Calculate luminance using the formula for relative luminance
-    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    
-    // Return white for dark backgrounds, black for light backgrounds
-    return luminance > 0.5 ? "#000000" : "#FFFFFF";
-  };
-
   // Collect legend data from all profiles
   const getLegendItems = () => {
     const legendMap = new Map();
@@ -148,76 +85,7 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
           </p>
         </div>
 
-        <div className="crystal-card p-2 print:border-none print:p-0 print:shadow-none print:w-full">
-          <div className={`grid grid-cols-7 ${isMobile ? 'gap-0.5 mb-1' : 'gap-1 mb-2'} print:gap-2 print:mb-2`}>
-            {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
-              <div key={day + index} className={`text-center font-medium ${isMobile ? 'p-1 text-xs' : 'p-2'} print:p-2 print:text-base`}>
-                {day}
-              </div>
-            ))}
-          </div>
-
-          <div className={`grid grid-cols-7 ${isMobile ? 'gap-0.5' : 'gap-1'} print:gap-2 print:w-full`}>
-            {getWeeks().map((week, weekIndex) => (
-              <React.Fragment key={weekIndex}>
-                {week.map((profile, dayIndex) => (
-                  <div
-                    key={`${weekIndex}-${dayIndex}`}
-                    className={`${
-                      isMobile ? 'p-1 min-h-14' : 'p-2 min-h-24'
-                    } print:p-2 print:min-h-[5rem] border rounded-md ${
-                      !profile
-                        ? "bg-gray-50"
-                        : "hover:bg-lumenaura-lavender hover:bg-opacity-10 transition-colors"
-                    }`}
-                  >
-                    {profile && (
-                      <>
-                        <div className="flex justify-between items-start">
-                          <span className="font-medium print:text-lg">
-                            {profile.date.getDate()}
-                          </span>
-                          <span 
-                            className={`${isMobile ? 'text-[10px] px-1 py-0.5' : 'text-xs px-2 py-1'} print:text-xs print:px-2 print:py-1 rounded-full text-white print:border print:border-gray-400`}
-                            style={{ 
-                              backgroundColor: profile.numerologyData.colorHex || "#6B7280",
-                              color: getContrastColor(profile.numerologyData.colorHex || "#6B7280"),
-                              WebkitPrintColorAdjust: "exact",
-                              printColorAdjust: "exact"
-                            }}
-                          >
-                            {profile.personalDay}
-                          </span>
-                        </div>
-                        <div className={`${isMobile ? 'mt-1' : 'mt-2'} ${isMobile ? 'text-[10px]' : 'text-xs'} print:mt-2 print:text-xs`}>
-                          <div className="font-medium truncate flex items-center gap-0.5">
-                            {formatList(profile.numerologyData.colors)}
-                            {(profile.numerologyData.colors && profile.numerologyData.colors.length > 1) && (
-                              <Asterisk className={cn(
-                                isMobile ? "h-2 w-2" : "h-3 w-3",
-                                "print:h-2 print:w-2"
-                              )} />
-                            )}
-                          </div>
-                          {(!isMobile || true) && (
-                            <div className="font-medium break-words hyphens-auto truncate print:block">
-                              {formatList(profile.numerologyData.gems)}
-                            </div>
-                          )}
-                          <div className="text-muted-foreground truncate">
-                            {isMobile 
-                              ? profile.numerologyData.powerWord || ""
-                              : profile.numerologyData.powerWord || profile.numerologyData.keyPhrase}
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                ))}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
+        <CalendarGrid profiles={profiles} />
 
         {/* Add the calendar legend */}
         <CalendarLegend legendItems={getLegendItems()} />
