@@ -32,9 +32,18 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
       // If there's a profile in storage, use it to complete the onboarding
       const existingProfile = getUserProfile();
       if (existingProfile) {
-        saveUserProfile(existingProfile);
-        onComplete();
-        return;
+        // Make sure we include profilePicture in the check for completeness
+        if (existingProfile.name && 
+            existingProfile.birthDay && 
+            existingProfile.birthMonth && 
+            existingProfile.birthYear) {
+          saveUserProfile(existingProfile);
+          onComplete();
+          return;
+        } else {
+          // If profile exists but isn't complete, pre-fill what we have
+          setProfile(existingProfile);
+        }
       }
     }
     
@@ -95,7 +104,12 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         return;
       }
       
-      saveUserProfile(profile);
+      // Ensure we save the updated profile with any uploaded profile picture
+      saveUserProfile({
+        ...profile,
+        profilePicture: profile.profilePicture || ""
+      });
+      
       toast({
         title: "Profile saved",
         description: "Your profile has been saved successfully"
