@@ -8,8 +8,10 @@ import { UserProfile } from "./types";
 import {
   getUserProfile,
   hasUserProfile,
+  saveUserProfile,     // ← new utility to write to localStorage
   clearUserProfile,
 } from "./utils/storage";
+import { fetchUserProfileFromServer } from "./utils/api";  // ← your API call
 import { useAuth } from "./hooks/useAuth";
 import { useToast } from "@/components/ui/use-toast";
 import Onboarding from "./components/Onboarding";
@@ -26,17 +28,16 @@ const App = () => {
     loading: authLoading,
     isLoggedOut,
     setIsLoggedOut,
-    signOut,            // ← make sure this comes from your useAuth hook
+    signOut,
   } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const [showAuth, setShowAuth] = useState<boolean>(false);
   const { toast } = useToast();
 
-  // React to auth state or explicit logout
   useEffect(() => {
     if (authLoading) return;
 
-    // If we’ve explicitly logged out, show the login screen
+    // 1) Explicit logout
     if (isLoggedOut) {
       setShowAuth(true);
       setUserProfile(null);
@@ -44,23 +45,40 @@ const App = () => {
       return;
     }
 
-    // If we have a saved profile, restore it
+    // 2) LocalStorage profile exists → restore and go to Dashboard
     if (hasUserProfile()) {
       setUserProfile(getUserProfile()!);
+      setShowAuth(false);
       setLoading(false);
       return;
     }
 
-    // Otherwise, decide based on whether the provider says we’re signed in
+    // 3) Authenticated but no local profile → try fetch from server
     if (user) {
-      setShowAuth(false);
-    } else {
-      setShowAuth(true);
+      setLoading(true);
+      fetchUserProfileFromServer(user.id)
+        .then((profile) => {
+          // Save for future visits
+          saveUserProfile(profile);
+          setUserProfile(profile);
+          setShowAuth(false);
+        })
+        .catch(() => {
+          // No saved profile remotely → first‐time user
+          setShowAuth(true);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+      return;
     }
+
+    // 4) Not authenticated → show login
+    setShowAuth(true);
     setLoading(false);
   }, [user, authLoading, isLoggedOut]);
 
-  // After showing the auth screen, reset the logout flag
+  // Reset the logout flag once we show the login screen
   useEffect(() => {
     if (showAuth && isLoggedOut) {
       setIsLoggedOut(false);
@@ -68,19 +86,16 @@ const App = () => {
   }, [showAuth, isLoggedOut, setIsLoggedOut]);
 
   const handleOnboardingComplete = () => {
+    // After they finish onboarding, we assume you write to your server
+    // then fetch the fresh profile into localStorage:
     const profile = getUserProfile();
     setUserProfile(profile);
+    setShowAuth(false);
   };
 
-  // ——— LOGOUT FIX ———
   const handleLogout = async () => {
-    // 1) Tell your auth provider to sign out
     await signOut();
-
-    // 2) Signal our app that we’re logged out (so the effect jumps to login)
     setIsLoggedOut(true);
-
-    // 3) Wipe any saved profile
     clearUserProfile();
     setUserProfile(null);
   };
@@ -116,7 +131,7 @@ const App = () => {
                 element={
                   <Dashboard
                     userProfile={userProfile}
-                    onLogout={handleLogout}  // ← logout now goes through our new flow
+                    onLogout={handleLogout}
                   />
                 }
               />
