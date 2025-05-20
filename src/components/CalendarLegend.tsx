@@ -1,6 +1,5 @@
 
 import React from "react";
-import { Asterisk } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -8,39 +7,49 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const COLOR_GROUPS = {
   PURPLE: {
     colors: ["Purple", "Violet"],
-    colorHex: "#9b87f5"
+    colorHexes: ["#9b87f5", "#7E69AB"]
   },
   BEIGE: {
     colors: ["Beige", "Brown", "Pink"],
-    colorHex: "#f5f5dc"
+    colorHexes: ["#f5f5dc", "#a52a2a", "#ffc0cb"]
   },
   BLACK: {
     colors: ["Black", "White", "Pearl Gray"],
-    colorHex: "#000000"
+    colorHexes: ["#000000", "#ffffff", "#e6e6e6"]
   },
   CORAL: {
     colors: ["Coral", "Russet"],
-    colorHex: "#ff7f50"
+    colorHexes: ["#ff7f50", "#80461b"]
   }
 };
 
-// Component for displaying color balls
-const ColorBall = ({ colorHex, size = "w-3 h-3", mobileSize = "w-2 h-2" }: { colorHex: string, size?: string, mobileSize?: string }) => {
+// Component for displaying multiple intersecting color balls
+const ColorBallGroup = ({ colorHexes, size = "w-4 h-4", mobileSize = "w-3 h-3" }: { 
+  colorHexes: string[], 
+  size?: string, 
+  mobileSize?: string 
+}) => {
   const isMobile = useIsMobile();
   
   return (
-    <div 
-      className={cn(
-        "rounded-full mr-1",
-        isMobile ? mobileSize : size,
-        "print:w-2 print:h-2"
-      )}
-      style={{ 
-        backgroundColor: colorHex,
-        WebkitPrintColorAdjust: "exact",
-        printColorAdjust: "exact"
-      }}
-    />
+    <div className="flex -space-x-2 mr-2">
+      {colorHexes.map((colorHex, index) => (
+        <div 
+          key={index}
+          className={cn(
+            "rounded-full border border-gray-100",
+            isMobile ? mobileSize : size,
+            "print:w-2 print:h-2"
+          )}
+          style={{ 
+            backgroundColor: colorHex,
+            zIndex: colorHexes.length - index,
+            WebkitPrintColorAdjust: "exact",
+            printColorAdjust: "exact"
+          }}
+        />
+      ))}
+    </div>
   );
 };
 
@@ -60,7 +69,6 @@ const CalendarLegend: React.FC = () => {
         Color Legend
       </h3>
       
-      {/* Special color groups that need asterisks */}
       <div className={cn(
         "space-y-1",
         isMobile ? "text-xs" : "text-sm",
@@ -68,23 +76,13 @@ const CalendarLegend: React.FC = () => {
       )}>
         {Object.values(COLOR_GROUPS).map((group, index) => (
           <div key={index} className="flex items-center">
-            <ColorBall 
-              colorHex={group.colorHex} 
+            <ColorBallGroup 
+              colorHexes={group.colorHexes}
               size={isMobile ? "w-3 h-3" : "w-4 h-4"}
               mobileSize="w-2 h-2"
             />
             <span className="flex items-center gap-1">
-              {group.colors[0]}
-              <Asterisk 
-                className={cn(
-                  "inline-block", 
-                  isMobile ? "h-2 w-2" : "h-3 w-3",
-                  "print:h-2 print:w-2"
-                )} 
-              />
-              <span className="text-muted-foreground">
-                = {group.colors.join(", ")}
-              </span>
+              {group.colors.join(", ")}
             </span>
           </div>
         ))}
