@@ -81,7 +81,7 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) 
         </span>
       </div>
       <div className={`${isMobile ? 'mt-1' : 'mt-2'} ${isMobile ? 'text-[10px]' : 'text-xs'} print:mt-2 print:text-xs`}>
-        <div className="font-medium truncate flex items-center gap-0.5">
+        <div className="font-medium truncate flex items-center gap-0">
           {formatList(profile.numerologyData.colors)}
           {shouldShowAsterisk(primaryColor) && (
             <Asterisk className={cn(
