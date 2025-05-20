@@ -176,25 +176,21 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
                           {profile.personalDay}
                         </span>
                       </div>
-                      {(!isMobile || dayIndex % 2 === 0) && (
-                        <div className={`${isMobile ? 'mt-1' : 'mt-2'} ${isMobile ? 'text-[10px]' : 'text-xs'}`}>
-                          <div className="font-medium truncate">
-                            {formatList(profile.numerologyData.colors)}
-                          </div>
-                          {!isMobile && (
-                            <div className="font-medium break-words hyphens-auto truncate">
-                              {formatList(profile.numerologyData.gems)}
-                            </div>
-                          )}
-                          {(!isMobile || weekIndex % 2 === 0) && (
-                            <div className="text-muted-foreground truncate">
-                              {isMobile 
-                                ? profile.numerologyData.powerWord || ""
-                                : profile.numerologyData.powerWord || profile.numerologyData.keyPhrase}
-                            </div>
-                          )}
+                      <div className={`${isMobile ? 'mt-1' : 'mt-2'} ${isMobile ? 'text-[10px]' : 'text-xs'}`}>
+                        <div className="font-medium truncate">
+                          {formatList(profile.numerologyData.colors)}
                         </div>
-                      )}
+                        {!isMobile && (
+                          <div className="font-medium break-words hyphens-auto truncate">
+                            {formatList(profile.numerologyData.gems)}
+                          </div>
+                        )}
+                        <div className="text-muted-foreground truncate">
+                          {isMobile 
+                            ? profile.numerologyData.powerWord || ""
+                            : profile.numerologyData.powerWord || profile.numerologyData.keyPhrase}
+                        </div>
+                      </div>
                     </>
                   )}
                 </div>

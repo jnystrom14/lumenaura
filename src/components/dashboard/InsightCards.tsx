@@ -22,7 +22,7 @@ const InsightCards: React.FC<InsightCardsProps> = ({ dailyProfile }) => {
 
   return (
     <>
-      <div className={`grid grid-cols-1 ${isMobile ? 'gap-4 mt-4' : 'md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8'}`}>
+      <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:mt-8">
         <div className="crystal-card p-6 animate-fade-in">
           <h3 className="text-xl font-semibold mb-4">Your Numbers</h3>
           <div className="space-y-2">
