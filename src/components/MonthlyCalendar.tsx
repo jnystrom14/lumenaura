@@ -106,7 +106,7 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
   };
 
   return (
-    <div className={`container mx-auto px-2 ${isMobile ? 'py-4' : 'px-4 py-8'} animate-fade-in print:p-0`}>
+    <div className="container mx-auto px-2 print:px-0 print:w-full print:max-w-none animate-fade-in">
       <div className="flex justify-between items-center mb-4 print:hidden">
         <Button onClick={onBack} variant="outline" className="gap-1 text-sm">
           <ArrowLeft className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'}`} />
@@ -121,12 +121,12 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
         </Button>
       </div>
 
-      <div className="flex justify-between items-center mb-4 print:mb-2">
+      <div className="flex justify-between items-center mb-4 print:mb-4">
         <Button onClick={handlePreviousMonth} variant="outline" className="print:hidden text-sm p-2">
           <ChevronLeft className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
           {!isMobile && "Previous"}
         </Button>
-        <h2 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-medium`}>
+        <h2 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-medium print:text-2xl`}>
           {format(currentDate, isMobile ? "MMM yyyy" : "MMMM yyyy")}
         </h2>
         <Button onClick={handleNextMonth} variant="outline" className="print:hidden text-sm p-2">
@@ -135,16 +135,16 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
         </Button>
       </div>
 
-      <div className="crystal-card p-2 print:border-none print:p-0 print:shadow-none">
-        <div className={`grid grid-cols-7 ${isMobile ? 'gap-0.5 mb-1' : 'gap-1 mb-2'}`}>
+      <div className="crystal-card p-2 print:border-none print:p-0 print:shadow-none print:w-full">
+        <div className={`grid grid-cols-7 ${isMobile ? 'gap-0.5 mb-1' : 'gap-1 mb-2'} print:gap-2 print:mb-2`}>
           {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
-            <div key={day + index} className={`text-center font-medium ${isMobile ? 'p-1 text-xs' : 'p-2'}`}>
+            <div key={day + index} className={`text-center font-medium ${isMobile ? 'p-1 text-xs' : 'p-2'} print:p-2 print:text-base`}>
               {day}
             </div>
           ))}
         </div>
 
-        <div className={`grid grid-cols-7 ${isMobile ? 'gap-0.5' : 'gap-1'}`}>
+        <div className={`grid grid-cols-7 ${isMobile ? 'gap-0.5' : 'gap-1'} print:gap-2 print:w-full`}>
           {getWeeks().map((week, weekIndex) => (
             <React.Fragment key={weekIndex}>
               {week.map((profile, dayIndex) => (
@@ -152,7 +152,7 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
                   key={`${weekIndex}-${dayIndex}`}
                   className={`${
                     isMobile ? 'p-1 min-h-14' : 'p-2 min-h-24'
-                  } border rounded-md ${
+                  } print:p-2 print:min-h-[5rem] border rounded-md ${
                     !profile
                       ? "bg-gray-50"
                       : "hover:bg-lumenaura-lavender hover:bg-opacity-10 transition-colors"
@@ -161,11 +161,11 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
                   {profile && (
                     <>
                       <div className="flex justify-between items-start">
-                        <span className="font-medium">
+                        <span className="font-medium print:text-lg">
                           {profile.date.getDate()}
                         </span>
                         <span 
-                          className={`${isMobile ? 'text-[10px] px-1 py-0.5' : 'text-xs px-2 py-1'} rounded-full print:border print:border-gray-400`}
+                          className={`${isMobile ? 'text-[10px] px-1 py-0.5' : 'text-xs px-2 py-1'} print:text-xs print:px-2 print:py-1 rounded-full print:border print:border-gray-400`}
                           style={{ 
                             backgroundColor: profile.numerologyData.colorHex || "#6B7280",
                             color: getContrastColor(profile.numerologyData.colorHex || "#6B7280"),
@@ -176,12 +176,12 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
                           {profile.personalDay}
                         </span>
                       </div>
-                      <div className={`${isMobile ? 'mt-1' : 'mt-2'} ${isMobile ? 'text-[10px]' : 'text-xs'}`}>
+                      <div className={`${isMobile ? 'mt-1' : 'mt-2'} ${isMobile ? 'text-[10px]' : 'text-xs'} print:mt-2 print:text-xs`}>
                         <div className="font-medium truncate">
                           {formatList(profile.numerologyData.colors)}
                         </div>
-                        {!isMobile && (
-                          <div className="font-medium break-words hyphens-auto truncate">
+                        {(!isMobile || true) && (
+                          <div className="font-medium break-words hyphens-auto truncate print:block">
                             {formatList(profile.numerologyData.gems)}
                           </div>
                         )}
@@ -247,6 +247,19 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
               overflow: hidden !important;
               text-overflow: ellipsis !important;
               max-width: 100% !important;
+            }
+            /* Make sure the calendar takes full width when printing */
+            .container {
+              width: 100% !important;
+              max-width: 100% !important;
+              padding: 0 !important;
+            }
+            .grid-cols-7 {
+              width: 100% !important;
+              grid-template-columns: repeat(7, 1fr) !important;
+            }
+            .crystal-card {
+              width: 100% !important;
             }
           }
         `}
