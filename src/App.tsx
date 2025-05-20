@@ -18,14 +18,23 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isLoggedOut } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const [showAuth, setShowAuth] = useState<boolean>(false);
   const { toast } = useToast();
 
+  // Effect to handle authentication state changes and user profile loading
   useEffect(() => {
     if (authLoading) return;
-
+    
+    // If user logged out, always show auth screen
+    if (isLoggedOut) {
+      setShowAuth(true);
+      setUserProfile(null);
+      setLoading(false);
+      return;
+    }
+    
     // Check for existing profiles from storage
     if (hasUserProfile()) {
       const profile = getUserProfile();
@@ -43,20 +52,15 @@ const App = () => {
     }
     
     setLoading(false);
-  }, [user, authLoading]);
+  }, [user, authLoading, isLoggedOut]);
 
-  // Reset showAuth when user logs in
-  useEffect(() => {
-    if (user) {
-      setShowAuth(false);
-    }
-  }, [user]);
-
+  // Handle onboarding completion
   const handleOnboardingComplete = () => {
     const profile = getUserProfile();
     setUserProfile(profile);
   };
 
+  // Handle logout
   const handleLogout = () => {
     clearUserProfile();
     setUserProfile(null);

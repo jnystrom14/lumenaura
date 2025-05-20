@@ -24,18 +24,20 @@ const Authentication: React.FC<AuthenticationProps> = ({
     signUpWithEmail,
     signInWithEmail,
     signInWithGoogle,
-    user
+    user,
+    isLoggedOut
   } = useAuth();
   const {
     toast
   } = useToast();
   
-  // If the user is already authenticated, call onContinueWithoutAccount
+  // If the user is already authenticated and hasn't just logged out,
+  // call onContinueWithoutAccount to move to the next screen
   useEffect(() => {
-    if (user) {
+    if (user && !isLoggedOut) {
       onContinueWithoutAccount();
     }
-  }, [user, onContinueWithoutAccount]);
+  }, [user, isLoggedOut, onContinueWithoutAccount]);
   
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();

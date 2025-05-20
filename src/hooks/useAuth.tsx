@@ -8,6 +8,7 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -17,13 +18,16 @@ export function useAuth() {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Only show toast for sign in and sign out events
+        // Reset isLoggedOut flag if user logs back in
         if (event === 'SIGNED_IN') {
+          setIsLoggedOut(false);
           toast({
             title: "Signed in successfully",
             description: "Welcome back!",
           });
         } else if (event === 'SIGNED_OUT') {
+          // Explicitly set logged out state
+          setIsLoggedOut(true);
           toast({
             title: "Signed out",
             description: "You have been signed out successfully.",
@@ -88,6 +92,7 @@ export function useAuth() {
 
   const signOut = async () => {
     try {
+      setIsLoggedOut(true); // Set logged out flag before the async operation
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       return { success: true, error: null };
@@ -100,6 +105,7 @@ export function useAuth() {
     user,
     session,
     loading,
+    isLoggedOut,
     signInWithEmail,
     signUpWithEmail,
     signInWithGoogle,
