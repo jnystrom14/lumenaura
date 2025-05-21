@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { logWithEmoji } from "@/utils/consoleLogger";
 
 interface ViewToggleButtonsProps {
   setShowMonthly: (show: boolean) => void;
@@ -15,7 +16,7 @@ const ViewToggleButtons: React.FC<ViewToggleButtonsProps> = ({
 }) => {
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
-    console.log("Logout button clicked");
+    logWithEmoji("Logout button clicked", 'info');
     onLogout();
   };
 

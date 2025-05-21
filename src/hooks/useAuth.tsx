@@ -1,6 +1,8 @@
+
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { logWithEmoji, logError, logWarning } from '@/utils/consoleLogger';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -12,7 +14,7 @@ export function useAuth() {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log("Auth state change event:", event);
+        logWithEmoji(`Auth state change event: ${event}`, 'info');
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -30,7 +32,7 @@ export function useAuth() {
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("Initial session check:", session ? "Logged in" : "No session");
+      logWithEmoji(`Initial session check: ${session ? "Logged in" : "No session"}`, 'info');
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -86,25 +88,46 @@ export function useAuth() {
   const signOut = async () => {
     try {
       // Immediately set local state to logged out
+      logWithEmoji("Starting logout process", 'info');
       setIsLoggedOut(true);
       
-      console.log("Signing out...");
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        console.error("Logout error:", error);
-        throw error;
+      try {
+        // Try to sign out via Supabase
+        const { error } = await supabase.auth.signOut();
+        
+        if (error) {
+          // Handle known error types
+          if (error.message.includes("Session not found")) {
+            logWarning("Session not found during logout. Session may have expired, continuing with local logout.");
+          } else {
+            throw error;
+          }
+        }
+        
+        logWithEmoji("Supabase sign out attempt completed", 'info');
+      } catch (signOutError: any) {
+        // Log the error but continue with local logout
+        logError(signOutError, "Sign out error");
       }
       
-      // Force clear the session and user state
+      // Force clear the session and user state regardless of server response
+      logWithEmoji("Forcing local session cleanup", 'info');
       setSession(null);
       setUser(null);
       
-      console.log("Sign out successful");
+      // Force clear any auth data from local storage to ensure clean logout state
+      try {
+        localStorage.removeItem('supabase.auth.token');
+      } catch (storageError) {
+        logWarning("Could not clear local storage items");
+      }
+      
+      logWithEmoji("Sign out completed successfully", 'success');
       return { success: true, error: null };
-    } catch (error: any) {
-      console.error("Sign out error:", error);
-      return { success: false, error: error.message };
+    } catch (finalError: any) {
+      // This should never happen as we catch errors above, but just in case
+      logError(finalError, "Unhandled sign out error");
+      return { success: false, error: finalError.message };
     }
   };
 
