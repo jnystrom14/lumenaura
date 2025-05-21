@@ -8,7 +8,7 @@ interface PersonalYearInfoProps {
 
 const PersonalYearInfo: React.FC<PersonalYearInfoProps> = ({ dailyProfile }) => {
   const personalYear = dailyProfile.personalYear;
-  const personalYearData = dailyProfile.numerologyData.personalYear;
+  const personalYearData = dailyProfile.personalYearData.personalYear;
 
   if (!personalYearData) {
     return null;

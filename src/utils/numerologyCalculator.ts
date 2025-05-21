@@ -112,7 +112,9 @@ export const getDailyProfile = (user: UserProfile, date: Date = new Date()): Dai
   const personalMonth = calculatePersonalMonth(personalYear, month);
   const personalDay = calculatePersonalDay(personalMonth, day);
   
+  // Fetch data for both personal day and personal year separately
   const numerologyData = getDataForNumber(personalDay);
+  const personalYearData = getDataForNumber(personalYear);
   
   return {
     date,
@@ -120,7 +122,8 @@ export const getDailyProfile = (user: UserProfile, date: Date = new Date()): Dai
     personalYear,
     personalMonth,
     personalDay,
-    numerologyData
+    numerologyData,
+    personalYearData
   };
 };
 

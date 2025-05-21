@@ -40,4 +40,5 @@ export interface DailyProfile {
   personalMonth: number;
   personalDay: number;
   numerologyData: NumerologyData;
+  personalYearData: NumerologyData; // New property for personal year data
 }
