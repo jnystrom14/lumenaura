@@ -60,21 +60,25 @@ const Dashboard: React.FC<DashboardProps> = ({ userProfile, onLogout }) => {
   
   return (
     <div className="min-h-screen pb-12">
-      <div className="container mx-auto px-4 py-6 md:py-8 space-y-6 md:space-y-8 animate-fade-in">
-        <header className="flex flex-col space-y-4">
+      <div className="container mx-auto px-4 py-6 md:py-8 space-y-5 md:space-y-8 animate-fade-in">
+        <header className={isMobile ? "mb-4" : "flex flex-col space-y-4 mb-6"}>
           <DashboardHeader userProfile={userProfile} selectedDate={selectedDate} />
           
-          <DateControls
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-            dateRange={dateRange}
-            setDateRange={setDateRange}
-            isRangeMode={isRangeMode}
-            setIsRangeMode={setIsRangeMode}
-            setShowMonthly={setShowMonthly}
-            setShowDateRange={setShowDateRange}
-            onLogout={onLogout}
-          />
+          {isMobile && <div className="h-2" />}
+          
+          <div className={isMobile ? "bg-white/30 rounded-xl p-3 shadow-sm" : ""}>
+            <DateControls
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+              dateRange={dateRange}
+              setDateRange={setDateRange}
+              isRangeMode={isRangeMode}
+              setIsRangeMode={setIsRangeMode}
+              setShowMonthly={setShowMonthly}
+              setShowDateRange={setShowDateRange}
+              onLogout={onLogout}
+            />
+          </div>
         </header>
         
         <NumerologyCard dailyProfile={dailyProfile} />

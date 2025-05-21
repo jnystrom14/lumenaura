@@ -44,20 +44,45 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     );
   }
 
+  if (isMobile) {
+    return (
+      <div className="mb-4">
+        <div className="flex items-center justify-center mb-3">
+          <Avatar className="h-16 w-16 border-2 border-lumenAura-lavender">
+            <AvatarImage src={userProfile.profilePicture} />
+            <AvatarFallback className="bg-lumenAura-lavender">
+              {userProfile.name ? userProfile.name.substring(0, 2).toUpperCase() : 'NA'}
+            </AvatarFallback>
+          </Avatar>
+        </div>
+        <div className="text-center">
+          <h1 className="text-xl font-serif font-medium">
+            {getGreeting()}, {userProfile.name}
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {isToday(selectedDate)
+              ? "Your numerology profile for today"
+              : `Viewing profile for ${format(selectedDate, "MMM d, yyyy")}`}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      <div className={`flex ${isMobile ? 'flex-col items-center text-center' : 'items-center'} space-x-4`}>
-        <Avatar className={`${isMobile ? 'h-16 w-16 mb-2' : 'h-12 w-12'} border-2 border-lumenAura-lavender`}>
+      <div className="flex items-center space-x-4">
+        <Avatar className="h-12 w-12 border-2 border-lumenAura-lavender">
           <AvatarImage src={userProfile.profilePicture} />
           <AvatarFallback className="bg-lumenAura-lavender">
             {userProfile.name ? userProfile.name.substring(0, 2).toUpperCase() : 'NA'}
           </AvatarFallback>
         </Avatar>
-        <div className={isMobile ? "text-center w-full" : ""}>
-          <h1 className={`${isMobile ? 'text-2xl mt-1' : 'text-2xl'} font-serif`}>
+        <div>
+          <h1 className="text-2xl font-serif">
             {getGreeting()}, <span className="font-semibold">{userProfile.name}</span>
           </h1>
-          <p className={`${isMobile ? 'text-base' : 'text-sm'} text-muted-foreground`}>
+          <p className="text-sm text-muted-foreground">
             {isToday(selectedDate)
               ? "Here's your numerology profile for today"
               : `Viewing profile for ${format(selectedDate, "MMMM d, yyyy")}`}
