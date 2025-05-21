@@ -39,9 +39,8 @@ const DesktopControls: React.FC<DesktopControlsProps> = ({
       <div className="flex items-center">
         {/* Previous Button */}
         <NavigationButtons 
-          onPreviousDay={handlePreviousDay} 
-          onNextDay={handleNextDay}
-          showNext={false}
+          onPreviousDay={handlePreviousDay}
+          variant="previous"
         />
         
         {/* Single Date Picker */}
@@ -54,9 +53,8 @@ const DesktopControls: React.FC<DesktopControlsProps> = ({
         
         {/* Next Button */}
         <NavigationButtons 
-          onPreviousDay={handlePreviousDay} 
           onNextDay={handleNextDay}
-          showPrevious={false}
+          variant="next"
         />
       </div>
       
