@@ -1,65 +1,30 @@
 
-import React, { useState, useEffect } from "react";
-import { UserProfile } from "../types";
-import { saveUserProfile, getUserProfile, hasUserProfile } from "../utils/storage";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import Authentication from "./auth/Authentication";
-import PersonalInfoForm from "./onboarding/PersonalInfoForm";
-import BirthDateForm from "./onboarding/BirthDateForm";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/components/ui/use-toast";
+import React from "react";
+import { useOnboardingState } from "../hooks/useOnboardingState";
+import { saveProfileToSupabase } from "../services/profileService";
+import OnboardingForm from "./onboarding/OnboardingForm";
 
 interface OnboardingProps {
   onComplete: () => void;
 }
 
 const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const [step, setStep] = useState<number>(1); // Start with personal info
-  const [profile, setProfile] = useState<UserProfile>({
-    name: "",
-    birthDay: 1,
-    birthMonth: 1,
-    birthYear: 1990,
-    profilePicture: ""
-  });
-  const [error, setError] = useState<string>("");
+  const { 
+    user, 
+    step, 
+    setStep, 
+    profile, 
+    error, 
+    setError, 
+    handleNameChange, 
+    handleBirthDayChange, 
+    handleBirthMonthChange, 
+    handleBirthYearChange, 
+    handleProfilePictureChange,
+    toast
+  } = useOnboardingState(onComplete);
   
-  // Check for existing user profile or fill from authenticated user info
-  useEffect(() => {
-    if (hasUserProfile()) {
-      // If there's a profile in storage, use it to complete the onboarding
-      const existingProfile = getUserProfile();
-      if (existingProfile) {
-        // Make sure we include profilePicture in the check for completeness
-        if (existingProfile.name && 
-            existingProfile.birthDay && 
-            existingProfile.birthMonth && 
-            existingProfile.birthYear) {
-          saveUserProfile(existingProfile);
-          onComplete();
-          return;
-        } else {
-          // If profile exists but isn't complete, pre-fill what we have
-          setProfile(existingProfile);
-        }
-      }
-    }
-    
-    // Pre-fill profile picture if available from authenticated user
-    if (user) {
-      setProfile(prevProfile => ({
-        ...prevProfile,
-        profilePicture: user.user_metadata?.avatar_url || prevProfile.profilePicture,
-        // Try to get name from user metadata if available
-        name: user.user_metadata?.full_name || user.user_metadata?.name || prevProfile.name
-      }));
-    }
-  }, [user, onComplete]);
-  
-  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProfilePictureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     
@@ -71,10 +36,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       if (event.target?.result) {
-        setProfile(prev => ({
-          ...prev,
-          profilePicture: event.target.result as string
-        }));
+        handleProfilePictureChange(event.target.result as string);
       }
     };
     reader.readAsDataURL(file);
@@ -105,30 +67,14 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         return;
       }
       
-      // Write to your Supabase "profiles" table
-      if (user) {
-        const { error: upsertError } = await supabase
-          .from('profiles')
-          .upsert({
-            id: user.id,
-            name: profile.name,
-            birth_day: profile.birthDay,
-            birth_month: profile.birthMonth,
-            birth_year: profile.birthYear,
-            profile_picture: profile.profilePicture,
-          });
-        if (upsertError) {
-          console.error("Failed to save profile:", upsertError);
-          setError("Unable to save profile to server");
-          return;
-        }
+      // Save profile to Supabase and local storage
+      const result = await saveProfileToSupabase(profile, user);
+      
+      if (!result.success) {
+        setError(result.error || "Failed to save profile");
+        return;
       }
-
-      // Now save locally and finish onboarding
-      saveUserProfile({
-        ...profile,
-        profilePicture: profile.profilePicture || ""
-      });
+      
       toast({
         title: "Profile saved",
         description: "Your profile has been saved successfully"
@@ -137,30 +83,6 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
     }
   };
 
-  // Handle setting name
-  const handleNameChange = (name: string) => {
-    setProfile(prev => ({ ...prev, name }));
-  };
-
-  // Handle birth date changes
-  const handleBirthDayChange = (day: number) => {
-    setProfile(prev => ({ ...prev, birthDay: day }));
-  };
-
-  const handleBirthMonthChange = (month: number) => {
-    setProfile(prev => ({ ...prev, birthMonth: month }));
-  };
-
-  const handleBirthYearChange = (year: number) => {
-    setProfile(prev => ({ ...prev, birthYear: year }));
-  };
-
-  // Handle continue without account
-  const handleContinueWithoutAccount = () => {
-    setStep(1);
-    setError("");
-  };
-  
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-10 animate-fade-in">
       <div className="w-full max-w-md crystal-card p-8 space-y-8">
@@ -180,46 +102,18 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
           </div>
         </div>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {step === 1 ? (
-            <PersonalInfoForm 
-              name={profile.name} 
-              setName={handleNameChange} 
-              error={error} 
-            />
-          ) : (
-            <BirthDateForm 
-              birthDay={profile.birthDay}
-              birthMonth={profile.birthMonth}
-              birthYear={profile.birthYear}
-              profilePicture={profile.profilePicture}
-              name={profile.name}
-              onBirthDayChange={handleBirthDayChange}
-              onBirthMonthChange={handleBirthMonthChange}
-              onBirthYearChange={handleBirthYearChange}
-              onProfilePictureChange={handleProfilePictureChange}
-              error={error}
-            />
-          )}
-          
-          <div className="flex justify-between">
-            {step === 2 && (
-              <Button 
-                type="button" 
-                variant="outline"
-                onClick={() => setStep(1)}
-              >
-                Back
-              </Button>
-            )}
-            <Button 
-              type="submit" 
-              className={`${step === 1 ? 'w-full' : 'ml-auto'} bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 transition-opacity`}
-            >
-              {step === 1 ? 'Next' : 'Start Your Journey'}
-            </Button>
-          </div>
-        </form>
+        <OnboardingForm
+          step={step}
+          profile={profile}
+          error={error}
+          onSubmit={handleSubmit}
+          onNameChange={handleNameChange}
+          onBirthDayChange={handleBirthDayChange}
+          onBirthMonthChange={handleBirthMonthChange}
+          onBirthYearChange={handleBirthYearChange}
+          onProfilePictureChange={handleProfilePictureUpload}
+          onBack={() => setStep(1)}
+        />
       </div>
     </div>
   );
