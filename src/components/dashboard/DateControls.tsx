@@ -1,4 +1,3 @@
-
 import React from "react";
 import { format, addDays, subDays } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -40,11 +39,6 @@ const DateControls: React.FC<DateControlsProps> = ({
   
   const handleDateRangeSelection = () => {
     if (dateRange?.from && dateRange?.to) {
-      const days = Math.floor((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-      toast({
-        title: "Date range selected",
-        description: `You selected ${days} days from ${format(dateRange.from, "MMMM d, yyyy")} to ${format(dateRange.to, "MMMM d, yyyy")}`,
-      });
       setIsRangeMode(false);
       setSelectedDate(dateRange.from);
       setShowDateRange(true);
