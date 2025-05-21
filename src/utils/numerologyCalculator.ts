@@ -1,4 +1,3 @@
-
 import { UserProfile, DailyProfile } from "../types";
 import { getDataForNumber } from "../data/numerologyData";
 
@@ -19,6 +18,31 @@ export const calculateUniversalYear = (year: number): number => {
   return result;
 };
 
+// New function that calculates personal year based on calendar year
+// This will be consistent throughout the entire year
+export const calculatePersonalYearForCalendarYear = (
+  birthMonth: number,
+  birthDay: number,
+  calendarYear: number
+): number => {
+  // Sum birth month, birth day, and universal year (based on calendar year)
+  const universalYear = calculateUniversalYear(calendarYear);
+  const sum = birthMonth + birthDay + universalYear;
+  
+  // Reduce to a single digit or master number
+  if (sum === 11 || sum === 22) {
+    return sum;
+  }
+  
+  let result = sum;
+  while (result > 9) {
+    result = Array.from(String(result), Number).reduce((a, b) => a + b, 0);
+  }
+  
+  return result;
+};
+
+// Keep the old function for backward compatibility
 export const calculatePersonalYear = (
   birthMonth: number,
   birthDay: number,
@@ -80,7 +104,11 @@ export const getDailyProfile = (user: UserProfile, date: Date = new Date()): Dai
   const day = date.getDate();
   
   const universalYear = calculateUniversalYear(year);
-  const personalYear = calculatePersonalYear(user.birthMonth, user.birthDay, universalYear);
+  
+  // Use the calendar year to calculate personal year instead of the universal year
+  // This ensures the personal year stays consistent throughout the calendar year
+  const personalYear = calculatePersonalYearForCalendarYear(user.birthMonth, user.birthDay, year);
+  
   const personalMonth = calculatePersonalMonth(personalYear, month);
   const personalDay = calculatePersonalDay(personalMonth, day);
   
