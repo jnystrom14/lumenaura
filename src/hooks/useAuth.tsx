@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,19 +21,11 @@ export function useAuth() {
         // Reset isLoggedOut flag if user logs back in
         if (event === 'SIGNED_IN') {
           setIsLoggedOut(false);
-          toast({
-            title: "Signed in successfully",
-            description: "Welcome back!",
-          });
         } else if (event === 'SIGNED_OUT') {
           // Explicitly set logged out state
           setSession(null);
           setUser(null);
           setIsLoggedOut(true);
-          toast({
-            title: "Signed out",
-            description: "You have been signed out successfully.",
-          });
         }
       }
     );
