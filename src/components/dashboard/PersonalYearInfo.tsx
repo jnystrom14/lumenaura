@@ -1,6 +1,7 @@
 
 import React from "react";
 import { DailyProfile } from "../../types";
+import { useIsMobile } from "../../hooks/use-mobile";
 
 interface PersonalYearInfoProps {
   dailyProfile: DailyProfile;
@@ -9,6 +10,7 @@ interface PersonalYearInfoProps {
 const PersonalYearInfo: React.FC<PersonalYearInfoProps> = ({ dailyProfile }) => {
   const personalYear = dailyProfile.personalYear;
   const personalYearData = dailyProfile.personalYearData.personalYear;
+  const isMobile = useIsMobile();
 
   if (!personalYearData) {
     return null;
@@ -17,18 +19,18 @@ const PersonalYearInfo: React.FC<PersonalYearInfoProps> = ({ dailyProfile }) => 
   return (
     <div className="crystal-card p-6 animate-fade-in my-6">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold">Your Personal Year: {personalYear}</h3>
-        <span className="px-3 py-1 bg-primary text-white rounded-full text-sm">
+        <h3 className={`${isMobile ? 'text-xl' : 'text-xl'} font-semibold`}>Your Personal Year: {personalYear}</h3>
+        <span className={`px-3 py-1 bg-primary text-white rounded-full ${isMobile ? 'text-base' : 'text-sm'}`}>
           {personalYearData.yearNumber}
         </span>
       </div>
       
-      <div className="prose prose-lg text-gray-700">
-        <p className="italic font-medium mb-4">
+      <div className={`prose ${isMobile ? 'prose-base' : 'prose-lg'} text-gray-700`}>
+        <p className={`${isMobile ? 'text-lg' : 'text-lg'} italic font-medium mb-4`}>
           {personalYearData.description.split('!')[0]}!
         </p>
         
-        <p className="text-gray-600">
+        <p className={`${isMobile ? 'text-base leading-relaxed' : 'text-base'} text-gray-600`}>
           {personalYearData.description.split('!').slice(1).join('!')}
         </p>
       </div>

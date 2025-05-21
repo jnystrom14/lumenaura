@@ -64,16 +64,17 @@ const DateControls: React.FC<DateControlsProps> = ({
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className={`${isMobile ? 'flex flex-col space-y-3' : 'flex flex-wrap gap-2'}`}>
       {/* Date Navigation Arrows */}
-      <div className="flex items-center">
+      <div className={`flex items-center ${isMobile ? 'w-full justify-between' : ''}`}>
         <Button
           variant="outline" 
-          size="icon"
+          size={isMobile ? "default" : "icon"}
           onClick={handlePreviousDay}
-          className="mr-1"
+          className={isMobile ? "px-4 py-2 text-base" : "mr-1"}
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className={isMobile ? "h-5 w-5 mr-1" : "h-4 w-4"} />
+          {isMobile && "Previous"}
         </Button>
         
         {/* Single Date Picker */}
@@ -81,9 +82,9 @@ const DateControls: React.FC<DateControlsProps> = ({
           <PopoverTrigger asChild>
             <Button
               variant={!isRangeMode ? "default" : "outline"}
-              className="flex items-center space-x-2"
+              className={`flex items-center space-x-2 ${isMobile ? 'text-base flex-1 mx-2' : ''}`}
             >
-              <CalendarIcon className="h-4 w-4" />
+              <CalendarIcon className={isMobile ? "h-5 w-5" : "h-4 w-4"} />
               <span>{!isRangeMode ? format(selectedDate, "MMM d, yyyy") : "Select a date"}</span>
             </Button>
           </PopoverTrigger>
@@ -107,66 +108,72 @@ const DateControls: React.FC<DateControlsProps> = ({
         
         <Button
           variant="outline" 
-          size="icon"
+          size={isMobile ? "default" : "icon"}
           onClick={handleNextDay}
-          className="ml-1"
+          className={isMobile ? "px-4 py-2 text-base" : "ml-1"}
         >
-          <ChevronRight className="h-4 w-4" />
+          {isMobile && "Next"}
+          <ChevronRight className={isMobile ? "h-5 w-5 ml-1" : "h-4 w-4"} />
         </Button>
       </div>
       
-      {/* Date Range Picker */}
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant={isRangeMode ? "default" : "outline"}
-            className="flex items-center space-x-2"
-          >
-            <CalendarRange className="h-4 w-4" />
-            <span>
-              {isRangeMode && dateRange?.from && dateRange?.to
-                ? `${format(dateRange.from, "MMM d")} - ${format(dateRange.to, "MMM d")}`
-                : "Date range"}
-            </span>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0 pointer-events-auto">
-          <div className="p-3">
-            <Calendar
-              initialFocus={!isMobile}
-              mode="range"
-              defaultMonth={selectedDate}
-              selected={dateRange}
-              onSelect={(range) => {
-                setDateRange(range);
-                setIsRangeMode(true);
-              }}
-              numberOfMonths={isMobile ? 1 : 2}
-              className="touch-manipulation"
-            />
-            <div className="flex justify-end gap-2 mt-4">
-              <Button 
-                onClick={handleDateRangeSelection}
-                disabled={!dateRange?.from || !dateRange?.to}
-              >
-                View Date Range
-              </Button>
+      {/* Date Range and Monthly buttons - side by side on mobile */}
+      <div className={`${isMobile ? 'flex justify-between w-full' : ''}`}>
+        {/* Date Range Picker */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={isRangeMode ? "default" : "outline"}
+              className={`flex items-center space-x-2 ${isMobile ? 'text-base flex-1 mr-2' : ''}`}
+            >
+              <CalendarRange className={isMobile ? "h-5 w-5" : "h-4 w-4"} />
+              <span>
+                {isRangeMode && dateRange?.from && dateRange?.to
+                  ? `${format(dateRange.from, "MMM d")} - ${format(dateRange.to, "MMM d")}`
+                  : "Date range"}
+              </span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 pointer-events-auto">
+            <div className="p-3">
+              <Calendar
+                initialFocus={!isMobile}
+                mode="range"
+                defaultMonth={selectedDate}
+                selected={dateRange}
+                onSelect={(range) => {
+                  setDateRange(range);
+                  setIsRangeMode(true);
+                }}
+                numberOfMonths={1}
+                className="touch-manipulation"
+              />
+              <div className="flex justify-end gap-2 mt-4">
+                <Button 
+                  onClick={handleDateRangeSelection}
+                  disabled={!dateRange?.from || !dateRange?.to}
+                  className={isMobile ? "text-base py-2" : ""}
+                >
+                  View Date Range
+                </Button>
+              </div>
             </div>
-          </div>
-        </PopoverContent>
-      </Popover>
-      
-      <Button
-        variant="outline"
-        onClick={() => setShowMonthly(true)}
-        className="border-lumenaura-lavender"
-      >
-        Monthly View
-      </Button>
+          </PopoverContent>
+        </Popover>
+        
+        <Button
+          variant="outline"
+          onClick={() => setShowMonthly(true)}
+          className={`border-lumenaura-lavender ${isMobile ? 'text-base flex-1' : ''}`}
+        >
+          Monthly View
+        </Button>
+      </div>
       
       <Button
         variant="ghost"
         onClick={onLogout}
+        className={`${isMobile ? 'w-full text-base py-2 mt-2' : ''}`}
       >
         Logout
       </Button>

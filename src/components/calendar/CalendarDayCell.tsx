@@ -1,3 +1,4 @@
+
 import React from "react";
 import { DailyProfile } from "../../types";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -70,7 +71,7 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) 
   if (!profile) {
     return (
       <div className={`${
-        isMobile ? 'p-1 min-h-14' : 'p-2 min-h-24'
+        isMobile ? 'p-2 min-h-[5rem]' : 'p-2 min-h-24'
       } print:p-2 print:min-h-[5rem] border rounded-md bg-gray-50`}></div>
     );
   }
@@ -81,14 +82,14 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) 
 
   return (
     <div className={`${
-      isMobile ? 'p-1 min-h-14' : 'p-2 min-h-24'
+      isMobile ? 'p-2 min-h-[5rem]' : 'p-2 min-h-24'
     } print:p-2 print:min-h-[5rem] border rounded-md hover:bg-lumenaura-lavender hover:bg-opacity-10 transition-colors`}>
       <div className="flex justify-between items-start">
         <span className="font-medium print:text-lg">
           {profile.date.getDate()}
         </span>
         <span 
-          className={`${isMobile ? 'text-[10px] px-1 py-0.5' : 'text-xs px-2 py-1'} print:text-xs print:px-2 print:py-1 rounded-full text-white print:border print:border-gray-400`}
+          className={`${isMobile ? 'text-xs px-2 py-1' : 'text-xs px-2 py-1'} print:text-xs print:px-2 print:py-1 rounded-full text-white print:border print:border-gray-400`}
           style={{ 
             backgroundColor: profile.numerologyData.colorHex || "#6B7280",
             color: getContrastColor(profile.numerologyData.colorHex || "#6B7280"),
@@ -99,31 +100,27 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) 
           {profile.personalDay}
         </span>
       </div>
-      <div className={`${isMobile ? 'mt-1' : 'mt-2'} ${isMobile ? 'text-[10px]' : 'text-xs'} print:mt-2 print:text-xs`}>
+      <div className={`${isMobile ? 'mt-2' : 'mt-2'} ${isMobile ? 'text-xs' : 'text-xs'} print:mt-2 print:text-xs`}>
         <div className="font-medium truncate flex items-center gap-0">
           {formatList(profile.numerologyData.colors)}
           {shouldShowAsterisk(primaryColor) && (
             <Asterisk className={cn(
-              isMobile ? "h-2 w-2" : "h-3 w-3",
+              isMobile ? "h-3 w-3" : "h-3 w-3",
               "print:h-2 print:w-2"
             )} />
           )}
         </div>
-        {(!isMobile || true) && (
-          <div className="font-medium break-words hyphens-auto truncate flex items-center gap-0">
-            {formatList(profile.numerologyData.gems)}
-            {shouldShowGemAsterisk(primaryGem) && (
-              <Asterisk className={cn(
-                isMobile ? "h-2 w-2" : "h-3 w-3",
-                "print:h-2 print:w-2"
-              )} />
-            )}
-          </div>
-        )}
+        <div className="font-medium break-words hyphens-auto truncate flex items-center gap-0">
+          {formatList(profile.numerologyData.gems)}
+          {shouldShowGemAsterisk(primaryGem) && (
+            <Asterisk className={cn(
+              isMobile ? "h-3 w-3" : "h-3 w-3",
+              "print:h-2 print:w-2"
+            )} />
+          )}
+        </div>
         <div className="text-muted-foreground truncate">
-          {isMobile 
-            ? profile.numerologyData.powerWord || ""
-            : profile.numerologyData.powerWord || profile.numerologyData.keyPhrase}
+          {profile.numerologyData.powerWord || profile.numerologyData.keyPhrase}
         </div>
       </div>
     </div>

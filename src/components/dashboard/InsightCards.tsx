@@ -24,39 +24,39 @@ const InsightCards: React.FC<InsightCardsProps> = ({ dailyProfile }) => {
     <>
       <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:mt-8">
         <div className="crystal-card p-6 animate-fade-in">
-          <h3 className="text-xl font-semibold mb-4">Your Numbers</h3>
-          <div className="space-y-2">
+          <h3 className={`${isMobile ? 'text-xl mb-4' : 'text-xl mb-4'} font-semibold`}>Your Numbers</h3>
+          <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Universal Year:</span>
-              <span className="font-medium">{dailyProfile.universalYear}</span>
+              <span className={`${isMobile ? 'text-base' : ''} text-muted-foreground`}>Universal Year:</span>
+              <span className={`${isMobile ? 'text-base' : ''} font-medium`}>{dailyProfile.universalYear}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Personal Year:</span>
-              <span className="font-medium">{dailyProfile.personalYear}</span>
+              <span className={`${isMobile ? 'text-base' : ''} text-muted-foreground`}>Personal Year:</span>
+              <span className={`${isMobile ? 'text-base' : ''} font-medium`}>{dailyProfile.personalYear}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Personal Month:</span>
-              <span className="font-medium">{dailyProfile.personalMonth}</span>
+              <span className={`${isMobile ? 'text-base' : ''} text-muted-foreground`}>Personal Month:</span>
+              <span className={`${isMobile ? 'text-base' : ''} font-medium`}>{dailyProfile.personalMonth}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Personal Day:</span>
-              <span className="font-semibold text-xl text-primary">{dailyProfile.personalDay}</span>
+              <span className={`${isMobile ? 'text-base' : ''} text-muted-foreground`}>Personal Day:</span>
+              <span className={`${isMobile ? 'text-2xl' : 'text-xl'} font-semibold text-primary`}>{dailyProfile.personalDay}</span>
             </div>
           </div>
         </div>
         
         <div className="crystal-card p-6 animate-fade-in" style={{ animationDelay: "100ms" }}>
-          <h3 className="text-xl font-semibold mb-4">Daily Affirmation</h3>
+          <h3 className={`${isMobile ? 'text-xl mb-4' : 'text-xl mb-4'} font-semibold`}>Daily Affirmation</h3>
           <div className="h-full flex flex-col">
-            <blockquote className="text-lg italic text-gray-700 flex-grow">
+            <blockquote className={`${isMobile ? 'text-lg' : 'text-lg'} italic text-gray-700 flex-grow`}>
               "{dailyProfile.numerologyData.affirmation || dailyProfile.numerologyData.meditation}"
             </blockquote>
           </div>
         </div>
         
         <div className="crystal-card p-6 animate-fade-in" style={{ animationDelay: "200ms" }}>
-          <h3 className="text-xl font-semibold mb-4">How to Use Today's Energy</h3>
-          <p className="text-gray-700">
+          <h3 className={`${isMobile ? 'text-xl mb-4' : 'text-xl mb-4'} font-semibold`}>How to Use Today's Energy</h3>
+          <p className={`${isMobile ? 'text-base leading-relaxed' : 'text-base'} text-gray-700`}>
             {dailyProfile.numerologyData.meaning || dailyProfile.numerologyData.description}
           </p>
         </div>
@@ -66,9 +66,9 @@ const InsightCards: React.FC<InsightCardsProps> = ({ dailyProfile }) => {
         <Button 
           variant={showPersonalYear ? "default" : "outline"}
           onClick={() => setShowPersonalYear(!showPersonalYear)}
-          className="flex items-center gap-2 transition-all"
+          className={`flex items-center gap-2 transition-all ${isMobile ? 'text-base py-2 px-4' : ''}`}
         >
-          <Calendar className="h-4 w-4" />
+          <Calendar className={`${isMobile ? 'h-5 w-5' : 'h-4 w-4'}`} />
           {showPersonalYear ? 'Hide Personal Year Insights' : 'Show Personal Year Insights'}
         </Button>
       </div>

@@ -9,6 +9,7 @@ import DateRangeCalendar from "./DateRangeCalendar";
 import DashboardHeader from "./dashboard/DashboardHeader";
 import DateControls from "./dashboard/DateControls";
 import InsightCards from "./dashboard/InsightCards";
+import { useIsMobile } from "../hooks/use-mobile";
 
 interface DashboardProps {
   userProfile: UserProfile;
@@ -22,6 +23,7 @@ const Dashboard: React.FC<DashboardProps> = ({ userProfile, onLogout }) => {
   const [showMonthly, setShowMonthly] = useState<boolean>(false);
   const [showDateRange, setShowDateRange] = useState<boolean>(false);
   const [isRangeMode, setIsRangeMode] = useState<boolean>(false);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     if (userProfile) {
@@ -58,8 +60,8 @@ const Dashboard: React.FC<DashboardProps> = ({ userProfile, onLogout }) => {
   
   return (
     <div className="min-h-screen pb-12">
-      <div className="container mx-auto px-4 py-8 space-y-8 animate-fade-in">
-        <header className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+      <div className="container mx-auto px-4 py-6 md:py-8 space-y-6 md:space-y-8 animate-fade-in">
+        <header className="flex flex-col space-y-4">
           <DashboardHeader userProfile={userProfile} selectedDate={selectedDate} />
           
           <DateControls

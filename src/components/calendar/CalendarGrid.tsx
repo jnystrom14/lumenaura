@@ -49,15 +49,15 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({ profiles }) => {
 
   return (
     <div className="crystal-card p-2 print:border-none print:p-0 print:shadow-none print:w-full">
-      <div className={`grid grid-cols-7 ${isMobile ? 'gap-0.5 mb-1' : 'gap-1 mb-2'} print:gap-2 print:mb-2`}>
+      <div className={`grid grid-cols-7 ${isMobile ? 'gap-1 mb-2' : 'gap-1 mb-2'} print:gap-2 print:mb-2`}>
         {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
-          <div key={day + index} className={`text-center font-medium ${isMobile ? 'p-1 text-xs' : 'p-2'} print:p-2 print:text-base`}>
+          <div key={day + index} className={`text-center font-medium ${isMobile ? 'p-2 text-sm' : 'p-2'} print:p-2 print:text-base`}>
             {day}
           </div>
         ))}
       </div>
 
-      <div className={`grid grid-cols-7 ${isMobile ? 'gap-0.5' : 'gap-1'} print:gap-2 print:w-full`}>
+      <div className={`grid grid-cols-7 ${isMobile ? 'gap-1' : 'gap-1'} print:gap-2 print:w-full`}>
         {getWeeks().map((week, weekIndex) => (
           <React.Fragment key={weekIndex}>
             {week.map((profile, dayIndex) => (

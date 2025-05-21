@@ -37,24 +37,24 @@ const DateRangeCalendar: React.FC<DateRangeCalendarProps> = ({
       <div className="container mx-auto px-2 print:px-0 print:w-full print:max-w-none animate-fade-in">
         <div className="flex justify-between items-center mb-4 print:hidden">
           <Button onClick={onBack} variant="outline" className="gap-1 text-sm">
-            <ArrowLeft className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'}`} />
+            <ArrowLeft className={`${isMobile ? 'h-4 w-4' : 'h-4 w-4'}`} />
             {isMobile ? 'Back' : 'Back to Dashboard'}
           </Button>
           <h1 className={`${isMobile ? 'text-xl' : 'text-3xl'} font-serif text-center`}>
             {isMobile ? 'Date Range' : 'Date Range Calendar'}
           </h1>
           <Button onClick={handlePrint} variant="default" className="gap-1 text-sm">
-            <Printer className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'}`} />
+            <Printer className={`${isMobile ? 'h-4 w-4' : 'h-4 w-4'}`} />
             {isMobile ? '' : 'Print'}
           </Button>
         </div>
 
         <div className="print:block print:w-full">
           <div className="text-center mb-4">
-            <h2 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-serif print:text-2xl`}>
+            <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-serif print:text-2xl`}>
               {format(from, "MMM d")} - {format(to, "MMM d, yyyy")}
             </h2>
-            <p className="text-muted-foreground text-sm">
+            <p className={`${isMobile ? 'text-base' : 'text-sm'} text-muted-foreground`}>
               {profiles.length} days selected
             </p>
           </div>

@@ -83,6 +83,29 @@
   h1, h2, h3, h4, h5 {
     @apply font-serif;
   }
+  
+  /* Mobile improvements */
+  @media (max-width: 768px) {
+    input, button, a, select, textarea {
+      @apply touch-manipulation;
+    }
+    
+    button {
+      @apply min-h-11; /* Minimum touch target height */
+    }
+    
+    .mobile-spacing {
+      @apply space-y-4;
+    }
+    
+    .mobile-text {
+      @apply text-base;
+    }
+    
+    .mobile-headings {
+      @apply text-xl mb-4;
+    }
+  }
 }
 
 @layer components {
@@ -98,5 +121,10 @@
 @layer utilities {
   .text-gradient {
     @apply bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent;
+  }
+  
+  /* Touch-friendly utility class */
+  .touch-friendly {
+    @apply min-h-11 min-w-11;
   }
 }

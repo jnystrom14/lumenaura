@@ -29,7 +29,7 @@ const NumerologyCard: React.FC<NumerologyCardProps> = ({ dailyProfile }) => {
           )}
         ></div>
         
-        {/* Responsive layout - grid for desktop, stacked for mobile */}
+        {/* Responsive layout - stack for mobile, grid for desktop */}
         <div className={`${isMobile ? 'flex flex-col space-y-6' : 'grid grid-cols-4 gap-0'}`}>
           {/* Today's Theme Panel */}
           <div className="relative">

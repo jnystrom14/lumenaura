@@ -50,29 +50,37 @@ const MonthlyCalendar: React.FC<MonthlyCalendarProps> = ({
       <div className="container mx-auto px-2 print:px-0 print:w-full print:max-w-none animate-fade-in">
         <div className="flex justify-between items-center mb-4 print:hidden">
           <Button onClick={onBack} variant="outline" className="gap-1 text-sm">
-            <ArrowLeft className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'}`} />
+            <ArrowLeft className={`${isMobile ? 'h-4 w-4' : 'h-4 w-4'}`} />
             {isMobile ? 'Back' : 'Back to Dashboard'}
           </Button>
           <h1 className={`${isMobile ? 'text-xl' : 'text-3xl'} font-serif text-center`}>
             {isMobile ? 'Month' : 'Monthly Overview'}
           </h1>
           <Button onClick={handlePrint} variant="default" className="gap-1 text-sm">
-            <Printer className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'}`} />
+            <Printer className={`${isMobile ? 'h-4 w-4' : 'h-4 w-4'}`} />
             {isMobile ? '' : 'Print'}
           </Button>
         </div>
 
         <div className="flex justify-between items-center mb-4 print:mb-4">
-          <Button onClick={handlePreviousMonth} variant="outline" className="print:hidden text-sm p-2">
-            <ChevronLeft className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
-            {!isMobile && "Previous"}
+          <Button 
+            onClick={handlePreviousMonth} 
+            variant="outline" 
+            className={`print:hidden ${isMobile ? 'text-sm p-3' : 'text-sm p-2'}`}
+          >
+            <ChevronLeft className={`${isMobile ? 'h-5 w-5 mr-1' : 'h-5 w-5'}`} />
+            {isMobile && "Previous"}
           </Button>
-          <h2 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-medium print:text-2xl`}>
-            {format(currentDate, isMobile ? "MMM yyyy" : "MMMM yyyy")}
+          <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-medium print:text-2xl`}>
+            {format(currentDate, isMobile ? "MMMM yyyy" : "MMMM yyyy")}
           </h2>
-          <Button onClick={handleNextMonth} variant="outline" className="print:hidden text-sm p-2">
-            {!isMobile && "Next"}
-            <ChevronRight className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
+          <Button 
+            onClick={handleNextMonth} 
+            variant="outline" 
+            className={`print:hidden ${isMobile ? 'text-sm p-3' : 'text-sm p-2'}`}
+          >
+            {isMobile && "Next"}
+            <ChevronRight className={`${isMobile ? 'h-5 w-5 ml-1' : 'h-5 w-5'}`} />
           </Button>
         </div>
 
