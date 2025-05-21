@@ -3,6 +3,7 @@ import React from "react";
 import { format, isSameDay } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserProfile } from "../../types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface DashboardHeaderProps {
   userProfile: UserProfile;
@@ -25,13 +26,28 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     return isSameDay(date, today);
   };
 
+  // If userProfile is null or undefined, show a loading skeleton
+  if (!userProfile) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center space-x-4">
+          <Skeleton className="h-12 w-12 rounded-full" />
+          <div>
+            <Skeleton className="h-6 w-40 mb-2" />
+            <Skeleton className="h-4 w-60" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center space-x-4">
         <Avatar className="h-12 w-12 border-2 border-lumenAura-lavender">
           <AvatarImage src={userProfile.profilePicture} />
           <AvatarFallback className="bg-lumenAura-lavender">
-            {userProfile.name.substring(0, 2).toUpperCase()}
+            {userProfile.name ? userProfile.name.substring(0, 2).toUpperCase() : 'NA'}
           </AvatarFallback>
         </Avatar>
         <div>

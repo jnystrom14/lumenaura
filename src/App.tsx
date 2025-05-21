@@ -1,3 +1,4 @@
+
 // src/App.tsx
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -34,7 +35,7 @@ const App: React.FC = () => {
   useEffect(() => {
     if (authLoading) return;
 
-    // 1) If they’ve explicitly hit “logout,” show login screen
+    // 1) If they've explicitly hit "logout," show login screen
     if (isLoggedOut) {
       setShowAuth(true);
       setUserProfile(null);
@@ -74,7 +75,7 @@ const App: React.FC = () => {
     setLoading(false);
   }, [user, authLoading, isLoggedOut]);
 
-  // After showing login, clear the “logged out” flag
+  // After showing login, clear the "logged out" flag
   useEffect(() => {
     if (showAuth && isLoggedOut) {
       setIsLoggedOut(false);
@@ -116,7 +117,7 @@ const App: React.FC = () => {
             />
           ) : user && !userProfile && !isLoggedOut ? (
             <Onboarding onComplete={handleOnboardingComplete} />
-          ) : (
+          ) : userProfile ? (
             <Routes>
               <Route
                 path="/"
@@ -129,6 +130,12 @@ const App: React.FC = () => {
               />
               <Route path="*" element={<NotFound />} />
             </Routes>
+          ) : (
+            // If no userProfile and not in other states, show authentication
+            <Authentication
+              onContinueWithoutAccount={() => setShowAuth(false)}
+              defaultToSignUp={false}
+            />
           )}
         </BrowserRouter>
       </TooltipProvider>
