@@ -57,7 +57,7 @@ const ColorBallGroup = ({ colorHexes, size = "w-4 h-4", mobileSize = "w-3 h-3" }
   const isMobile = useIsMobile();
   
   return (
-    <div className="flex -space-x-2 mr-2">
+    <div className="flex -space-x-2 flex-shrink-0">
       {colorHexes.map((colorHex, index) => (
         <div 
           key={index}
@@ -88,7 +88,7 @@ const GemGroup = ({ gems, iconColor, size = "w-4 h-4", mobileSize = "w-3 h-3" }:
   const isMobile = useIsMobile();
   
   return (
-    <div className="flex -space-x-1 mr-2 items-center">
+    <div className="flex -space-x-1 flex-shrink-0">
       {gems.map((_, index) => (
         <Gem
           key={index}
@@ -118,7 +118,7 @@ const CalendarLegend: React.FC = () => {
       "print:mt-2 print:p-1 print:border print:border-gray-200"
     )}>
       <h3 className={cn(
-        "text-sm font-medium mb-1",
+        "text-sm font-medium mb-2",
         isMobile ? "text-xs" : "",
         "print:text-xs print:mb-1"
       )}>
@@ -126,19 +126,21 @@ const CalendarLegend: React.FC = () => {
       </h3>
       
       <div className={cn(
-        "space-y-1",
+        "grid grid-cols-2 gap-x-4 gap-y-1",
         isMobile ? "text-xs" : "text-sm",
         "print:text-xs"
       )}>
         {/* Color Groups */}
         {Object.values(COLOR_GROUPS).map((group, index) => (
-          <div key={`color-${index}`} className="flex items-center">
-            <ColorBallGroup 
-              colorHexes={group.colorHexes}
-              size={isMobile ? "w-3 h-3" : "w-4 h-4"}
-              mobileSize="w-2 h-2"
-            />
-            <span className="flex items-center gap-1">
+          <div key={`color-${index}`} className="flex items-center gap-2">
+            <div className="w-8 flex-shrink-0">
+              <ColorBallGroup 
+                colorHexes={group.colorHexes}
+                size={isMobile ? "w-3 h-3" : "w-4 h-4"}
+                mobileSize="w-2 h-2"
+              />
+            </div>
+            <span className="truncate">
               {group.colors.join(", ")}
             </span>
           </div>
@@ -146,14 +148,16 @@ const CalendarLegend: React.FC = () => {
         
         {/* Gem Groups */}
         {Object.values(GEM_GROUPS).map((group, index) => (
-          <div key={`gem-${index}`} className="flex items-center">
-            <GemGroup 
-              gems={group.gems}
-              iconColor={group.iconColor}
-              size={isMobile ? "w-3 h-3" : "w-4 h-4"}
-              mobileSize="w-2 h-2"
-            />
-            <span className="flex items-center gap-1">
+          <div key={`gem-${index}`} className="flex items-center gap-2">
+            <div className="w-8 flex-shrink-0">
+              <GemGroup 
+                gems={group.gems}
+                iconColor={group.iconColor}
+                size={isMobile ? "w-3 h-3" : "w-4 h-4"}
+                mobileSize="w-2 h-2"
+              />
+            </div>
+            <span className="truncate">
               {group.gems.join(", ")}
             </span>
           </div>
