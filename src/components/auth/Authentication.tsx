@@ -145,12 +145,6 @@ const Authentication: React.FC<AuthenticationProps> = ({
               {isSignUp ? "Sign In" : "Sign Up"}
             </button>
           </p>
-          
-          <p className="text-center text-sm">
-            <button type="button" className="text-primary hover:underline" onClick={onContinueWithoutAccount}>
-              Continue without an account
-            </button>
-          </p>
         </form>
       </div>
     </div>;

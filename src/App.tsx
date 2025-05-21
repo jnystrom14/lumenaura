@@ -112,7 +112,7 @@ const App: React.FC = () => {
         <BrowserRouter>
           {showAuth ? (
             <Authentication
-              onContinueWithoutAccount={() => setShowAuth(false)}
+              onContinueWithoutAccount={() => {}} // Empty function as we're removing this feature
               defaultToSignUp={false}
             />
           ) : user && !userProfile && !isLoggedOut ? (
@@ -133,7 +133,7 @@ const App: React.FC = () => {
           ) : (
             // If no userProfile and not in other states, show authentication
             <Authentication
-              onContinueWithoutAccount={() => setShowAuth(false)}
+              onContinueWithoutAccount={() => {}} // Empty function as we're removing this feature
               defaultToSignUp={false}
             />
           )}
