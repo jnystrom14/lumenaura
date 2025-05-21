@@ -2,6 +2,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsLargerThan, useIsSmallerThan } from "@/hooks/use-responsive";
 import { Gem } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
@@ -56,6 +57,9 @@ const ColorBallGroup = ({ colorHexes, size = "w-4 h-4", mobileSize = "w-3 h-3" }
   mobileSize?: string 
 }) => {
   const isMobile = useIsMobile();
+  const isExtraSmall = useIsSmallerThan('xs');
+  
+  const ballSize = isExtraSmall ? "w-2 h-2" : isMobile ? mobileSize : size;
   
   return (
     <div className="flex -space-x-2 flex-shrink-0">
@@ -64,7 +68,7 @@ const ColorBallGroup = ({ colorHexes, size = "w-4 h-4", mobileSize = "w-3 h-3" }
           key={index}
           className={cn(
             "rounded-full border border-gray-100",
-            isMobile ? mobileSize : size,
+            ballSize,
             "print:w-2 print:h-2"
           )}
           style={{ 
@@ -87,6 +91,9 @@ const GemGroup = ({ gems, iconColor, size = "w-4 h-4", mobileSize = "w-3 h-3" }:
   mobileSize?: string
 }) => {
   const isMobile = useIsMobile();
+  const isExtraSmall = useIsSmallerThan('xs');
+  
+  const gemSize = isExtraSmall ? "w-2 h-2" : isMobile ? mobileSize : size;
   
   return (
     <div className="flex -space-x-1 flex-shrink-0">
@@ -94,7 +101,7 @@ const GemGroup = ({ gems, iconColor, size = "w-4 h-4", mobileSize = "w-3 h-3" }:
         <Gem
           key={index}
           className={cn(
-            isMobile ? mobileSize : size,
+            gemSize,
             "print:w-2 print:h-2"
           )}
           style={{ 
@@ -112,15 +119,18 @@ const GemGroup = ({ gems, iconColor, size = "w-4 h-4", mobileSize = "w-3 h-3" }:
 
 const CalendarLegend: React.FC = () => {
   const isMobile = useIsMobile();
+  const isExtraSmall = useIsSmallerThan('xs');
+  const isLargerThanMobile = useIsLargerThan('md');
   
   return (
     <div className={cn(
       "mt-4 p-3 rounded-md bg-white bg-opacity-50 border border-lumenaura-lavender border-opacity-30",
+      isExtraSmall ? "p-2" : "",
       "print:mt-2 print:p-1 print:border print:border-gray-200"
     )}>
       <h3 className={cn(
         "text-sm font-medium mb-2",
-        isMobile ? "text-xs" : "",
+        isExtraSmall ? "text-xs mb-1" : isMobile ? "text-xs" : "",
         "print:text-xs print:mb-1"
       )}>
         Legend
@@ -128,20 +138,26 @@ const CalendarLegend: React.FC = () => {
       
       <div className={cn(
         "flex flex-col space-y-3",
-        isMobile ? "text-xs" : "text-sm",
+        isExtraSmall ? "space-y-2" : "",
+        isExtraSmall ? "text-[10px]" : isMobile ? "text-xs" : "text-sm",
         "print:text-xs"
       )}>
         {/* Colors Section */}
         <div className="space-y-1">
-          <h4 className="text-xs font-medium text-muted-foreground mb-1">Colors</h4>
+          <h4 className={cn(
+            "text-xs font-medium text-muted-foreground mb-1",
+            isExtraSmall ? "text-[10px] mb-0.5" : ""
+          )}>
+            Colors
+          </h4>
           <div className="flex flex-col space-y-1">
             {Object.values(COLOR_GROUPS).map((group, index) => (
               <div key={`color-${index}`} className="flex items-center gap-2">
                 <div className="w-8 flex-shrink-0">
                   <ColorBallGroup 
                     colorHexes={group.colorHexes}
-                    size={isMobile ? "w-3 h-3" : "w-4 h-4"}
-                    mobileSize="w-2 h-2"
+                    size="w-4 h-4"
+                    mobileSize={isExtraSmall ? "w-2 h-2" : "w-3 h-3"}
                   />
                 </div>
                 <span className="truncate">
@@ -157,7 +173,12 @@ const CalendarLegend: React.FC = () => {
         
         {/* Gems Section */}
         <div className="space-y-1">
-          <h4 className="text-xs font-medium text-muted-foreground mb-1">Gems</h4>
+          <h4 className={cn(
+            "text-xs font-medium text-muted-foreground mb-1",
+            isExtraSmall ? "text-[10px] mb-0.5" : ""
+          )}>
+            Gems
+          </h4>
           <div className="flex flex-col space-y-1">
             {Object.values(GEM_GROUPS).map((group, index) => (
               <div key={`gem-${index}`} className="flex items-center gap-2">
@@ -165,8 +186,8 @@ const CalendarLegend: React.FC = () => {
                   <GemGroup 
                     gems={group.gems}
                     iconColor={group.iconColor}
-                    size={isMobile ? "w-3 h-3" : "w-4 h-4"}
-                    mobileSize="w-2 h-2"
+                    size="w-4 h-4"
+                    mobileSize={isExtraSmall ? "w-2 h-2" : "w-3 h-3"}
                   />
                 </div>
                 <span className="truncate">

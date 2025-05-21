@@ -18,6 +18,15 @@ export default {
 				'2xl': '1400px'
 			}
 		},
+		// Add the xs breakpoint and other custom sizes
+		screens: {
+			'xs': '480px',
+			'sm': '640px',
+			'md': '768px',
+			'lg': '1024px',
+			'xl': '1280px',
+			'2xl': '1536px',
+		},
 		extend: {
 			colors: {
 				border: 'hsl(var(--border))',
@@ -72,6 +81,13 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
+			spacing: {
+				// Add some responsive spacing values
+				'safe': 'env(safe-area-inset-bottom)',
+				'safe-top': 'env(safe-area-inset-top)',
+				'safe-left': 'env(safe-area-inset-left)',
+				'safe-right': 'env(safe-area-inset-right)',
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
@@ -111,13 +127,25 @@ export default {
 					'50%': {
 						transform: 'translateY(-10px)'
 					}
+				},
+				// Add touch feedback animation
+				'touch-ripple': {
+					'0%': {
+						transform: 'scale(0)',
+						opacity: '0.4',
+					},
+					'100%': {
+						transform: 'scale(2.5)',
+						opacity: '0',
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.6s ease-out',
-				'float': 'float 6s ease-in-out infinite'
+				'float': 'float 6s ease-in-out infinite',
+				'touch-ripple': 'touch-ripple 0.6s ease-out'
 			},
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
