@@ -3,6 +3,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Gem } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 // Define our color groups with their hex values
 const COLOR_GROUPS = {
@@ -114,7 +115,7 @@ const CalendarLegend: React.FC = () => {
   
   return (
     <div className={cn(
-      "mt-4 p-2 rounded-md bg-white bg-opacity-50 border border-lumenaura-lavender border-opacity-30",
+      "mt-4 p-3 rounded-md bg-white bg-opacity-50 border border-lumenaura-lavender border-opacity-30",
       "print:mt-2 print:p-1 print:border print:border-gray-200"
     )}>
       <h3 className={cn(
@@ -126,42 +127,55 @@ const CalendarLegend: React.FC = () => {
       </h3>
       
       <div className={cn(
-        "grid grid-cols-2 gap-x-4 gap-y-1",
+        "flex flex-col space-y-3",
         isMobile ? "text-xs" : "text-sm",
         "print:text-xs"
       )}>
-        {/* Color Groups */}
-        {Object.values(COLOR_GROUPS).map((group, index) => (
-          <div key={`color-${index}`} className="flex items-center gap-2">
-            <div className="w-8 flex-shrink-0">
-              <ColorBallGroup 
-                colorHexes={group.colorHexes}
-                size={isMobile ? "w-3 h-3" : "w-4 h-4"}
-                mobileSize="w-2 h-2"
-              />
-            </div>
-            <span className="truncate">
-              {group.colors.join(", ")}
-            </span>
+        {/* Colors Section */}
+        <div className="space-y-1">
+          <h4 className="text-xs font-medium text-muted-foreground mb-1">Colors</h4>
+          <div className="flex flex-col space-y-1">
+            {Object.values(COLOR_GROUPS).map((group, index) => (
+              <div key={`color-${index}`} className="flex items-center gap-2">
+                <div className="w-8 flex-shrink-0">
+                  <ColorBallGroup 
+                    colorHexes={group.colorHexes}
+                    size={isMobile ? "w-3 h-3" : "w-4 h-4"}
+                    mobileSize="w-2 h-2"
+                  />
+                </div>
+                <span className="truncate">
+                  {group.colors.join(", ")}
+                </span>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
         
-        {/* Gem Groups */}
-        {Object.values(GEM_GROUPS).map((group, index) => (
-          <div key={`gem-${index}`} className="flex items-center gap-2">
-            <div className="w-8 flex-shrink-0">
-              <GemGroup 
-                gems={group.gems}
-                iconColor={group.iconColor}
-                size={isMobile ? "w-3 h-3" : "w-4 h-4"}
-                mobileSize="w-2 h-2"
-              />
-            </div>
-            <span className="truncate">
-              {group.gems.join(", ")}
-            </span>
+        {/* Separator */}
+        <Separator className="my-1 bg-lumenaura-lavender/20" />
+        
+        {/* Gems Section */}
+        <div className="space-y-1">
+          <h4 className="text-xs font-medium text-muted-foreground mb-1">Gems</h4>
+          <div className="flex flex-col space-y-1">
+            {Object.values(GEM_GROUPS).map((group, index) => (
+              <div key={`gem-${index}`} className="flex items-center gap-2">
+                <div className="w-8 flex-shrink-0">
+                  <GemGroup 
+                    gems={group.gems}
+                    iconColor={group.iconColor}
+                    size={isMobile ? "w-3 h-3" : "w-4 h-4"}
+                    mobileSize="w-2 h-2"
+                  />
+                </div>
+                <span className="truncate">
+                  {group.gems.join(", ")}
+                </span>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );
