@@ -15,6 +15,7 @@ export function useAuth() {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log("Auth state change event:", event);
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -27,6 +28,8 @@ export function useAuth() {
           });
         } else if (event === 'SIGNED_OUT') {
           // Explicitly set logged out state
+          setSession(null);
+          setUser(null);
           setIsLoggedOut(true);
           toast({
             title: "Signed out",
@@ -38,6 +41,7 @@ export function useAuth() {
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Initial session check:", session ? "Logged in" : "No session");
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -92,11 +96,25 @@ export function useAuth() {
 
   const signOut = async () => {
     try {
-      setIsLoggedOut(true); // Set logged out flag before the async operation
+      // Immediately set local state to logged out
+      setIsLoggedOut(true);
+      
+      console.log("Signing out...");
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      
+      if (error) {
+        console.error("Logout error:", error);
+        throw error;
+      }
+      
+      // Force clear the session and user state
+      setSession(null);
+      setUser(null);
+      
+      console.log("Sign out successful");
       return { success: true, error: null };
     } catch (error: any) {
+      console.error("Sign out error:", error);
       return { success: false, error: error.message };
     }
   };
@@ -106,11 +124,10 @@ export function useAuth() {
     session,
     loading,
     isLoggedOut,
-    setIsLoggedOut, // ✅ expose this so App can reset it
+    setIsLoggedOut,
     signInWithEmail,
     signUpWithEmail,
     signInWithGoogle,
     signOut,
   };
-
 }

@@ -62,6 +62,12 @@ const DateControls: React.FC<DateControlsProps> = ({
     setSelectedDate(nextDay);
     setIsRangeMode(false);
   };
+  
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault();
+    console.log("Logout button clicked");
+    onLogout();
+  };
 
   return (
     <div className={`${isMobile ? 'flex flex-col space-y-3' : 'flex flex-wrap gap-2'}`}>
@@ -172,7 +178,7 @@ const DateControls: React.FC<DateControlsProps> = ({
       
       <Button
         variant="ghost"
-        onClick={onLogout}
+        onClick={handleLogout}
         className={`${isMobile ? 'w-full text-base py-2 mt-2' : ''}`}
       >
         Logout

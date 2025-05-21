@@ -1,7 +1,7 @@
 
 // src/App.tsx
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -35,6 +35,8 @@ const App: React.FC = () => {
   useEffect(() => {
     if (authLoading) return;
 
+    console.log("Auth state changed:", { user, isLoggedOut });
+
     // 1) If they've explicitly hit "logout," show login screen
     if (isLoggedOut) {
       setShowAuth(true);
@@ -44,7 +46,7 @@ const App: React.FC = () => {
     }
 
     // 2) If we have a saved profile locally, go straight to Dashboard
-    if (hasUserProfile()) {
+    if (user && hasUserProfile()) {
       setUserProfile(getUserProfile());
       setShowAuth(false);
       setLoading(false);
@@ -90,10 +92,25 @@ const App: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    await signOut();
-    setIsLoggedOut(true);
+    console.log("Handling logout");
+    // Clear user data first
     clearUserProfile();
     setUserProfile(null);
+    
+    // Then trigger the sign out
+    const result = await signOut();
+    if (result.error) {
+      toast({
+        title: "Error during logout",
+        description: result.error,
+        variant: "destructive",
+      });
+      console.error("Logout error:", result.error);
+    } else {
+      console.log("Logout successful");
+      // Force the logout state
+      setIsLoggedOut(true);
+    }
   };
 
   if (loading || authLoading) {
