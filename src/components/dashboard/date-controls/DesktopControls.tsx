@@ -35,27 +35,33 @@ const DesktopControls: React.FC<DesktopControlsProps> = ({
 }) => {
   return (
     <div className="flex flex-wrap gap-2">
-      {/* Date Navigation and Picker in correct order */}
+      {/* Date Navigation and Picker with explicit order */}
       <div className="flex items-center">
         {/* Previous Button */}
-        <NavigationButtons 
-          onPreviousDay={handlePreviousDay}
-          variant="previous"
-        />
+        <div className="order-1">
+          <NavigationButtons 
+            onPreviousDay={handlePreviousDay}
+            variant="previous"
+          />
+        </div>
         
         {/* Single Date Picker */}
-        <DatePicker
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          isRangeMode={isRangeMode}
-          setIsRangeMode={setIsRangeMode}
-        />
+        <div className="order-2 mx-1">
+          <DatePicker
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            isRangeMode={isRangeMode}
+            setIsRangeMode={setIsRangeMode}
+          />
+        </div>
         
         {/* Next Button */}
-        <NavigationButtons 
-          onNextDay={handleNextDay}
-          variant="next"
-        />
+        <div className="order-3">
+          <NavigationButtons 
+            onNextDay={handleNextDay}
+            variant="next"
+          />
+        </div>
       </div>
       
       {/* Date Range Picker */}
