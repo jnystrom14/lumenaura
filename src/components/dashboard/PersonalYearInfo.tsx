@@ -18,11 +18,8 @@ const PersonalYearInfo: React.FC<PersonalYearInfoProps> = ({ dailyProfile }) => 
 
   return (
     <div className="crystal-card p-6 animate-fade-in my-6">
-      <div className="flex justify-between items-center mb-4">
+      <div className="mb-4">
         <h3 className={`${isMobile ? 'text-xl' : 'text-xl'} font-semibold`}>Your Personal Year: {personalYear}</h3>
-        <span className={`px-3 py-1 bg-primary text-white rounded-full ${isMobile ? 'text-base' : 'text-sm'}`}>
-          {personalYearData.yearNumber}
-        </span>
       </div>
       
       <div className={`prose ${isMobile ? 'prose-base' : 'prose-lg'} text-gray-700`}>
