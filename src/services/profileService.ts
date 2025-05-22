@@ -38,3 +38,33 @@ export async function saveProfileToSupabase(profile: UserProfile, user: User | n
     return { success: false, error: "An unexpected error occurred" };
   }
 }
+
+export async function fetchUserProfile(userId: string): Promise<UserProfile | null> {
+  try {
+    const { data, error, status } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    if (error && status !== 406) { // 406 is expected if no row is found (PostgREST)
+      console.error("Error fetching user profile:", error);
+      return null;
+    }
+
+    if (data) {
+      // Transform snake_case from DB to camelCase for UserProfile type
+      return {
+        name: data.name,
+        birthDay: data.birth_day,
+        birthMonth: data.birth_month,
+        birthYear: data.birth_year,
+        profilePicture: data.profile_picture || "", // Ensure empty string if null
+      };
+    }
+    return null; // No profile found
+  } catch (err) {
+    console.error("Exception fetching user profile:", err);
+    return null;
+  }
+}

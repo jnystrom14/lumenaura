@@ -1,15 +1,47 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logWithEmoji, logError, logWarning } from '@/utils/consoleLogger';
+import { fetchUserProfile } from '@/services/profileService'; // Import the new service
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Overall auth loading
   const [isLoggedOut, setIsLoggedOut] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false); // Profile specific loading
+  const [isProfileReady, setIsProfileReady] = useState<boolean | null>(null); // Profile readiness
+
+  const checkAndSetUserProfileStatus = useCallback(async (currentUser: User | null) => {
+    if (!currentUser) {
+      setIsProfileReady(null); // No user, so profile status is not applicable
+      setIsLoadingProfile(false);
+      return;
+    }
+
+    logWithEmoji('🕵️ Checking user profile status...', 'info');
+    setIsLoadingProfile(true);
+    setIsProfileReady(null); // Reset while checking
+
+    try {
+      const profile = await fetchUserProfile(currentUser.id);
+      if (profile && profile.name && profile.birthDay && profile.birthMonth && profile.birthYear) { // Basic completeness check
+        setIsProfileReady(true);
+        logWithEmoji('✅ User profile is ready.', 'success');
+      } else {
+        setIsProfileReady(false);
+        logWithEmoji('⏳ User profile not complete or found. May require onboarding.', 'info');
+      }
+    } catch (error) {
+      logError(error, "Error fetching user profile status");
+      setIsProfileReady(false); // Treat error as profile not ready
+      setAuthError("Could not verify profile status. Please try again.");
+    } finally {
+      setIsLoadingProfile(false);
+    }
+  }, []);
 
   useEffect(() => {
     // Track if component is mounted to prevent state updates after unmount
@@ -18,30 +50,79 @@ export function useAuth() {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        logWithEmoji(`Auth state change event: ${event}`, 'info');
-        
-        if (!isMounted) return;
-        
-        // Update session and user state
-        setSession(session);
-        setUser(session?.user ?? null);
-        setAuthError(null); // Clear any previous errors on successful auth events
-        
-        // Reset isLoggedOut flag if user logs back in
-        if (event === 'SIGNED_IN') {
-          setIsLoggedOut(false);
-          logWithEmoji('User successfully signed in', 'success');
-        } else if (event === 'SIGNED_OUT') {
-          // Explicitly set logged out state
-          setSession(null);
-          setUser(null);
-          setIsLoggedOut(true);
-        } else if (event === 'USER_UPDATED') {
-          logWithEmoji('User profile was updated', 'info');
-        } else if (event === 'PASSWORD_RECOVERY') {
-          logWithEmoji('Password recovery flow detected', 'info');
-        } else if (event === 'TOKEN_REFRESHED') {
-          logWithEmoji('Auth token was refreshed', 'info');
+        logWithEmoji(`🔔 Auth state change event: ${event}`, 'info');
+        if (session) {
+          // Log session details (e.g., user ID, expiry) carefully, avoid logging sensitive tokens directly in production
+          logWithEmoji(`📬 Session object received. User: ${session.user?.id}, Expires at: ${new Date(session.expires_at * 1000).toLocaleString()}`, 'debug');
+        } else {
+          logWithEmoji('📬 No session object received with this event.', 'debug');
+        }
+
+        if (!isMounted) {
+          logWarning(`🚫 Component unmounted. Skipping state update for event: ${event}`);
+          return;
+        }
+
+        switch (event) {
+          case 'SIGNED_IN':
+            setSession(session);
+            setUser(session?.user ?? null);
+            setAuthError(null);
+            setIsLoggedOut(false);
+            logWithEmoji('✅ User successfully signed in. Local state updated.', 'success');
+            if (session?.user) {
+              checkAndSetUserProfileStatus(session.user);
+            }
+            if (session?.provider_token) { // No need to log provider_refresh_token, it's sensitive
+              logWithEmoji('🔑 OAuth provider token present in session.', 'debug');
+            }
+            break;
+          case 'SIGNED_OUT':
+            // Reset profile status on sign out
+            setIsProfileReady(null);
+            setIsLoadingProfile(false);
+            setSession(null);
+            setUser(null);
+            setIsLoggedOut(true);
+            setAuthError(null); // Explicitly clear auth error on clean sign-out
+            logWithEmoji('🚪 User successfully signed out. Local state updated.', 'info');
+            break;
+          case 'USER_UPDATED':
+            if (session) {
+              setUser(session.user ?? null);
+              logWithEmoji('👤 User profile updated. Local user state refreshed.', 'info');
+            } else {
+              logWarning('👤 USER_UPDATED event received without a session object. User state not updated.');
+            }
+            break;
+          case 'TOKEN_REFRESHED':
+            if (session) {
+              setSession(session);
+              setUser(session.user ?? null);
+              setAuthError(null); // Clear any previous errors if refresh is successful
+              setIsLoggedOut(false); // Ensure user is marked as logged in
+              logWithEmoji('🔄 Auth token successfully refreshed. Local session updated.', 'info');
+            } else {
+              // This is critical: token refresh failed, user is effectively logged out
+              setSession(null);
+              setUser(null);
+              setIsLoggedOut(true);
+              setAuthError("Your session has expired or token refresh failed. Please sign in again.");
+              logError(new Error('Token refresh failed, session is null.'), 'TOKEN_REFRESHED event indicated failed refresh. User logged out.');
+            }
+            break;
+          case 'PASSWORD_RECOVERY':
+            setAuthError(null); // Clear errors as user is in a recovery flow
+            logWithEmoji('🔑 Password recovery event detected. Auth errors cleared.', 'info');
+            break;
+          default:
+            logWithEmoji(`❓ Unhandled auth event: ${event}. Session: ${session ? 'exists' : 'null'}`, 'debug');
+            // Fallback: Update session and user, clear error, as a general safe measure
+            // This might be too broad, but ensures some level of state sync for unknown events.
+            // Consider removing if strict handling per event is preferred.
+            setSession(session);
+            setUser(session?.user ?? null);
+            setAuthError(null);
         }
       }
     );
@@ -58,7 +139,14 @@ export function useAuth() {
       if (isMounted) {
         setSession(session);
         setUser(session?.user ?? null);
-        setLoading(false);
+        if (session?.user) {
+          checkAndSetUserProfileStatus(session.user);
+        } else {
+          // No user in initial session, means not logged in.
+          // Profile status isn't applicable yet, ensure loading is false.
+          setIsLoadingProfile(false);
+        }
+        setLoading(false); // Overall auth loading finished
       }
     });
 
@@ -104,18 +192,17 @@ export function useAuth() {
     try {
       setAuthError(null);
       
-      // Get current URL to handle mobile vs desktop environments 
-      const redirectUrl = new URL(window.location.href);
-      redirectUrl.search = ''; // Remove any query parameters
-      redirectUrl.hash = ''; // Remove any hash
+      // Get current URL to handle mobile vs desktop environments
+      // Using window.location.origin + window.location.pathname ensures a clean base URL.
+      const redirectBaseUrl = window.location.origin + window.location.pathname;
       
       // Log the redirect URL for debugging
-      logWithEmoji(`Google auth redirect URL: ${redirectUrl.toString()}`, 'info');
+      logWithEmoji(`Google auth redirect base URL: ${redirectBaseUrl}`, 'info');
       
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: redirectUrl.toString(),
+          redirectTo: redirectBaseUrl,
           skipBrowserRedirect: false,
           queryParams: {
             // Add access_type and prompt parameters for better mobile compatibility
@@ -136,50 +223,68 @@ export function useAuth() {
   };
 
   const signOut = async () => {
+    logWithEmoji("🚀 Starting logout process", 'info');
+    
+    // Set this early to reflect immediate intent, additional sets in finally ensure it.
+    logWithEmoji("➡️ Setting isLoggedOut to true (early)", 'info');
+    setIsLoggedOut(true); 
+
     try {
-      // Immediately set local state to logged out
-      logWithEmoji("Starting logout process", 'info');
-      setIsLoggedOut(true);
-      
-      try {
-        // Try to sign out via Supabase
-        const { error } = await supabase.auth.signOut();
-        
-        if (error) {
-          // Handle known error types
-          if (error.message.includes("Session not found")) {
-            logWarning("Session not found during logout. Session may have expired, continuing with local logout.");
-          } else {
-            throw error;
-          }
+      logWithEmoji("📡 Attempting Supabase server-side sign out...", 'info');
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        if (error.message.includes("Session not found")) {
+          logWarning("Supabase: Session not found on server during logout. Session may have already expired or been invalidated. Proceeding with local logout.");
+        } else {
+          logError(error, "Error during Supabase server-side sign out. Proceeding with local logout.");
         }
-        
-        logWithEmoji("Supabase sign out attempt completed", 'info');
-      } catch (signOutError: any) {
-        // Log the error but continue with local logout
-        logError(signOutError, "Sign out error");
+      } else {
+        logWithEmoji("✅ Supabase server-side sign out successful", 'success');
       }
+
+    } catch (signOutError: any) {
+      logError(signOutError, "Exception during Supabase sign out attempt. Proceeding with local logout.");
+    } finally {
+      logWithEmoji("🧹 Clearing local authentication state (finally block)...", 'info');
       
-      // Force clear the session and user state regardless of server response
-      logWithEmoji("Forcing local session cleanup", 'info');
+      logWithEmoji("➡️ Setting session to null", 'info');
       setSession(null);
+      logWithEmoji("➡️ Setting user to null", 'info');
       setUser(null);
-      
-      // Force clear any auth data from local storage to ensure clean logout state
+      logWithEmoji("➡️ Ensuring isLoggedOut is true (finally)", 'info');
+      setIsLoggedOut(true); // Ensure it's true
+
+      logWithEmoji("🗑️ Attempting to clear authentication tokens from localStorage...", 'info');
       try {
-        localStorage.removeItem('supabase.auth.token');
-        localStorage.removeItem('sb-bpolzfohirmqkmvubjzo-auth-token');
-      } catch (storageError) {
-        logWarning("Could not clear local storage items");
+        const mainAuthTokenKey = 'sb-bpolzfohirmqkmvubjzo-auth-token'; // Default Supabase key structure
+        const legacyTokenKey = 'supabase.auth.token'; // Potentially legacy or alternative key
+
+        logWithEmoji(`Attempting to remove localStorage key: '${mainAuthTokenKey}'`, 'info');
+        if (localStorage.getItem(mainAuthTokenKey)) {
+          localStorage.removeItem(mainAuthTokenKey);
+          logWithEmoji(`✅ Removed '${mainAuthTokenKey}' from localStorage`, 'info');
+        } else {
+          logWarning(`⚠️ Key '${mainAuthTokenKey}' not found in localStorage`);
+        }
+
+        logWithEmoji(`Attempting to remove localStorage key: '${legacyTokenKey}'`, 'info');
+        if (localStorage.getItem(legacyTokenKey)) {
+          localStorage.removeItem(legacyTokenKey);
+          logWithEmoji(`✅ Removed '${legacyTokenKey}' from localStorage`, 'info');
+        } else {
+          logWarning(`⚠️ Key '${legacyTokenKey}' not found in localStorage`);
+        }
+
+      } catch (storageError: any) {
+        logError(storageError, "Error removing authentication tokens from localStorage.");
       }
-      
-      logWithEmoji("Sign out completed successfully", 'success');
-      return { success: true, error: null };
-    } catch (finalError: any) {
-      // This should never happen as we catch errors above, but just in case
-      logError(finalError, "Unhandled sign out error");
-      return { success: false, error: finalError.message };
+
+      logWithEmoji("🏁 Sign out process completed locally.", 'success');
     }
+
+    // Return a consistent success response because local logout is the goal.
+    return { success: true, error: null };
   };
 
   // Method to clear auth error state
@@ -197,6 +302,8 @@ export function useAuth() {
     loading,
     isLoggedOut,
     authError,
+    isLoadingProfile, // expose new state
+    isProfileReady,   // expose new state
     clearAuthError,
     isSamsungBrowser: isSamsungBrowser(),
     setIsLoggedOut,
