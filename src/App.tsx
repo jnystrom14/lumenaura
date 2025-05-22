@@ -21,6 +21,7 @@ import Authentication from "./components/auth/Authentication";
 import Onboarding from "./components/Onboarding";
 import Dashboard from "./components/Dashboard";
 import NotFound from "./pages/NotFound";
+import ProfilePage from "./pages/ProfilePage";
 
 const queryClient = new QueryClient();
 
@@ -130,6 +131,10 @@ const App: React.FC = () => {
     setUserProfile(profile);
     setShowAuth(false);
   };
+  
+  const handleProfileUpdate = (updatedProfile: any) => {
+    setUserProfile(updatedProfile);
+  };
 
   const handleLogout = async () => {
     logWithEmoji("Handling logout", "info");
@@ -182,6 +187,15 @@ const App: React.FC = () => {
                   <Dashboard
                     userProfile={userProfile}
                     onLogout={handleLogout}
+                  />
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProfilePage
+                    userProfile={userProfile}
+                    onProfileUpdate={handleProfileUpdate}
                   />
                 }
               />

@@ -38,3 +38,8 @@ export async function saveProfileToSupabase(profile: UserProfile, user: User | n
     return { success: false, error: "An unexpected error occurred" };
   }
 }
+
+export async function updateUserProfile(profile: UserProfile, user: User | null): Promise<{ success: boolean; error?: string }> {
+  // We can reuse the same function since we're using upsert
+  return saveProfileToSupabase(profile, user);
+}

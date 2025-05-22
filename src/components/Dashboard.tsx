@@ -62,7 +62,11 @@ const Dashboard: React.FC<DashboardProps> = ({ userProfile, onLogout }) => {
     <div className="min-h-screen pb-12">
       <div className="container mx-auto px-4 py-6 md:py-8 space-y-5 md:space-y-8 animate-fade-in">
         <header className={isMobile ? "mb-4" : "flex flex-col space-y-4 mb-6"}>
-          <DashboardHeader userProfile={userProfile} selectedDate={selectedDate} />
+          <DashboardHeader 
+            userProfile={userProfile} 
+            selectedDate={selectedDate} 
+            onLogout={onLogout} 
+          />
           
           {isMobile && <div className="h-2" />}
           
