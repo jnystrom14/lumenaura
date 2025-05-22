@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import { logWithEmoji } from "@/utils/consoleLogger";
 
 import { useAuth } from "./hooks/useAuth";
 import {
@@ -25,17 +26,40 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
-  const { user, loading: authLoading, isLoggedOut, setIsLoggedOut, signOut } =
+  const { user, loading: authLoading, isLoggedOut, setIsLoggedOut, signOut, authError } =
     useAuth();
   const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showAuth, setShowAuth] = useState(false);
   const { toast } = useToast();
 
+  // Log initial app state for debugging
+  useEffect(() => {
+    logWithEmoji("App mounted, initial state:", "info");
+    logWithEmoji(`User authenticated: ${!!user}`, "info");
+    logWithEmoji(`Auth loading: ${authLoading}`, "info");
+    logWithEmoji(`Is logged out: ${isLoggedOut}`, "info");
+    
+    // Check for authentication parameters in URL that might indicate
+    // a redirect back from an OAuth provider
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasAuthParams = urlParams.has('access_token') || 
+                          urlParams.has('refresh_token') ||
+                          urlParams.has('provider') ||
+                          urlParams.has('code');
+    
+    if (hasAuthParams) {
+      logWithEmoji("Auth redirect detected in URL", "info");
+    }
+  }, []);
+
+  // Main effect to handle authentication state changes
   useEffect(() => {
     if (authLoading) return;
 
-    console.log("Auth state changed:", { user, isLoggedOut });
+    logWithEmoji("Auth state changed:", "info");
+    logWithEmoji(`User: ${user ? "Logged in" : "Not logged in"}`, "info");
+    logWithEmoji(`Is logged out flag: ${isLoggedOut}`, "info");
 
     // 1) If they've explicitly hit "logout," show login screen
     if (isLoggedOut) {
@@ -47,7 +71,9 @@ const App: React.FC = () => {
 
     // 2) If we have a saved profile locally, go straight to Dashboard
     if (user && hasUserProfile()) {
-      setUserProfile(getUserProfile());
+      const profile = getUserProfile();
+      logWithEmoji("Found cached user profile", "info");
+      setUserProfile(profile);
       setShowAuth(false);
       setLoading(false);
       return;
@@ -55,14 +81,17 @@ const App: React.FC = () => {
 
     // 3) If authenticated but no local profile, fetch from server
     if (user) {
+      logWithEmoji("User authenticated, fetching profile...", "info");
       setLoading(true);
       fetchUserProfileFromServer(user.id)
         .then((profile) => {
+          logWithEmoji("Profile fetched successfully", "success");
           saveUserProfile(profile);
           setUserProfile(profile);
           setShowAuth(false);
         })
-        .catch(() => {
+        .catch((error) => {
+          logWithEmoji(`Error fetching profile: ${error.message}`, "error");
           // truly first-time user: run onboarding
           setShowAuth(true);
         })
@@ -73,6 +102,7 @@ const App: React.FC = () => {
     }
 
     // 4) Not authenticated: show login
+    logWithEmoji("No authentication, showing login", "info");
     setShowAuth(true);
     setLoading(false);
   }, [user, authLoading, isLoggedOut]);
@@ -84,6 +114,17 @@ const App: React.FC = () => {
     }
   }, [showAuth, isLoggedOut, setIsLoggedOut]);
 
+  // Show error toast if auth error exists
+  useEffect(() => {
+    if (authError) {
+      toast({
+        title: "Authentication Error",
+        description: authError,
+        variant: "destructive",
+      });
+    }
+  }, [authError, toast]);
+
   const handleOnboardingComplete = () => {
     // Onboarding should save to your server & localStorage
     const profile = getUserProfile();
@@ -92,7 +133,7 @@ const App: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    console.log("Handling logout");
+    logWithEmoji("Handling logout", "info");
     // Clear user data first
     clearUserProfile();
     setUserProfile(null);
@@ -105,9 +146,9 @@ const App: React.FC = () => {
         description: result.error,
         variant: "destructive",
       });
-      console.error("Logout error:", result.error);
+      logWithEmoji(`Logout error: ${result.error}`, "error");
     } else {
-      console.log("Logout successful");
+      logWithEmoji("Logout successful", "success");
       // Force the logout state
       setIsLoggedOut(true);
     }

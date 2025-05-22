@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/components/ui/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle, Info } from "lucide-react";
 
 interface AuthenticationProps {
   onContinueWithoutAccount: () => void;
@@ -19,30 +21,58 @@ const Authentication: React.FC<AuthenticationProps> = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [authAttempted, setAuthAttempted] = useState(false);
   const {
     signUpWithEmail,
     signInWithEmail,
     signInWithGoogle,
     user,
-    isLoggedOut
+    isLoggedOut,
+    authError,
+    clearAuthError,
+    isSamsungBrowser
   } = useAuth();
   const {
     toast
   } = useToast();
+  
+  // Reset auth attempted flag when user switches between signup and signin
+  useEffect(() => {
+    clearAuthError();
+    setAuthAttempted(false);
+  }, [isSignUp, clearAuthError]);
   
   // If the user is already authenticated and hasn't just logged out,
   // call onContinueWithoutAccount to move to the next screen
   useEffect(() => {
     if (!user || isLoggedOut) return;
 
-  onContinueWithoutAccount();
-}, [user, isLoggedOut, onContinueWithoutAccount]);
+    onContinueWithoutAccount();
+  }, [user, isLoggedOut, onContinueWithoutAccount]);
+
+  // Check for URL parameters that might indicate an auth redirect with error
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error');
+    const errorDescription = urlParams.get('error_description');
+    
+    if (error || errorDescription) {
+      toast({
+        variant: "destructive",
+        title: "Authentication Error",
+        description: errorDescription || error || "There was a problem signing you in"
+      });
+      
+      // Clean the URL to prevent showing the error again on refresh
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  }, [toast]);
   
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
+    setAuthAttempted(true);
     try {
       let result;
       if (isSignUp) {
@@ -51,7 +81,11 @@ const Authentication: React.FC<AuthenticationProps> = ({
         result = await signInWithEmail(email, password);
       }
       if (result.error) {
-        setError(result.error);
+        toast({
+          variant: "destructive",
+          title: "Authentication Error",
+          description: result.error
+        });
       } else if (isSignUp) {
         toast({
           title: "Account created",
@@ -59,7 +93,11 @@ const Authentication: React.FC<AuthenticationProps> = ({
         });
       }
     } catch (err: any) {
-      setError(err.message || "An error occurred during authentication");
+      toast({
+        variant: "destructive",
+        title: "Authentication Error",
+        description: err.message || "An error occurred during authentication"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -67,15 +105,23 @@ const Authentication: React.FC<AuthenticationProps> = ({
   
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
-    setError("");
+    setAuthAttempted(true);
     try {
       const result = await signInWithGoogle();
       if (result.error) {
-        setError(result.error);
+        toast({
+          variant: "destructive",
+          title: "Google Sign-In Error",
+          description: result.error
+        });
       }
       // The redirect will happen automatically, no need for additional code here
     } catch (err: any) {
-      setError(err.message || "An error occurred during Google authentication");
+      toast({
+        variant: "destructive",
+        title: "Google Authentication Error",
+        description: err.message || "An error occurred during Google authentication"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -97,6 +143,22 @@ const Authentication: React.FC<AuthenticationProps> = ({
           </p>
         </div>
         
+        {authError && (
+          <Alert variant="destructive" className="text-sm">
+            <AlertCircle className="h-4 w-4 mr-2" />
+            <AlertDescription>{authError}</AlertDescription>
+          </Alert>
+        )}
+        
+        {isSamsungBrowser && authAttempted && (
+          <Alert className="bg-amber-50 text-amber-700 border-amber-200">
+            <Info className="h-4 w-4 mr-2 text-amber-600" />
+            <AlertDescription className="text-xs">
+              Some Samsung devices may experience authentication issues. If you're having trouble, try using a different browser like Chrome.
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <form onSubmit={handleAuth} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
@@ -107,8 +169,6 @@ const Authentication: React.FC<AuthenticationProps> = ({
             <Label htmlFor="password">Password</Label>
             <Input id="password" type="password" placeholder="Create a password" value={password} onChange={e => setPassword(e.target.value)} className="crystal-input" minLength={6} required />
           </div>
-          
-          {error && <p className="text-destructive text-sm">{error}</p>}
           
           <Button type="submit" className="w-full bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 transition-opacity" disabled={isLoading}>
             {isLoading ? "Processing..." : isSignUp ? "Sign Up" : "Sign In"}
@@ -139,9 +199,8 @@ const Authentication: React.FC<AuthenticationProps> = ({
           <p className="text-center text-sm">
             {isSignUp ? "Already have an account?" : "Don't have an account?"} 
             <button type="button" className="text-primary hover:underline ml-1" onClick={() => {
-            setIsSignUp(!isSignUp);
-            setError("");
-          }}>
+              setIsSignUp(!isSignUp);
+            }}>
               {isSignUp ? "Sign In" : "Sign Up"}
             </button>
           </p>
