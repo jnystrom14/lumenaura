@@ -2,7 +2,7 @@
 // Rendering functions for the fluid simulation
 
 import { FBO, DoubleFBO } from './framebuffer-types';
-import { Material } from './fluid-classes';
+import { Material } from './classes/material-program';
 import { SplashConfig } from './config';
 
 // Render the fluid simulation

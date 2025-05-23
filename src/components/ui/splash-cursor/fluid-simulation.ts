@@ -1,6 +1,7 @@
 
 // Fluid simulation core initialization function
-import { Material, Program, compileShader } from './fluid-classes';
+import { Material, Program } from './classes/material-program';
+import { compileShader } from './utils/shader-utils';
 import * as shaders from './shaders';
 import { SplashConfig } from './config';
 import { simulationStep } from './simulation-step';

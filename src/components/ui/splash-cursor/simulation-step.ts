@@ -1,7 +1,7 @@
 
 // Core simulation step functions for fluid simulation
 
-import { Program } from './fluid-classes';
+import { Program } from './classes/material-program';
 import { FBO, DoubleFBO } from './framebuffer-types';
 import { SplashConfig } from './config';
 

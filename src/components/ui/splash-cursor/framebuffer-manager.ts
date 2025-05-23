@@ -3,7 +3,8 @@
 
 import { FBO, DoubleFBO } from './framebuffer-types';
 import { SplashConfig } from './config';
-import { createDoubleFBO, createFBO, resizeDoubleFBO, Program } from './fluid-classes';
+import { Program } from './classes/material-program';
+import { createDoubleFBO, createFBO, resizeDoubleFBO } from './utils/framebuffer-utils';
 
 // Initialize framebuffers
 export function initFramebuffers(

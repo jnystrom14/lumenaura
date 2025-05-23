@@ -1,9 +1,20 @@
 
-// WebGL utility functions for splash cursor
+// WebGL utility functions
 
-/**
- * Get WebGL context from a canvas element
- */
+// Hash function for shader keywords
+export function hashCode(s: string): number {
+  if (s.length === 0) return 0;
+  
+  let hash = 0;
+  for (let i = 0; i < s.length; i++) {
+    hash = (hash << 5) - hash + s.charCodeAt(i);
+    hash |= 0; // Convert to 32bit integer
+  }
+  
+  return hash;
+}
+
+// Get WebGL context with necessary extensions
 export function getWebGLContext(canvas: HTMLCanvasElement) {
   const params = {
     alpha: true,
@@ -12,198 +23,144 @@ export function getWebGLContext(canvas: HTMLCanvasElement) {
     antialias: false,
     preserveDrawingBuffer: false,
   };
+
+  let gl = canvas.getContext("webgl", params) as WebGLRenderingContext;
   
-  let gl = canvas.getContext("webgl2", params);
-  const isWebGL2 = !!gl;
-  
-  if (!isWebGL2) {
-    gl = canvas.getContext("webgl", params) || 
-         canvas.getContext("experimental-webgl", params) as WebGLRenderingContext;
+  if (!gl) {
+    gl = canvas.getContext("experimental-webgl", params) as WebGLRenderingContext;
   }
   
+  if (!gl) {
+    console.error("WebGL not supported");
+    return { gl: null, ext: null };
+  }
+
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   
-  const halfFloat = isWebGL2 ? null : gl.getExtension("OES_texture_half_float");
-  const halfFloatTexType = isWebGL2
-    ? gl.HALF_FLOAT
-    : halfFloat?.HALF_FLOAT_OES;
-    
-  const supportLinearFiltering = isWebGL2
-    ? gl.getExtension("OES_texture_float_linear")
-    : gl.getExtension("OES_texture_half_float_linear");
+  // Extensions setup
+  const halfFloat = gl.getExtension("OES_texture_half_float");
+  const supportLinearFiltering = gl.getExtension("OES_texture_half_float_linear");
   
-  // Format initialization
-  let formatRGBA, formatRG, formatR;
-
-  if (isWebGL2) {
-    formatRGBA = getSupportedFormat(
-      gl,
-      gl.RGBA16F,
-      gl.RGBA,
-      halfFloatTexType
-    );
-    formatRG = getSupportedFormat(gl, gl.RG16F, gl.RG, halfFloatTexType);
-    formatR = getSupportedFormat(gl, gl.R16F, gl.RED, halfFloatTexType);
-  } else {
-    formatRGBA = getSupportedFormat(gl, gl.RGBA, gl.RGBA, halfFloatTexType);
-    formatRG = getSupportedFormat(gl, gl.RGBA, gl.RGBA, halfFloatTexType);
-    formatR = getSupportedFormat(gl, gl.RGBA, gl.RGBA, halfFloatTexType);
+  // Format setup
+  let halfFloatTexType = gl.HALF_FLOAT_OES;
+  if (!halfFloat) {
+    console.error("OES_texture_half_float not supported");
+    halfFloatTexType = gl.UNSIGNED_BYTE;
   }
+  
+  // Additional extensions
+  gl.getExtension("EXT_color_buffer_float");
+  gl.getExtension("OES_standard_derivatives");
 
+  // Format objects
+  const formatRGBA = getSupportedFormat(
+    gl,
+    gl.RGBA16F || 34842,  // Use constant if not available
+    gl.RGBA,
+    halfFloatTexType
+  );
+  
+  const formatRG = getSupportedFormat(
+    gl,
+    gl.RG16F || 33327,    // Use constant if not available
+    gl.RG || 33319,       // Use constant if not available
+    halfFloatTexType
+  );
+  
+  const formatR = getSupportedFormat(
+    gl,
+    gl.R16F || 33325,     // Use constant if not available
+    gl.RED || 6403,       // Use constant if not available
+    halfFloatTexType
+  );
+
+  // Fallback formats
+  const fallbackFormatRGBA = getSupportedFormat(
+    gl,
+    gl.RGBA,
+    gl.RGBA,
+    gl.UNSIGNED_BYTE
+  );
+  
+  const fallbackFormatRG = getSupportedFormat(
+    gl,
+    gl.RGBA,
+    gl.RGBA,
+    gl.UNSIGNED_BYTE
+  );
+  
+  const fallbackFormatR = getSupportedFormat(
+    gl,
+    gl.RGBA,
+    gl.RGBA,
+    gl.UNSIGNED_BYTE
+  );
+
+  // WebGL extensions object
   return {
     gl,
     ext: {
-      formatRGBA,
-      formatRG,
-      formatR,
-      halfFloatTexType,
       supportLinearFiltering,
+      halfFloatTexType,
+      formatRGBA: formatRGBA || fallbackFormatRGBA,
+      formatRG: formatRG || fallbackFormatRG,
+      formatR: formatR || fallbackFormatR,
     },
   };
 }
 
-/**
- * Get supported format for WebGL
- */
-export function getSupportedFormat(
-  gl: WebGLRenderingContext, 
-  internalFormat: number, 
-  format: number, 
-  type: number
-) {
-  if (!supportRenderTextureFormat(gl, internalFormat, format, type)) {
-    switch (internalFormat) {
-      case gl.R16F:
-        return getSupportedFormat(gl, gl.RG16F, gl.RG, type);
-      case gl.RG16F:
-        return getSupportedFormat(gl, gl.RGBA16F, gl.RGBA, type);
-      default:
-        return null;
-    }
-  }
-  
-  return {
-    internalFormat,
-    format,
-  };
+// Interface for format support
+interface FormatSupport {
+  internalFormat: number;
+  format: number;
 }
 
-/**
- * Check if render texture format is supported
- */
-export function supportRenderTextureFormat(
+// Get supported format
+function getSupportedFormat(
   gl: WebGLRenderingContext, 
   internalFormat: number, 
-  format: number, 
+  format: number,
   type: number
-) {
+): FormatSupport | null {
+  // WebGL 1.0 has limitations on format support
+  // This is a simplified version to avoid errors
+  if (
+    !isFormatSupported(gl, internalFormat, format, type) &&
+    (internalFormat === gl.R16F || internalFormat === 33325 ||
+     internalFormat === gl.RG16F || internalFormat === 33327 ||
+     internalFormat === gl.RGBA16F || internalFormat === 34842)
+  ) {
+    // Fallback to standard formats
+    return null;
+  }
+  
+  return { internalFormat, format };
+}
+
+// Check if a format is supported
+function isFormatSupported(
+  gl: WebGLRenderingContext, 
+  internalFormat: number, 
+  format: number,
+  type: number
+): boolean {
+  // Create a small texture with the format
   const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  gl.texImage2D(
-    gl.TEXTURE_2D,
-    0,
-    internalFormat,
-    4,
-    4,
-    0,
-    format,
-    type,
-    null
-  );
-
+  gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, 4, 4, 0, format, type, null);
+  
+  // Create FBO and attach the texture
   const fbo = gl.createFramebuffer();
   gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-  gl.framebufferTexture2D(
-    gl.FRAMEBUFFER,
-    gl.COLOR_ATTACHMENT0,
-    gl.TEXTURE_2D,
-    texture,
-    0
-  );
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
   
+  // Check if the format is supported
   const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+  
+  // Clean up
+  gl.deleteTexture(texture);
+  gl.deleteFramebuffer(fbo);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  
   return status === gl.FRAMEBUFFER_COMPLETE;
-}
-
-/**
- * Helper to hash shader keywords
- */
-export function hashCode(s: string): number {
-  if (s.length === 0) return 0;
-  let hash = 0;
-  for (let i = 0; i < s.length; i++) {
-    hash = (hash << 5) - hash + s.charCodeAt(i);
-    hash |= 0;
-  }
-  return hash;
-}
-
-/**
- * Scale by device pixel ratio
- */
-export function scaleByPixelRatio(input: number): number {
-  const pixelRatio = window.devicePixelRatio || 1;
-  return Math.floor(input * pixelRatio);
-}
-
-/**
- * Get resolution based on aspect ratio
- */
-export function getResolution(resolution: number, width: number, height: number) {
-  let aspectRatio = width / height;
-  if (aspectRatio < 1) aspectRatio = 1.0 / aspectRatio;
-  const min = Math.round(resolution);
-  const max = Math.round(resolution * aspectRatio);
-  if (width > height)
-    return { width: max, height: min };
-  else 
-    return { width: min, height: max };
-}
-
-/**
- * Utility to wrap values within a range
- */
-export function wrap(value: number, min: number, max: number) {
-  const range = max - min;
-  if (range === 0) return min;
-  return ((value - min) % range) + min;
-}
-
-/**
- * Convert HSV color to RGB
- */
-export function HSVtoRGB(h: number, s: number, v: number) {
-  let r, g, b;
-  const i = Math.floor(h * 6);
-  const f = h * 6 - i;
-  const p = v * (1 - s);
-  const q = v * (1 - f * s);
-  const t = v * (1 - (1 - f) * s);
-  
-  switch (i % 6) {
-    case 0: r = v; g = t; b = p; break;
-    case 1: r = q; g = v; b = p; break;
-    case 2: r = p; g = v; b = t; break;
-    case 3: r = p; g = q; b = v; break;
-    case 4: r = t; g = p; b = v; break;
-    case 5: r = v; g = p; b = q; break;
-    default: r = 0; g = 0; b = 0;
-  }
-  
-  return { r, g, b };
-}
-
-/**
- * Convert hex color to RGB
- */
-export function hexToRgb(hex: string) {
-  hex = hex.replace(/^#/, '');
-  const r = parseInt(hex.substring(0, 2), 16) / 255;
-  const g = parseInt(hex.substring(2, 4), 16) / 255;
-  const b = parseInt(hex.substring(4, 6), 16) / 255;
-  return { r, g, b };
 }
