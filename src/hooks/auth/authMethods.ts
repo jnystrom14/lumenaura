@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { logWithEmoji, logError } from '@/utils/consoleLogger';
 import { clearLocalStorageAuth } from './authUtils';
@@ -67,23 +66,43 @@ export const signInWithGoogle = async (
     // Log the redirect URL for debugging
     logWithEmoji(`Google auth redirect URL: ${redirectUrl.toString()}`, 'info');
     
+    // Check if we're in a popup or iframe
+    const isPopup = window.opener || window.parent !== window;
+    if (isPopup) {
+      logWithEmoji('Auth initiated in popup/iframe - this might cause issues', 'warning');
+    }
+
+    // Check if localStorage is available
+    try {
+      localStorage.setItem('test', 'test');
+      localStorage.removeItem('test');
+    } catch (e) {
+      logWithEmoji('localStorage is not available - this will cause auth issues', 'error');
+      throw new Error('localStorage is not available. Please enable cookies and try again.');
+    }
+    
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: redirectUrl.toString(),
         skipBrowserRedirect: false,
         queryParams: {
-          // Add access_type and prompt parameters for better mobile compatibility
           access_type: 'offline',
-          prompt: 'select_account'
+          prompt: 'select_account',
+          // Add additional parameters to help with mobile compatibility
+          response_type: 'code',
+          include_granted_scopes: 'true'
         }
       },
     });
 
-    if (error) throw error;
+    if (error) {
+      logError(error, "Google sign in error from Supabase");
+      throw error;
+    }
     return { success: true, error: null };
   } catch (error: any) {
-    const errorMsg = error.message;
+    const errorMsg = error.message || 'An unknown error occurred during Google sign in';
     logError(error, "Google sign in error");
     setAuthError(errorMsg);
     return { success: false, error: errorMsg };
