@@ -1,6 +1,23 @@
 "use client";
 import { useEffect, useRef } from "react";
 
+// Add TypeScript interfaces for WebGL classes
+interface CustomMaterial {
+  vertexShader: any;
+  fragmentShaderSource: string;
+  programs: any[];
+  activeProgram: any;
+  uniforms: any[];
+  setKeywords(keywords: string[]): void;
+  bind(): void;
+}
+
+interface CustomProgram {
+  uniforms: Record<string, WebGLUniformLocation>;
+  program: WebGLProgram;
+  bind(): void;
+}
+
 function SplashCursor({
   SIM_RESOLUTION = 128,
   DYE_RESOLUTION = 1024, // Reduced from 1440 for better performance
@@ -19,7 +36,7 @@ function SplashCursor({
   useCustomColors = true,
   colorPalette = ["#9b87f5", "#FFDEE2", "#E5DEFF", "#FEF7CD", "#D3E4FD"],
 }) {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -174,6 +191,7 @@ function SplashCursor({
       return status === gl.FRAMEBUFFER_COMPLETE;
     }
 
+    // Type cast to CustomMaterial since we're defining a custom class
     class Material {
       constructor(vertexShader, fragmentShaderSource) {
         this.vertexShader = vertexShader;
@@ -204,6 +222,7 @@ function SplashCursor({
       }
     }
 
+    // Type cast to CustomProgram since we're defining a custom class
     class Program {
       constructor(vertexShader, fragmentShader) {
         this.uniforms = {};
