@@ -3,8 +3,8 @@
 export { 
   Material, 
   Program, 
-  CustomMaterial, 
-  CustomProgram,
+  type CustomMaterial, 
+  type CustomProgram,
   hashCode
 } from './classes/material-program';
 

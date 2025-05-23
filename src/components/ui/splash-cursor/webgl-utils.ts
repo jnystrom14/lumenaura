@@ -14,6 +14,42 @@ export function hashCode(s: string): number {
   return hash;
 }
 
+// HSV to RGB color conversion
+export function HSVtoRGB(h: number, s: number, v: number): { r: number, g: number, b: number } {
+  let r = 0, g = 0, b = 0;
+  
+  const i = Math.floor(h * 6);
+  const f = h * 6 - i;
+  const p = v * (1 - s);
+  const q = v * (1 - f * s);
+  const t = v * (1 - (1 - f) * s);
+  
+  switch (i % 6) {
+    case 0: r = v; g = t; b = p; break;
+    case 1: r = q; g = v; b = p; break;
+    case 2: r = p; g = v; b = t; break;
+    case 3: r = p; g = q; b = v; break;
+    case 4: r = t; g = p; b = v; break;
+    case 5: r = v; g = p; b = q; break;
+  }
+  
+  return { r, g, b };
+}
+
+// Hex to RGB color conversion
+export function hexToRgb(hex: string): { r: number, g: number, b: number } {
+  // Remove # if present
+  hex = hex.replace(/^#/, '');
+  
+  // Parse hex values
+  const bigint = parseInt(hex, 16);
+  const r = ((bigint >> 16) & 255) / 255;
+  const g = ((bigint >> 8) & 255) / 255;
+  const b = (bigint & 255) / 255;
+  
+  return { r, g, b };
+}
+
 // Get WebGL context with necessary extensions
 export function getWebGLContext(canvas: HTMLCanvasElement) {
   const params = {
@@ -42,35 +78,34 @@ export function getWebGLContext(canvas: HTMLCanvasElement) {
   const supportLinearFiltering = gl.getExtension("OES_texture_half_float_linear");
   
   // Format setup
-  let halfFloatTexType = gl.HALF_FLOAT_OES;
+  let halfFloatTexType = halfFloat ? halfFloat.HALF_FLOAT_OES : gl.UNSIGNED_BYTE;
   if (!halfFloat) {
     console.error("OES_texture_half_float not supported");
-    halfFloatTexType = gl.UNSIGNED_BYTE;
   }
   
   // Additional extensions
   gl.getExtension("EXT_color_buffer_float");
   gl.getExtension("OES_standard_derivatives");
 
-  // Format objects
+  // Format objects - using constants for WebGL extensions that might not be in the type definitions
   const formatRGBA = getSupportedFormat(
     gl,
-    gl.RGBA16F || 34842,  // Use constant if not available
+    34842, // gl.RGBA16F - Using constant since TypeScript doesn't recognize this
     gl.RGBA,
     halfFloatTexType
   );
   
   const formatRG = getSupportedFormat(
     gl,
-    gl.RG16F || 33327,    // Use constant if not available
-    gl.RG || 33319,       // Use constant if not available
+    33327, // gl.RG16F - Using constant since TypeScript doesn't recognize this
+    33319, // gl.RG - Using constant since TypeScript doesn't recognize this
     halfFloatTexType
   );
   
   const formatR = getSupportedFormat(
     gl,
-    gl.R16F || 33325,     // Use constant if not available
-    gl.RED || 6403,       // Use constant if not available
+    33325, // gl.R16F - Using constant since TypeScript doesn't recognize this
+    6403,  // gl.RED - Using constant since TypeScript doesn't recognize this
     halfFloatTexType
   );
 
@@ -126,9 +161,9 @@ function getSupportedFormat(
   // This is a simplified version to avoid errors
   if (
     !isFormatSupported(gl, internalFormat, format, type) &&
-    (internalFormat === gl.R16F || internalFormat === 33325 ||
-     internalFormat === gl.RG16F || internalFormat === 33327 ||
-     internalFormat === gl.RGBA16F || internalFormat === 34842)
+    (internalFormat === 33325 || // gl.R16F
+     internalFormat === 33327 || // gl.RG16F
+     internalFormat === 34842)   // gl.RGBA16F
   ) {
     // Fallback to standard formats
     return null;
