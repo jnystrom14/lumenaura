@@ -72,8 +72,3 @@ export function useIsLargerThan(breakpoint: Breakpoint) {
   
   return isMatching;
 }
-
-// Keep the original hook for backward compatibility
-export function useIsMobile() {
-  return useIsSmallerThan('md');
-}
