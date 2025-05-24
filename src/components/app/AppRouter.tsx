@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { UserProfile } from "../../types";
@@ -24,8 +23,14 @@ const AppRouter: React.FC<AppRouterProps> = ({
   onProfileUpdate,
   onboardingComplete,
 }) => {
-  if (!userProfile || isLoggedOut) {
-    return null; // Auth component will be rendered by parent
+  // This component should only render when we have a valid user profile
+  // AuthenticationWrapper handles authentication and logout states
+  if (!userProfile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin h-10 w-10 border-4 border-primary rounded-full" />
+      </div>
+    );
   }
   
   return (

@@ -1,73 +1,217 @@
-# Welcome to your Lovable project
+# 🌟 LumenAura - Daily Numerology Guide
 
-## Project info
+> **Discover your daily numerology profile with personalized colors, gems, and affirmations based on Louise Hay's wisdom system.**
 
-**URL**: https://lovable.dev/projects/e97705d8-cc9b-452d-89cf-2258ef3a2075
+[![Live Demo](https://img.shields.io/badge/Live-Demo-blue?style=for-the-badge)](https://lumenaura.vercel.app)
+[![Made with React](https://img.shields.io/badge/Made%20with-React-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-## How can I edit this code?
+## ✨ Features
 
-There are several ways of editing your application.
+- **🎯 Personalized Daily Profiles** - Get your unique numerology reading based on your birth date
+- **🎨 Color & Gem Guidance** - Discover your daily colors and gemstones for optimal energy
+- **📱 Mobile-First Design** - Seamlessly optimized for all devices
+- **🗓️ Calendar Views** - Explore past and future numerology profiles
+- **📊 Monthly Insights** - View your entire month's numerology patterns
+- **🔐 Secure Authentication** - Google OAuth integration with Supabase
+- **✨ Beautiful UI** - Crystal-themed design with smooth animations
+- **📤 Profile Management** - Edit your personal information and preferences
 
-**Use Lovable**
+## 🚀 Quick Start
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e97705d8-cc9b-452d-89cf-2258ef3a2075) and start prompting.
+### Prerequisites
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Node.js** (v18 or higher)
+- **npm** or **yarn**
+- **Git**
 
-**Use your preferred IDE**
+### Installation
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+```bash
+# Clone the repository
+git clone https://github.com/jnystrom14/lumenaura.git
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+# Navigate to project directory
+cd lumenaura
 
-Follow these steps:
+# Install dependencies
+npm install
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Visit `http://localhost:8080` to see your app in action! 🎉
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🛠️ Tech Stack
 
-**Use GitHub Codespaces**
+### **Frontend**
+- **React 18** - Modern React with hooks
+- **TypeScript** - Type-safe development
+- **Vite** - Lightning-fast build tool
+- **Tailwind CSS** - Utility-first styling
+- **shadcn/ui** - Beautiful component library
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### **Backend & Auth**
+- **Supabase** - Backend as a service
+- **Google OAuth** - Secure authentication
+- **PostgreSQL** - Robust database
 
-## What technologies are used for this project?
+### **Additional Libraries**
+- **React Router** - Client-side routing
+- **React Hook Form** - Form management
+- **Date-fns** - Date manipulation
+- **Lucide React** - Beautiful icons
+- **React Day Picker** - Calendar components
 
-This project is built with:
+## 📱 Mobile Optimization
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+LumenAura is built mobile-first with:
+- **Responsive design** that adapts to all screen sizes
+- **Touch-friendly interactions** with proper spacing
+- **PWA capabilities** for app-like experience
+- **Optimized performance** for mobile devices
 
-## How can I deploy this project?
+## 🎨 Design System
 
-Simply open [Lovable](https://lovable.dev/projects/e97705d8-cc9b-452d-89cf-2258ef3a2075) and click on Share -> Publish.
+### **Color Palette**
+- **Primary**: Lumenaura Purple (`#9b87f5`)
+- **Secondary**: Crystal Lavender (`#e6dbff`) 
+- **Accent**: Soft gradients and crystal-inspired effects
 
-## Can I connect a custom domain to my Lovable project?
+### **Typography**
+- **Headers**: Playfair Display (serif)
+- **Body**: Inter (sans-serif)
 
-Yes, you can!
+## 📂 Project Structure
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```
+lumenaura/
+├── src/
+│   ├── components/          # Reusable UI components
+│   │   ├── ui/             # shadcn/ui components
+│   │   ├── auth/           # Authentication components
+│   │   ├── dashboard/      # Dashboard-specific components
+│   │   └── calendar/       # Calendar view components
+│   ├── hooks/              # Custom React hooks
+│   ├── utils/              # Utility functions
+│   ├── data/               # Numerology data and calculations
+│   ├── types/              # TypeScript type definitions
+│   └── integrations/       # Third-party integrations
+├── public/                 # Static assets
+└── docs/                   # Documentation
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 🔧 Configuration
+
+### **Environment Variables**
+
+Create a `.env.local` file:
+
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### **Supabase Setup**
+
+1. Create a new Supabase project
+2. Set up authentication with Google OAuth
+3. Configure your database schema
+4. Add your domain to allowed origins
+
+## 🚀 Deployment
+
+### **Vercel (Recommended)**
+
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables
+3. Deploy automatically on every push
+
+```bash
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### **Development Guidelines**
+
+- Follow TypeScript best practices
+- Use meaningful component and variable names
+- Add JSDoc comments for complex functions
+- Ensure mobile responsiveness
+- Test on multiple devices
+
+## 📖 API Documentation
+
+### **Core Functions**
+
+```typescript
+// Calculate daily numerology profile
+getDailyProfile(userProfile: UserProfile, date: Date): DailyProfile
+
+// Fetch user profile from database
+fetchUserProfileFromServer(userId: string): Promise<UserProfile>
+
+// Calculate personal year
+calculatePersonalYear(birthDate: Date, year: number): number
+```
+
+### **Component Props**
+
+See individual component files for detailed prop documentation.
+
+## 🎯 Numerology System
+
+LumenAura uses Louise Hay's numerology system featuring:
+
+- **Personal Year, Month, Day calculations**
+- **Color associations** for energy alignment
+- **Gemstone recommendations** for daily focus
+- **Affirmations and themes** for personal growth
+- **Universal year influence** for global energy
+
+## 📱 Browser Support
+
+- **Chrome** 90+ ✅
+- **Firefox** 88+ ✅
+- **Safari** 14+ ✅
+- **Edge** 90+ ✅
+- **Mobile browsers** ✅
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Louise Hay** - For the foundational numerology system
+- **shadcn** - For the beautiful UI components
+- **Supabase** - For the robust backend infrastructure
+- **Vercel** - For seamless deployment
+
+## 📞 Support
+
+Having issues? We're here to help!
+
+- 📧 **Email**: [your-email@example.com]
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/jnystrom14/lumenaura/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/jnystrom14/lumenaura/discussions)
+
+---
+
+**Made with ❤️ by [Your Name]**
+
+*Discover your daily magic with LumenAura* ✨

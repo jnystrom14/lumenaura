@@ -1,4 +1,3 @@
-
 import React from "react";
 import { User } from "@supabase/supabase-js";
 import { UserProfile } from "../../types";
@@ -27,8 +26,8 @@ const AuthenticationWrapper: React.FC = () => {
     );
   }
 
-  // Render authentication screen
-  if (showAuth) {
+  // Render authentication screen when user needs to authenticate OR has logged out
+  if (showAuth || isLoggedOut) {
     return (
       <Authentication
         onContinueWithoutAccount={() => {}} // Empty function as we're removing this feature
@@ -37,20 +36,30 @@ const AuthenticationWrapper: React.FC = () => {
     );
   }
 
-  // Render onboarding for new users
-  if (user && !userProfile && !isLoggedOut) {
+  // Render onboarding for new users (authenticated but no profile)
+  if (user && !userProfile) {
     return <Onboarding onComplete={handleOnboardingComplete} />;
   }
 
-  // Render main app if we have a user profile
+  // Render main app if we have a user profile and they're not logged out
+  if (user && userProfile) {
+    return (
+      <AppRouter
+        userProfile={userProfile}
+        isLoggedOut={isLoggedOut}
+        showAuth={showAuth}
+        onLogout={handleLogout}
+        onProfileUpdate={handleProfileUpdate}
+        onboardingComplete={handleOnboardingComplete}
+      />
+    );
+  }
+
+  // Fallback: show authentication screen
   return (
-    <AppRouter
-      userProfile={userProfile}
-      isLoggedOut={isLoggedOut}
-      showAuth={showAuth}
-      onLogout={handleLogout}
-      onProfileUpdate={handleProfileUpdate}
-      onboardingComplete={handleOnboardingComplete}
+    <Authentication
+      onContinueWithoutAccount={() => {}}
+      defaultToSignUp={false}
     />
   );
 };
