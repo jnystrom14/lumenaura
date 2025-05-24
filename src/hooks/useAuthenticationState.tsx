@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { logWithEmoji } from "@/utils/consoleLogger";
@@ -77,8 +76,10 @@ export function useAuthenticationState() {
         })
         .catch((error) => {
           logWithEmoji(`Error fetching profile: ${error.message}`, "error");
-          // truly first-time user: run onboarding
-          setShowAuth(true);
+          // Profile doesn't exist - user needs onboarding, not login
+          // Set userProfile to null and showAuth to false so onboarding shows
+          setUserProfile(null);
+          setShowAuth(false);
         })
         .finally(() => {
           setLoading(false);

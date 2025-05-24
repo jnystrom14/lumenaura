@@ -1,10 +1,10 @@
-
 import React from "react";
 import { DateRange } from "react-day-picker";
 import DatePicker from "./DatePicker";
 import DateRangePicker from "./DateRangePicker";
 import NavigationButtons from "./NavigationButtons";
 import ViewToggleButtons from "./ViewToggleButtons";
+import { Button } from "@/components/ui/button";
 
 interface MobileControlsProps {
   selectedDate: Date;
@@ -35,25 +35,34 @@ const MobileControls: React.FC<MobileControlsProps> = ({
 }) => {
   return (
     <div className="space-y-4">
-      {/* Date Navigation Controls */}
-      <div className="flex items-center justify-between bg-white/50 rounded-lg p-2 shadow-sm">
+      {/* Date Navigation Controls - prev | date picker | next */}
+      <div className="flex items-center justify-center bg-white/50 rounded-lg p-3 shadow-sm gap-2">
         <NavigationButtons 
           onPreviousDay={handlePreviousDay} 
-          onNextDay={handleNextDay} 
+          variant="previous"
           isMobile={true} 
         />
         
-        <DatePicker
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          isRangeMode={isRangeMode}
-          setIsRangeMode={setIsRangeMode}
-          isMobile={true}
+        <div className="flex-1 max-w-[200px]">
+          <DatePicker
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            isRangeMode={isRangeMode}
+            setIsRangeMode={setIsRangeMode}
+            isMobile={true}
+          />
+        </div>
+        
+        <NavigationButtons 
+          onNextDay={handleNextDay} 
+          variant="next"
+          isMobile={true} 
         />
       </div>
       
-      {/* View Options */}
-      <div className="grid grid-cols-2 gap-2">
+      {/* Bottom row - Date Range and View Options */}
+      <div className="space-y-3">
+        {/* Date Range Picker - full width */}
         <DateRangePicker
           dateRange={dateRange}
           setDateRange={setDateRange}
@@ -63,11 +72,23 @@ const MobileControls: React.FC<MobileControlsProps> = ({
           isMobile={true}
         />
         
-        <ViewToggleButtons 
-          setShowMonthly={setShowMonthly} 
-          onLogout={onLogout} 
-          isMobile={true} 
-        />
+        {/* Monthly and Logout buttons side by side */}
+        <div className="grid grid-cols-2 gap-3">
+          <Button
+            variant="outline"
+            onClick={() => setShowMonthly(true)}
+            className="border-lumenaura-lavender text-sm h-10"
+          >
+            Monthly View
+          </Button>
+          <Button
+            variant="outline"
+            onClick={onLogout}
+            className="text-sm h-10"
+          >
+            Logout
+          </Button>
+        </div>
       </div>
     </div>
   );

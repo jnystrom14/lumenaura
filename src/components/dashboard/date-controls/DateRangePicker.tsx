@@ -1,4 +1,3 @@
-
 import React from "react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -33,7 +32,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
       <PopoverTrigger asChild>
         <Button
           variant={isRangeMode ? "default" : "outline"}
-          className={isMobile ? "flex items-center justify-center text-sm h-10" : "flex items-center space-x-2"}
+          className={isMobile ? "w-full flex items-center justify-center text-sm h-10" : "flex items-center space-x-2"}
         >
           <CalendarRange className={isMobile ? "h-4 w-4 mr-1 flex-shrink-0" : "h-4 w-4"} />
           <span className={isMobile ? "truncate" : ""}>

@@ -1,4 +1,3 @@
-
 // src/utils/api.ts
 import { UserProfile } from "../types";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,7 +13,7 @@ export async function fetchUserProfileFromServer(
     .from('profiles')
     .select('name, birth_day, birth_month, birth_year, profile_picture')
     .eq('id', userId)
-    .single();
+    .maybeSingle(); // Use maybeSingle instead of single to avoid error when no rows
 
   if (error) {
     // Profile doesn't exist or there was another error
@@ -22,7 +21,8 @@ export async function fetchUserProfileFromServer(
   }
 
   if (!data) {
-    throw new Error('Profile not found');
+    // Profile doesn't exist - this should trigger onboarding flow
+    throw new Error('Profile not found - user needs onboarding');
   }
 
   // Map the Supabase data format to our UserProfile type

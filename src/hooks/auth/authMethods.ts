@@ -63,8 +63,17 @@ export const signInWithGoogle = async (
     redirectUrl.search = ''; // Remove any query parameters
     redirectUrl.hash = ''; // Remove any hash
     
-    // Log the redirect URL for debugging
+    // For mobile on ngrok, ensure we use the full ngrok URL
+    if (window.location.hostname.includes('ngrok')) {
+      redirectUrl.pathname = '/'; // Ensure we redirect to root
+    }
+    
+    // Log detailed info for debugging
     logWithEmoji(`Google auth redirect URL: ${redirectUrl.toString()}`, 'info');
+    logWithEmoji(`User Agent: ${navigator.userAgent}`, 'info');
+    logWithEmoji(`Is mobile: ${/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)}`, 'info');
+    logWithEmoji(`Current hostname: ${window.location.hostname}`, 'info');
+    logWithEmoji(`Current protocol: ${window.location.protocol}`, 'info');
     
     // Check if we're in a popup or iframe
     const isPopup = window.opener || window.parent !== window;
@@ -76,10 +85,18 @@ export const signInWithGoogle = async (
     try {
       localStorage.setItem('test', 'test');
       localStorage.removeItem('test');
+      logWithEmoji('localStorage is available', 'info');
     } catch (e) {
       logWithEmoji('localStorage is not available - this will cause auth issues', 'error');
       throw new Error('localStorage is not available. Please enable cookies and try again.');
     }
+    
+    // Check if we're on ngrok and warn about potential issues
+    if (window.location.hostname.includes('ngrok')) {
+      logWithEmoji('Detected ngrok environment - mobile OAuth may have issues', 'warning');
+    }
+    
+    logWithEmoji('Initiating Google OAuth...', 'info');
     
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -100,6 +117,8 @@ export const signInWithGoogle = async (
       logError(error, "Google sign in error from Supabase");
       throw error;
     }
+    
+    logWithEmoji('Google OAuth request sent successfully', 'success');
     return { success: true, error: null };
   } catch (error: any) {
     const errorMsg = error.message || 'An unknown error occurred during Google sign in';

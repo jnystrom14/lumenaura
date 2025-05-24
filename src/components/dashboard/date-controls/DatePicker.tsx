@@ -1,4 +1,3 @@
-
 import React from "react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -31,12 +30,12 @@ const DatePicker: React.FC<DatePickerProps> = ({
         <Button
           variant={!isRangeMode ? "default" : "outline"}
           className={
-            isMobile ? "flex-1 mx-2 text-sm" : "flex items-center space-x-2"
+            isMobile ? "w-full text-sm h-10" : "flex items-center space-x-2"
           }
         >
           <CalendarIcon className={isMobile ? "h-4 w-4 mr-1 flex-shrink-0" : "h-4 w-4"} />
           <span className={isMobile ? "truncate" : ""}>
-            {!isRangeMode ? format(selectedDate, isMobile ? "MMM d, yyyy" : "MMM d, yyyy") : "Select date"}
+            {!isRangeMode ? format(selectedDate, isMobile ? "MMM d" : "MMM d, yyyy") : "Select date"}
           </span>
         </Button>
       </PopoverTrigger>

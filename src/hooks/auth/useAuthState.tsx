@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,6 +21,19 @@ export function useAuthState(): UseAuthReturn {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         logWithEmoji(`Auth state change event: ${event}`, 'info');
+        logWithEmoji(`Session exists: ${!!session}`, 'info');
+        logWithEmoji(`User exists: ${!!session?.user}`, 'info');
+        
+        if (session?.user) {
+          logWithEmoji(`User email: ${session.user.email}`, 'info');
+          logWithEmoji(`User provider: ${session.user.app_metadata?.provider}`, 'info');
+        }
+        
+        // Log URL parameters for debugging OAuth returns
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('access_token') || urlParams.has('code') || urlParams.has('error')) {
+          logWithEmoji(`OAuth URL params detected: ${window.location.search}`, 'info');
+        }
         
         if (!isMounted) return;
         
@@ -32,9 +44,11 @@ export function useAuthState(): UseAuthReturn {
         
         // Reset isLoggedOut flag if user logs back in
         if (event === 'SIGNED_IN') {
+          logWithEmoji('Setting isLoggedOut to false', 'info');
           setIsLoggedOut(false);
         } else if (event === 'SIGNED_OUT') {
           // Explicitly set logged out state
+          logWithEmoji('Setting isLoggedOut to true', 'info');
           setSession(null);
           setUser(null);
           setIsLoggedOut(true);
