@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
@@ -27,8 +27,16 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   onDateRangeSelection,
   isMobile = false,
 }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleViewDateRange = () => {
+    onDateRangeSelection();
+    // Auto-close the popover after clicking View Date Range
+    setOpen(false);
+  };
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant={isRangeMode ? "default" : "outline"}
@@ -58,7 +66,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
           />
           <div className="flex justify-end gap-2 mt-4">
             <Button 
-              onClick={onDateRangeSelection}
+              onClick={handleViewDateRange}
               disabled={!dateRange?.from || !dateRange?.to}
               className={isMobile ? "text-sm" : ""}
             >

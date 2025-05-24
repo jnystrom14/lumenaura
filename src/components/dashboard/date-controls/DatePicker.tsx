@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
@@ -24,8 +24,19 @@ const DatePicker: React.FC<DatePickerProps> = ({
   setIsRangeMode,
   isMobile = false,
 }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      setSelectedDate(date);
+      setIsRangeMode(false);
+      // Auto-close the popover after selection
+      setOpen(false);
+    }
+  };
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant={!isRangeMode ? "default" : "outline"}
@@ -44,12 +55,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
           <Calendar
             mode="single"
             selected={selectedDate}
-            onSelect={(date) => {
-              if (date) {
-                setSelectedDate(date);
-                setIsRangeMode(false);
-              }
-            }}
+            onSelect={handleDateSelect}
             className="touch-manipulation"
             initialFocus={!isMobile}
           />
