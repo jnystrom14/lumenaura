@@ -3,8 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 import { logWithEmoji, logError } from '@/utils/consoleLogger';
 
-const SUPABASE_URL = "https://bpolzfohirmqkmvubjzo.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJwb2x6Zm9oaXJtcWttdnVianpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDczMTE2NTYsImV4cCI6MjA2Mjg4NzY1Nn0.VFWscgB-afT3Vm8QLST-IsQsfDMuMZcYyKE0S8y5s_Q";
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://bpolzfohirmqkmvubjzo.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJwb2x6Zm9oaXJtcWttdnVianpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDczMTE2NTYsImV4cCI6MjA2Mjg4NzY1Nn0.VFWscgB-afT3Vm8QLST-IsQsfDMuMZcYyKE0S8y5s_Q";
 
 // Try to detect if we're in a secure context
 const isSecureContext = window.isSecureContext;
