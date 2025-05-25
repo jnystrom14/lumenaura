@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<svg baseProfile="full" height="512px" version="1.1" width="512px" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><linearGradient id="grad" x1="0%" x2="100%" y1="0%" y2="100%"><stop offset="0%" stop-color="#6B46C1" /><stop offset="100%" stop-color="#4299E1" /></linearGradient></defs><circle cx="256px" cy="256px" fill="url(#grad)" r="256px" /><text fill="#FFFFFF" font-family="serif" font-size="320px" text-anchor="middle" x="50%" y="58%">L</text></svg>
