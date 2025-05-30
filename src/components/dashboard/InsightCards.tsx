@@ -32,15 +32,34 @@ const InsightCards: React.FC<InsightCardsProps> = ({ dailyProfile }) => {
             </div>
             <div className="flex justify-between items-center">
               <span className={`${isMobile ? 'text-base' : ''} text-muted-foreground`}>Personal Year:</span>
-              <span className={`${isMobile ? 'text-base' : ''} font-medium`}>{dailyProfile.personalYear}</span>
+              <div className="flex flex-col items-end">
+                <span className={`${isMobile ? 'text-base' : ''} font-medium`}>{dailyProfile.personalYear.value}</span>
+                {dailyProfile.personalYear.masterNumber && (
+                  <span className="text-xs text-purple-600 font-medium">✨ Master {dailyProfile.personalYear.masterNumber}</span>
+                )}
+              </div>
             </div>
             <div className="flex justify-between items-center">
               <span className={`${isMobile ? 'text-base' : ''} text-muted-foreground`}>Personal Month:</span>
-              <span className={`${isMobile ? 'text-base' : ''} font-medium`}>{dailyProfile.personalMonth}</span>
+              <div className="flex flex-col items-end">
+                <span className={`${isMobile ? 'text-base' : ''} font-medium`}>{dailyProfile.personalMonth.value}</span>
+                {dailyProfile.personalMonth.masterNumber && (
+                  <span className="text-xs text-purple-600 font-medium">✨ Master {dailyProfile.personalMonth.masterNumber}</span>
+                )}
+              </div>
             </div>
             <div className="flex justify-between items-center">
               <span className={`${isMobile ? 'text-base' : ''} text-muted-foreground`}>Personal Day:</span>
-              <span className={`${isMobile ? 'text-2xl' : 'text-xl'} font-semibold text-primary`}>{dailyProfile.personalDay}</span>
+              <div className="flex flex-col items-end">
+                <span className={`${isMobile ? 'text-2xl' : 'text-xl'} font-semibold text-primary`}>
+                  {dailyProfile.personalDay.value}
+                </span>
+                {dailyProfile.personalDay.masterNumber && (
+                  <span className="text-sm text-purple-600 font-semibold">
+                    ✨ Master {dailyProfile.personalDay.masterNumber}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>

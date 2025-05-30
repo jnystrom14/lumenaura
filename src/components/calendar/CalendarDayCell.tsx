@@ -88,17 +88,22 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ profile, isMobile }) 
         <span className="font-medium print:text-lg">
           {profile.date.getDate()}
         </span>
-        <span 
-          className={`${isMobile ? 'text-xs px-2 py-1' : 'text-xs px-2 py-1'} print:text-xs print:px-2 print:py-1 rounded-full text-white print:border print:border-gray-400`}
-          style={{ 
-            backgroundColor: profile.numerologyData.colorHex || "#6B7280",
-            color: getContrastColor(profile.numerologyData.colorHex || "#6B7280"),
-            WebkitPrintColorAdjust: "exact",
-            printColorAdjust: "exact"
-          }}
-        >
-          {profile.personalDay}
-        </span>
+        <div className="flex flex-col items-end">
+          <span 
+            className={`${isMobile ? 'text-xs px-2 py-1' : 'text-xs px-2 py-1'} print:text-xs print:px-2 print:py-1 rounded-full text-white print:border print:border-gray-400`}
+            style={{ 
+              backgroundColor: profile.numerologyData.colorHex || "#6B7280",
+              color: getContrastColor(profile.numerologyData.colorHex || "#6B7280"),
+              WebkitPrintColorAdjust: "exact",
+              printColorAdjust: "exact"
+            }}
+          >
+            {profile.personalDay.value}
+          </span>
+          {profile.personalDay.masterNumber && (
+            <span className="text-xs text-purple-600 font-bold mt-1">M{profile.personalDay.masterNumber}</span>
+          )}
+        </div>
       </div>
       <div className={`${isMobile ? 'mt-2' : 'mt-2'} ${isMobile ? 'text-xs' : 'text-xs'} print:mt-2 print:text-xs`}>
         <div className="font-medium truncate flex items-center gap-0">

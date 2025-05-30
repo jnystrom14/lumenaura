@@ -33,12 +33,18 @@ export interface NumerologyData {
   personalYear?: PersonalYearData;
 }
 
+export interface NumerologyNumber {
+  value: number;
+  isMasterNumber: boolean;
+  masterNumber?: number; // 11 or 22 if it was reduced from a master number
+}
+
 export interface DailyProfile {
   date: Date;
   universalYear: number;
-  personalYear: number;
-  personalMonth: number;
-  personalDay: number;
+  personalYear: NumerologyNumber;
+  personalMonth: NumerologyNumber;
+  personalDay: NumerologyNumber;
   numerologyData: NumerologyData;
   personalYearData: NumerologyData; // New property for personal year data
 }
